@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+<meta property="og:image" content="https://get.sentinelx.app/logo.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://get.sentinelx.app/logo.png">
+
+<title>Terms of Service — SentinelX</title>
+<meta name="theme-color" content="#0e1116">
+<style>
+:root {
+  --bg: #0e1116;
+  --bg-elev: #161b22;
+  --bg-code: #0d1117;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-dim: #8b949e;
+  --text-faint: #6e7681;
+  --accent: #58a6ff;
+  --green: #7ee787;
+  --orange: #ffa657;
+  --max-width: 760px;
+}
+* { box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  line-height: 1.7;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 56px 24px 80px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 36px;
+  text-decoration: none;
+  color: var(--text);
+}
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #58a6ff, #1f6feb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  color: white;
+}
+.brand-name {
+  font-size: 18px;
+  font-weight: 600;
+}
+h1 {
+  font-size: 32px;
+  margin: 0 0 8px;
+  letter-spacing: -0.02em;
+}
+h2 {
+  font-size: 20px;
+  margin: 36px 0 12px;
+  letter-spacing: -0.01em;
+}
+.last-updated {
+  color: var(--text-faint);
+  font-size: 14px;
+  margin: 0 0 32px;
+}
+p, li { color: var(--text); }
+ul { padding-left: 20px; }
+li { margin: 6px 0; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.92em;
+}
+footer {
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  color: var(--text-faint);
+  font-size: 14px;
+}
+footer .links { display: flex; gap: 20px; flex-wrap: wrap; }
+@media (max-width: 600px) {
+  main { padding: 32px 20px 64px; }
+  h1 { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+<main>
+<a href="/about" class="brand">
+  <div class="brand-mark">S</div>
+  <div class="brand-name">SentinelX</div>
+</a>
+<h1>Terms of Service</h1>
+<p class="last-updated">Last updated: May 10, 2026</p>
+<p>By using SentinelX you agree to these terms. If you don't agree, please don't use the service.</p>
+<h2>What SentinelX is</h2>
+<p>SentinelX is a hosted service that lets you operate Linux servers via an LLM (Claude.ai, ChatGPT, etc.). You install a small open-source agent on your server, the agent connects to our hub, and the hub appears as an MCP connector in your LLM.</p>
+<h2>Your responsibility</h2>
+<ul>
+  <li><strong>The servers you enroll.</strong> SentinelX gives an LLM the ability to run commands on your hosts. You decide which commands by editing <code>/etc/sentinelx/config.yaml</code> on each host. Anything you allow there can be invoked from your LLM session.</li>
+  <li><strong>Your account.</strong> Don't share your login. Sign in with Google or GitHub — we don't manage passwords ourselves.</li>
+  <li><strong>Compliance with applicable law</strong> in the jurisdictions where your servers run.</li>
+</ul>
+<h2>What we promise</h2>
+<ul>
+  <li>To run the service in good faith and try to keep it available.</li>
+  <li>Not to use your server access for anything other than relaying commands you initiated.</li>
+  <li>Not to access, exfiltrate, or modify the contents of your servers ourselves.</li>
+  <li>Reasonable security practices for the data we store (see <a href="/privacy">Privacy Policy</a>).</li>
+</ul>
+<h2>What we don't promise</h2>
+<p>SentinelX is provided "as is", without warranties of any kind. We don't guarantee:</p>
+<ul>
+  <li>100% uptime. The service can go down for maintenance, outages, or other reasons.</li>
+  <li>That every command you ask the LLM to run will execute correctly. The LLM may misinterpret you, your config may have errors, or the command itself may misbehave.</li>
+  <li>Bug-free software. The agent and hub are open source — you can read the code, file issues, and contribute fixes.</li>
+</ul>
+<h2>Liability</h2>
+<p>To the maximum extent permitted by law, our liability for any damages arising from your use of SentinelX is limited to the amount you paid us in the previous 12 months. SentinelX is currently free, so this is currently zero.</p>
+<h2>Acceptable use</h2>
+<p>Don't use SentinelX to:</p>
+<ul>
+  <li>Run attacks against systems you don't own or operate</li>
+  <li>Distribute malware, host illegal content, or facilitate illegal activity</li>
+  <li>Circumvent technical access controls on systems you don't own</li>
+  <li>Spam, harass, or abuse other users</li>
+</ul>
+<p>We may suspend or terminate accounts that violate these terms.</p>
+<h2>Termination</h2>
+<p>You may stop using SentinelX at any time by uninstalling the agents and asking us to delete your account. We may terminate accounts that violate these terms, or discontinue the service entirely with reasonable notice.</p>
+<h2>Changes to these terms</h2>
+<p>We'll update the "last updated" date when terms change. For material changes, we'll email you. Continued use after a change means you accept the new terms.</p>
+<h2>Open source</h2>
+<p>The agent (<a href="https://github.com/pensados/sentinelx-cloud-core">sentinelx-cloud-core</a>), the protocol (<a href="https://github.com/pensados/sentinelx-cloud-protocol">sentinelx-cloud-protocol</a>), and the installer (<a href="https://github.com/pensados/sentinelx-cloud-installer">sentinelx-cloud-installer</a>) are released under the Apache 2.0 license. The hub is currently closed-source.</p>
+<h2>Governing law</h2>
+<p>These terms are governed by the laws of Argentina. Disputes will be resolved in the competent courts of the Autonomous City of Buenos Aires.</p>
+<h2>Contact</h2>
+<p>Questions: <a href="mailto:hello@pensa.ar">hello@pensa.ar</a></p>
+<footer>
+  <div>© 2026 SentinelX</div>
+  <div class="links">
+    <a href="/about">Home</a>
+    <a href="/privacy">Privacy</a>
+    <a href="/terms">Terms</a>
+    <a href="https://github.com/pensados/sentinelx-cloud-core">GitHub</a>
+    <a href="mailto:hello@pensa.ar">Contact</a>
+  </div>
+</footer>
+</main>
+</body>
+</html>

@@ -1,0 +1,507 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+<meta property="og:image" content="https://get.sentinelx.app/logo.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://get.sentinelx.app/logo.png">
+
+<title>SentinelX — Operate Linux servers from Claude.ai and ChatGPT</title>
+<meta name="description" content="Install a small agent on your Linux servers. Talk to them through Claude.ai or ChatGPT. SentinelX is a hosted MCP service that bridges your fleet to your LLM.">
+<meta name="theme-color" content="#0e1116">
+
+<!-- Open Graph -->
+<meta property="og:title" content="SentinelX — Operate Linux servers from Claude.ai and ChatGPT">
+<meta property="og:description" content="Install a small agent on your Linux servers. Talk to them through Claude.ai or ChatGPT.">
+<meta property="og:url" content="https://get.sentinelx.app/about">
+<meta property="og:type" content="website">
+
+<style>
+:root {
+  --bg: #0e1116;
+  --bg-elev: #161b22;
+  --bg-code: #0d1117;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-dim: #8b949e;
+  --text-faint: #6e7681;
+  --accent: #58a6ff;
+  --accent-bright: #79c0ff;
+  --green: #7ee787;
+  --green-bright: #56d364;
+  --orange: #ffa657;
+  --max-width: 760px;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  line-height: 1.65;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 56px 24px 80px;
+}
+
+.hero {
+  margin-bottom: 56px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.brand-mark {
+  width: 36px;
+  height: 36px;
+  display: block;
+  object-fit: contain;
+}
+
+.brand-name {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+
+h1 {
+  font-size: 38px;
+  line-height: 1.2;
+  margin: 0 0 16px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+}
+
+.tagline {
+  font-size: 18px;
+  color: var(--text-dim);
+  margin: 0 0 32px;
+  max-width: 580px;
+}
+
+.cta {
+  display: block;
+  background: var(--bg-code);
+  padding: 18px 22px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, monospace;
+  font-size: 14.5px;
+  color: var(--green);
+  position: relative;
+  overflow-x: auto;
+}
+
+.cta::before {
+  content: "$";
+  color: var(--text-faint);
+  margin-right: 12px;
+  user-select: none;
+}
+
+/* Copy-to-clipboard button overlaid in the top-right of the .cta box.
+   The .cta is position:relative; the button anchors here. Padding-right
+   on .cta-cmd reserves space so the command never slides under the button
+   on narrow viewports. */
+.cta {
+  padding-right: 56px;
+}
+
+.cta-copy-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-faint);
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+}
+.cta-copy-btn:hover {
+  color: var(--green);
+  background: rgba(127, 255, 127, 0.05);
+  border-color: var(--green);
+}
+.cta-copy-btn:focus-visible {
+  outline: 2px solid var(--green);
+  outline-offset: 2px;
+}
+.cta-copy-check {
+  display: none;
+}
+.cta-copy-btn.copied {
+  color: var(--green);
+  border-color: var(--green);
+}
+.cta-copy-btn.copied .cta-copy-icon {
+  display: none;
+}
+.cta-copy-btn.copied .cta-copy-check {
+  display: inline-block;
+}
+
+.cta-note {
+  margin-top: 10px;
+  color: var(--text-faint);
+  font-size: 13px;
+}
+
+h2 {
+  font-size: 22px;
+  margin: 56px 0 16px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+
+h3 {
+  font-size: 16px;
+  margin: 24px 0 6px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+p { margin: 0 0 14px; }
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover { text-decoration: underline; }
+
+code {
+  background: var(--bg-code);
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-size: 13.5px;
+  font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, monospace;
+  color: var(--green);
+  border: 1px solid var(--border);
+}
+
+pre {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 18px;
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text);
+  margin: 0 0 18px;
+}
+
+pre code {
+  background: transparent;
+  padding: 0;
+  border: 0;
+  color: inherit;
+  font-size: inherit;
+}
+
+ul {
+  margin: 8px 0 18px;
+  padding-left: 22px;
+}
+li { margin: 4px 0; }
+
+.steps {
+  display: grid;
+  gap: 16px;
+  margin: 24px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.step {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 16px;
+  align-items: start;
+}
+
+.step-num {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.step-body strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.callout {
+  border-left: 3px solid var(--accent);
+  background: rgba(88, 166, 255, 0.06);
+  padding: 12px 16px;
+  border-radius: 0 6px 6px 0;
+  margin: 18px 0;
+  font-size: 14px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  margin: 16px 0 8px;
+}
+
+@media (max-width: 600px) {
+  .grid-2 { grid-template-columns: 1fr; }
+  h1 { font-size: 30px; }
+  main { padding: 40px 20px 60px; }
+}
+
+.card {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 18px 20px;
+}
+
+.card h3 { margin-top: 0; }
+.card p:last-child { margin-bottom: 0; }
+
+footer {
+  border-top: 1px solid var(--border);
+  margin-top: 80px;
+  padding: 28px 0;
+  color: var(--text-faint);
+  font-size: 13.5px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+footer .links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+}
+
+.beta-tag {
+  display: inline-block;
+  background: rgba(255, 166, 87, 0.1);
+  border: 1px solid rgba(255, 166, 87, 0.3);
+  color: var(--orange);
+  padding: 2px 9px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  vertical-align: middle;
+  margin-left: 10px;
+}
+</style>
+</head>
+<body>
+
+<main>
+  <header class="hero">
+    <div class="brand">
+      <img src="/logo.svg" alt="SentinelX" class="brand-mark">
+      <div class="brand-name">SentinelX <span class="beta-tag">beta</span></div>
+    </div>
+
+    <h1>Operate your Linux servers from Claude.ai or ChatGPT.</h1>
+
+    <p class="tagline">
+      Install a small agent on your servers. Connect SentinelX as an MCP connector in your LLM. Then ask the LLM to check disk usage, restart a service, edit a config, or anything else you've allowed.
+    </p>
+
+    <div class="cta"><span class="cta-cmd">curl -fsSL https://get.sentinelx.app | sudo bash</span><button class="cta-copy-btn" type="button" aria-label="Copy install command" data-copy="curl -fsSL https://get.sentinelx.app | sudo bash"><svg class="cta-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><svg class="cta-copy-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button></div>
+    <div class="cta-note">Linux only. Run as root. The agent runs as an unprivileged user after install.</div>
+  </header>
+
+  <h2>How it works</h2>
+
+  <ol class="steps">
+    <li class="step">
+      <div class="step-num">1</div>
+      <div class="step-body">
+        <strong>Install the agent.</strong>
+        Run the command above on any Linux host. It clones the open-source agent, sets up a virtualenv, and registers a systemd service.
+      </div>
+    </li>
+    <li class="step">
+      <div class="step-num">2</div>
+      <div class="step-body">
+        <strong>Sign in with Google.</strong>
+        The installer prints a URL. Open it, sign in with Google, copy the displayed token, and paste it back into the installer.
+      </div>
+    </li>
+    <li class="step">
+      <div class="step-num">3</div>
+      <div class="step-body">
+        <strong>Connect SentinelX in Claude.ai or ChatGPT.</strong>
+        Settings → Connectors → Add custom MCP →
+        <code>https://mcp.sentinelx.app/mcp/mcp</code>
+        → authorize with the same Google account. Done.
+      </div>
+    </li>
+  </ol>
+
+  <div class="callout">
+    <strong>Multiple servers?</strong> Run the install command on each one. Your hosts get human-friendly aliases automatically (their hostname). Ask the LLM "list my servers" and it'll show all of them — pick which one to target by host_id, hostname, or a custom label.
+  </div>
+
+  <h2>What you can ask</h2>
+
+  <p>Once it's connected, you can talk to your servers in plain English (or whatever language). The LLM picks the right tool automatically:</p>
+
+  <pre><code># Health checks
+"Show me uptime and disk usage on my-vps"
+"Compare free memory across all my servers"
+
+# Operations
+"Restart nginx on prod-web and tell me when it's back"
+"Tail the last 50 lines of /var/log/syslog on db1"
+
+# Config edits
+"Update the worker_processes setting in my nginx config to 4"
+"Show me the diff before applying"</code></pre>
+
+  <h2>What's installed where</h2>
+
+  <div class="grid-2">
+    <div class="card">
+      <h3>On your server</h3>
+      <p>The agent goes to <code>/opt/sentinelx-cloud-core</code> and runs as systemd unit <code>sentinelx-cloud-core.service</code> under user <code>sentinelx</code>.</p>
+      <p>Allowed commands live in <code>/etc/sentinelx/config.yaml</code> — you fully control what the LLM can do.</p>
+    </div>
+    <div class="card">
+      <h3>In the cloud</h3>
+      <p>A hosted hub at <code>mcp.sentinelx.app</code> relays MCP tool calls between your LLM and your agents. Authentication is OAuth 2 + PKCE via Google.</p>
+      <p>Your agent connects out to the hub. No port forwarding, no inbound traffic to your server.</p>
+    </div>
+  </div>
+
+  <h2>Security model</h2>
+  <ul>
+    <li>The agent <strong>only opens outbound connections</strong>. Nothing inbound, no port to expose.</li>
+    <li>Commands are gated by an <strong>allowlist</strong> you maintain in <code>/etc/sentinelx/config.yaml</code>. The LLM cannot ask for what's not allowed.</li>
+    <li>Each host has its own identity JWT. Compromising one host doesn't grant access to others.</li>
+    <li>The agent code, the protocol, and the installer are <a href="https://github.com/pensados/sentinelx-cloud-core">open source</a>. Read the code before you install.</li>
+  </ul>
+
+  <h2>Open source</h2>
+  <p>The agent and its protocol are under Apache 2.0:</p>
+  <ul>
+    <li><a href="https://github.com/pensados/sentinelx-cloud-core"><code>sentinelx-cloud-core</code></a> — the agent that runs on your server</li>
+    <li><a href="https://github.com/pensados/sentinelx-cloud-protocol"><code>sentinelx-cloud-protocol</code></a> — wire format between agent and hub</li>
+    <li><a href="https://github.com/pensados/sentinelx-cloud-installer"><code>sentinelx-cloud-installer</code></a> — what <code>get.sentinelx.app</code> serves</li>
+  </ul>
+
+  <h2>Manual install</h2>
+  <p>If you'd rather not <code>curl | sudo bash</code>, fetch and inspect first:</p>
+  <pre><code>curl -fsSL https://get.sentinelx.app/install.sh -o install.sh
+less install.sh
+sudo bash install.sh</code></pre>
+
+  <h2>Status</h2>
+  <p>SentinelX is in beta. Hub status: <a href="https://mcp.sentinelx.app/healthz">healthz</a> · <a href="https://mcp.sentinelx.app/readyz">readyz</a></p>
+
+  <footer>
+    <div>© 2026 SentinelX — a <a href="https://pensa.ar/legal/marca/" style="color:var(--accent);text-decoration:none;">Pensa Software®</a> product</div>
+    <div class="links">
+      <a href="/privacy">Privacy</a>
+      <a href="/terms">Terms</a>
+      <a href="https://github.com/pensados/sentinelx-cloud-core">GitHub</a>
+      <a href="mailto:hello@pensa.ar">Contact</a>
+    </div>
+  </footer>
+</main>
+
+<script>
+  // Copy-to-clipboard for any .cta-copy-btn. We bind via delegation on
+  // document so future buttons added dynamically also work — and so a
+  // single listener handles both the hero CTA and any future code blocks
+  // with the same pattern.
+  document.addEventListener('click', async function (evt) {
+    const btn = evt.target.closest('.cta-copy-btn');
+    if (!btn) return;
+
+    const text = btn.getAttribute('data-copy') || '';
+    if (!text) return;
+
+    // Try the modern Clipboard API first. It requires a secure context
+    // (https) which we always have, but fall back to execCommand for the
+    // rare browser that doesn't expose it (or denies permission).
+    let copied = false;
+    try {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        await navigator.clipboard.writeText(text);
+        copied = true;
+      }
+    } catch (_) {
+      // fall through to the fallback path
+    }
+
+    if (!copied) {
+      // Legacy fallback: temporarily inject a hidden textarea, select
+      // it, fire execCommand('copy'), and clean up. Works on iOS Safari
+      // and other browsers without async clipboard support.
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.position = 'absolute';
+      ta.style.left = '-9999px';
+      document.body.appendChild(ta);
+      ta.select();
+      try {
+        copied = document.execCommand('copy');
+      } catch (_) {
+        copied = false;
+      }
+      document.body.removeChild(ta);
+    }
+
+    if (!copied) return;
+
+    // Visual feedback: swap the icon to a checkmark for 1.5s.
+    btn.classList.add('copied');
+    btn.setAttribute('aria-label', 'Copied');
+    setTimeout(function () {
+      btn.classList.remove('copied');
+      btn.setAttribute('aria-label', 'Copy install command');
+    }, 1500);
+  });
+</script>
+</body>
+</html>

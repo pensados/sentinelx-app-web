@@ -1,0 +1,29 @@
+# Large media assets — too big for git, served from /var/www directly.
+# If you reinstall the server from scratch, these need to be restored
+# manually (look in backups, or re-export from local copies).
+demo.mp4
+*.mp4
+*.mov
+*.webm
+
+# install.sh + enroll.py are NOT canonical here. The source of truth
+# lives in github.com/pensados/sentinelx-cloud-installer. They get
+# copied into this directory at deploy time so nginx can serve them
+# at https://get.sentinelx.app/install.sh.
+#
+# Tracking them here would mean two sources of truth that can drift.
+# Always edit them in sentinelx-cloud-installer, then sync over.
+install.sh
+enroll.py
+
+# Editor backups (sentinel_edit leaves these on failed transactions)
+*.bak.*
+*.bak
+
+# OS clutter
+.DS_Store
+Thumbs.db
+
+# Editor scratch
+*.swp
+*~

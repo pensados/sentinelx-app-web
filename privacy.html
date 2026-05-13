@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+<meta property="og:image" content="https://get.sentinelx.app/logo.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://get.sentinelx.app/logo.png">
+
+<title>Privacy Policy — SentinelX</title>
+<meta name="theme-color" content="#0e1116">
+<style>
+:root {
+  --bg: #0e1116;
+  --bg-elev: #161b22;
+  --bg-code: #0d1117;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-dim: #8b949e;
+  --text-faint: #6e7681;
+  --accent: #58a6ff;
+  --green: #7ee787;
+  --orange: #ffa657;
+  --max-width: 760px;
+}
+* { box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  line-height: 1.7;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 56px 24px 80px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 36px;
+  text-decoration: none;
+  color: var(--text);
+}
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #58a6ff, #1f6feb);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  color: white;
+}
+.brand-name {
+  font-size: 18px;
+  font-weight: 600;
+}
+h1 {
+  font-size: 32px;
+  margin: 0 0 8px;
+  letter-spacing: -0.02em;
+}
+h2 {
+  font-size: 20px;
+  margin: 36px 0 12px;
+  letter-spacing: -0.01em;
+}
+h3 {
+  font-size: 16px;
+  margin: 24px 0 8px;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+.last-updated {
+  color: var(--text-faint);
+  font-size: 14px;
+  margin: 0 0 32px;
+}
+p, li { color: var(--text); }
+ul { padding-left: 20px; }
+li { margin: 6px 0; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.92em;
+}
+footer {
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  color: var(--text-faint);
+  font-size: 14px;
+}
+footer .links { display: flex; gap: 20px; flex-wrap: wrap; }
+@media (max-width: 600px) {
+  main { padding: 32px 20px 64px; }
+  h1 { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+<main>
+<a href="/about" class="brand">
+  <div class="brand-mark">S</div>
+  <div class="brand-name">SentinelX</div>
+</a>
+<h1>Privacy Policy</h1>
+<p class="last-updated">Last updated: May 10, 2026</p>
+<p>This page describes what data SentinelX collects, why, and how it's stored. SentinelX is a hosted MCP service that lets you operate Linux servers from inside Claude.ai or ChatGPT via a small agent installed on your servers.</p>
+<h2>What we collect</h2>
+<h3>Account data</h3>
+<p>When you sign in with Google or GitHub, we receive from your identity provider:</p>
+<ul>
+  <li>Your email address</li>
+  <li>Your name (as provided by your identity provider)</li>
+  <li>A stable user ID issued by your identity provider (the OpenID Connect <code>sub</code> claim)</li>
+</ul>
+<p>We use these to identify your SentinelX account and bind your enrolled hosts to it. We do <strong>not</strong> receive your password — your identity provider (Google or GitHub) handles authentication.</p>
+<h3>Host data</h3>
+<p>For every server you enroll with SentinelX, we store on our hub:</p>
+<ul>
+  <li>A unique host ID generated at install time</li>
+  <li>Your server's hostname (as reported by the agent at handshake)</li>
+  <li>Any optional label you've set</li>
+  <li>The agent version and protocol version</li>
+  <li>Metadata about the active connection (session ID, connect time)</li>
+</ul>
+<p>We do <strong>not</strong> store the contents of your server's filesystem, the output of commands you run, or any application data on your host. The agent runs commands locally and returns results to your LLM session — they pass through our hub but are not persisted.</p>
+<h3>Operational logs</h3>
+<p>For service health, debugging, and abuse prevention, our hub logs each tool call with:</p>
+<ul>
+  <li>Your user ID (not your email)</li>
+  <li>The target host ID</li>
+  <li>The operation name (<code>exec</code>, <code>edit</code>, etc.)</li>
+  <li>A timestamp</li>
+  <li>Whether the call succeeded</li>
+</ul>
+<p>We do <strong>not</strong> log command arguments, file paths, file contents, or command output in our hub. Those stay between your agent and your LLM session.</p>
+<h2>What we do NOT collect</h2>
+<ul>
+  <li>Your password — your identity provider authenticates you, we never see it</li>
+  <li>Contents of files on your servers</li>
+  <li>Output of commands you run via SentinelX</li>
+  <li>SSH keys, credentials, or other secrets stored on your hosts</li>
+  <li>Browsing or telemetry data unrelated to using SentinelX</li>
+</ul>
+<h2>How long we keep data</h2>
+<ul>
+  <li><strong>Account data:</strong> for as long as your account exists. Delete your account to remove it.</li>
+  <li><strong>Host registrations:</strong> until you uninstall the agent or revoke the host.</li>
+  <li><strong>Operational logs:</strong> 30 days, then automatically rotated out.</li>
+</ul>
+<h2>Who we share data with</h2>
+<p>We do not sell your data. We share account data only with infrastructure providers required to operate the service (compute, DNS, certificate authorities), and only as needed for them to deliver their service.</p>
+<h2>Where data is stored</h2>
+<p>SentinelX hub infrastructure runs on servers physically located in Argentina. If we add additional regions, we'll update this page.</p>
+<h2>Your controls</h2>
+<ul>
+  <li><strong>Disconnect a host:</strong> uninstall the agent (<code>systemctl disable --now sentinelx-cloud-core</code>) or remove its identity file. The host stops appearing in your account.</li>
+  <li><strong>Delete a label:</strong> ask your LLM to call <code>sentinel_remove_host_label</code>.</li>
+  <li><strong>Delete your account and all associated data:</strong> email <a href="mailto:privacy@pensa.ar">privacy@pensa.ar</a>. We process the request within 30 days.</li>
+</ul>
+<h2>Security</h2>
+<p>All connections between your agent, our hub, and your LLM are TLS-encrypted. Identity tokens are short-lived JWTs. The agent never accepts inbound connections — it only opens an outbound WebSocket to our hub. Each agent's authority is scoped to its own host.</p>
+<h2>Changes to this policy</h2>
+<p>We'll update the "last updated" date when we make material changes. For significant changes, we'll email you via the address provided by your identity provider.</p>
+<h2>Contact</h2>
+<p>Questions: <a href="mailto:privacy@pensa.ar">privacy@pensa.ar</a></p>
+<footer>
+  <div>© 2026 SentinelX</div>
+  <div class="links">
+    <a href="/about">Home</a>
+    <a href="/privacy">Privacy</a>
+    <a href="/terms">Terms</a>
+    <a href="https://github.com/pensados/sentinelx-cloud-core">GitHub</a>
+    <a href="mailto:privacy@pensa.ar">Contact</a>
+  </div>
+</footer>
+</main>
+</body>
+</html>
