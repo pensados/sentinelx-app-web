@@ -222,6 +222,26 @@ pre code {
   font-size: inherit;
 }
 
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0 18px;
+  font-size: 13.5px;
+}
+th, td {
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+th {
+  font-weight: 600;
+  color: var(--text);
+  background: var(--bg-elev);
+  border-bottom: 1px solid var(--border);
+}
+td code { font-size: 12.5px; padding: 1px 6px; }
+
 ul {
   margin: 8px 0 18px;
   padding-left: 22px;
@@ -400,6 +420,28 @@ footer .links {
 # Config edits
 "Update the worker_processes setting in my nginx config to 4"
 "Show me the diff before applying"</code></pre>
+
+  <h2 id="integrations">Integrations</h2>
+
+  <p>Beyond your hosts, the hub exposes a few <strong>third-party integrations</strong> as MCP tools — so the LLM can also send mail, post Telegram notifications, or edit DNS on your behalf. Each one needs credentials configured once on <a href="https://mcp.sentinelx.app">mcp.sentinelx.app</a>; the agent on your hosts is not involved.</p>
+
+  <table>
+    <thead><tr><th>Tool</th><th>What it does</th></tr></thead>
+    <tbody>
+      <tr><td><code>cloudflare_dns_list_zones</code></td><td>List Cloudflare zones the saved token can access</td></tr>
+      <tr><td><code>cloudflare_dns_list_records</code></td><td>List DNS records in a zone, optionally filtered</td></tr>
+      <tr><td><code>cloudflare_dns_create_record</code></td><td>Create a new DNS record</td></tr>
+      <tr><td><code>cloudflare_dns_update_record</code></td><td>Partially update an existing DNS record</td></tr>
+      <tr><td><code>cloudflare_dns_delete_record</code></td><td>Delete a DNS record</td></tr>
+      <tr><td><code>resend_send_email</code></td><td>Send a transactional or operational email via Resend</td></tr>
+      <tr><td><code>telegram_send_message</code></td><td>Send a text message to a Telegram chat using a saved bot</td></tr>
+      <tr><td><code>list_integrations</code></td><td>List the integrations the calling user has configured</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Hub-side, not agent-side.</strong> These tools run inside the SentinelX hub, not on your Linux hosts. They're convenient bundled extras, not part of the open-source agent — credentials live in your hub account and never touch the agent's allowlist.
+  </div>
 
   <h2>What's installed where</h2>
 
