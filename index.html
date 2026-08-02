@@ -216,6 +216,58 @@ h1 {
   font-size: 13px;
 }
 
+/* Sticky top nav: full-width bar, inner content capped to --max-width so
+   it lines up with <main>. Brand left, Dashboard button right. */
+.topnav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(14, 17, 22, 0.82);
+  backdrop-filter: saturate(180%) blur(10px);
+  -webkit-backdrop-filter: saturate(180%) blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.topnav-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.topnav-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--text);
+}
+.topnav-logo {
+  width: 26px;
+  height: 26px;
+  display: block;
+  object-fit: contain;
+}
+.topnav-name {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+}
+.topnav-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+}
+.btn-sm {
+  padding: 7px 14px;
+  font-size: 13.5px;
+}
+
+@media (max-width: 600px) {
+  .topnav-inner { padding: 10px 20px; }
+}
+
 h2 {
   font-size: 22px;
   margin: 56px 0 16px;
@@ -398,13 +450,22 @@ footer .links {
 </head>
 <body>
 
+<nav class="topnav">
+  <div class="topnav-inner">
+    <a class="topnav-brand" href="/">
+      <img src="/logo.svg" alt="SentinelX" class="topnav-logo">
+      <span class="topnav-name">SentinelX</span>
+      <span class="beta-tag">beta</span>
+    </a>
+    <div class="topnav-actions">
+      <a class="topnav-link" href="https://github.com/pensados/sentinelx-cloud-core" style="color:var(--text-dim);text-decoration:none;font-size:14px;">GitHub</a>
+      <a class="btn btn-primary btn-sm" href="https://mcp.sentinelx.app/dashboard">Dashboard <span class="btn-arrow" aria-hidden="true">→</span></a>
+    </div>
+  </div>
+</nav>
+
 <main>
   <header class="hero">
-    <div class="brand">
-      <img src="/logo.svg" alt="SentinelX" class="brand-mark">
-      <div class="brand-name">SentinelX <span class="beta-tag">beta</span></div>
-    </div>
-
     <h1>Operate your Linux servers from Claude.ai or ChatGPT.</h1>
 
     <p class="tagline">
