@@ -567,6 +567,112 @@ footer .links {
     <strong>Used to run this site.</strong> SentinelX edits <code>/var/www/get.sentinelx.app/index.html</code> directly from a Claude chat, with <code>git</code> tracking every change. Including this paragraph.
   </div>
 
+  <!-- editor & CLI clients: drop-in JSON config -->
+  <style>
+    .cfg { margin: 20px 0; }
+    .cfg-head { font-size: 14px; margin-bottom: 8px; color: var(--text); }
+    .cfg-head strong { font-weight: 600; }
+    .cfg-head code { font-size: 12px; color: var(--text-dim); }
+    .cfg-note { font-size: 13px; color: var(--text-dim); margin: 4px 0 0; }
+    .cb-wrap { position: relative; }
+    .copy-btn { position: absolute; top: 8px; right: 8px; display: inline-flex; align-items: center; gap: 5px; background: var(--bg-elev); border: 1px solid var(--border); color: var(--text-dim); font-size: 11px; font-family: ui-monospace, monospace; padding: 3px 8px; border-radius: 5px; cursor: pointer; transition: color .15s, border-color .15s; }
+    .copy-btn:hover, .copy-btn.copied { color: var(--accent); border-color: var(--accent); }
+    .copy-btn svg { width: 11px; height: 11px; }
+  </style>
+
+  <h2 id="editors">Connect from your editor</h2>
+  <p>Claude and ChatGPT connect through their own UI. Editor and CLI clients read a small JSON config instead &mdash; same hub URL, one paste. The only thing that changes per client is the top-level key and how the transport field is spelled; get it wrong and the client silently falls back to the legacy SSE transport.</p>
+
+  <div class="cfg">
+    <div class="cfg-head"><strong>VS Code</strong> &nbsp;<code>~/.config/Code/User/mcp.json</code></div>
+    <div class="cb-wrap">
+      <button class="copy-btn" onclick="sxCopy(this)" aria-label="Copy config"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span class="copy-label">Copy</span></button>
+<pre><code>{
+  "servers": {
+    "sentinelx": {
+      "type": "http",
+      "url": "https://mcp.sentinelx.app/mcp/mcp"
+    }
+  }
+}</code></pre>
+    </div>
+    <p class="cfg-note">Top-level key <code>servers</code>, transport <code>"http"</code>.</p>
+  </div>
+
+  <div class="cfg">
+    <div class="cfg-head"><strong>Cline</strong> &nbsp;<code>cline_mcp_settings.json</code></div>
+    <div class="cb-wrap">
+      <button class="copy-btn" onclick="sxCopy(this)" aria-label="Copy config"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span class="copy-label">Copy</span></button>
+<pre><code>{
+  "mcpServers": {
+    "sentinelx": {
+      "type": "streamableHttp",
+      "url": "https://mcp.sentinelx.app/mcp/mcp"
+    }
+  }
+}</code></pre>
+    </div>
+    <p class="cfg-note">Transport must be <code>"streamableHttp"</code> &mdash; camelCase, no hyphen. Omitting it or using <code>"http"</code> falls back to SSE (405).</p>
+  </div>
+
+  <div class="cfg">
+    <div class="cfg-head"><strong>Cursor</strong> &nbsp;<code>~/.cursor/mcp.json</code></div>
+    <div class="cb-wrap">
+      <button class="copy-btn" onclick="sxCopy(this)" aria-label="Copy config"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span class="copy-label">Copy</span></button>
+<pre><code>{
+  "mcpServers": {
+    "sentinelx": {
+      "url": "https://mcp.sentinelx.app/mcp/mcp"
+    }
+  }
+}</code></pre>
+    </div>
+    <p class="cfg-note"><code>url</code> only &mdash; Cursor auto-detects transport and handles OAuth. Note: Cursor caps ~40 active tools and SentinelX exposes 38, so disable ones you don't use or trim other servers.</p>
+  </div>
+
+  <div class="cfg">
+    <div class="cfg-head"><strong>Windsurf</strong> &nbsp;<code>~/.codeium/windsurf/mcp_config.json</code></div>
+    <div class="cb-wrap">
+      <button class="copy-btn" onclick="sxCopy(this)" aria-label="Copy config"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span class="copy-label">Copy</span></button>
+<pre><code>{
+  "mcpServers": {
+    "sentinelx": {
+      "serverUrl": "https://mcp.sentinelx.app/mcp/mcp"
+    }
+  }
+}</code></pre>
+    </div>
+    <p class="cfg-note">Windsurf uses <code>serverUrl</code>, not <code>url</code>. Quit and reopen Windsurf fully after saving.</p>
+  </div>
+
+  <div class="callout">
+    <strong>Android Studio &mdash; known issue.</strong> Its built-in MCP client has a PKCE bug (the code_verifier doesn&#39;t match its own code_challenge), so the OAuth handshake fails on the client side. Nothing to fix server-side &mdash; use VS Code or another client until JetBrains ships a fix.
+  </div>
+
+  <div class="callout" style="border-left-color: var(--green); background: rgba(126,231,135,0.06);">
+    <strong>One URL for every client:</strong> <code>https://mcp.sentinelx.app/mcp/mcp</code> &mdash; sign in with Google on first connect.
+  </div>
+
+  <script>
+    function sxCopy(btn){
+      var block = btn.parentElement.querySelector('pre');
+      if(!block) return;
+      var text = block.textContent.trim();
+      var lbl = btn.querySelector('.copy-label');
+      function feedback(){
+        btn.classList.add('copied');
+        if(lbl) lbl.textContent = 'Copied';
+        setTimeout(function(){ btn.classList.remove('copied'); if(lbl) lbl.textContent = 'Copy'; }, 1600);
+      }
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(feedback).catch(function(){ sxFallbackCopy(text); feedback(); });
+      } else { sxFallbackCopy(text); feedback(); }
+    }
+    function sxFallbackCopy(text){
+      try { var ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); } catch(e){}
+    }
+  </script>
+
   <h2>What you can ask</h2>
 
   <p>Once it's connected, you can talk to your servers in plain English (or whatever language). The LLM picks the right tool automatically:</p>
