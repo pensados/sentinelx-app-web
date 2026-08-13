@@ -8,21 +8,21 @@
 <link rel="apple-touch-icon" href="/favicon.png">
 <meta property="og:image" content="https://get.sentinelx.app/favicon.png">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SentinelX — Operate Linux servers from Claude.ai or ChatGPT">
-<meta name="twitter:description" content="Install a small agent on your Linux servers. Talk to them through Claude.ai or ChatGPT.">
+<meta name="twitter:title" content="SentinelX — Operate Linux, macOS and Windows servers from Claude.ai or ChatGPT">
+<meta name="twitter:description" content="Install a small agent on your Linux, macOS and Windows hosts. Talk to them through Claude.ai or ChatGPT.">
 <meta name="twitter:url" content="https://sentinelx.app/">
 <meta name="twitter:image" content="https://get.sentinelx.app/favicon.png">
 
-<title>SentinelX — Operate Linux servers from Claude.ai and ChatGPT</title>
-<meta name="description" content="Install a small agent on your Linux servers. Talk to them through Claude.ai or ChatGPT. SentinelX is a hosted MCP service that bridges your fleet to your LLM.">
+<title>SentinelX — Operate Linux, macOS and Windows servers from Claude.ai and ChatGPT</title>
+<meta name="description" content="Install a small agent on your Linux, macOS and Windows hosts. Talk to them through Claude.ai or ChatGPT. SentinelX is a hosted MCP service that bridges your fleet to your LLM.">
 <link rel="canonical" href="https://sentinelx.app/">
 <meta name="author" content="pensa.ar">
 <meta name="robots" content="index, follow">
 <meta name="theme-color" content="#0e1116">
 
 <!-- Open Graph -->
-<meta property="og:title" content="SentinelX — Operate Linux servers from Claude.ai and ChatGPT">
-<meta property="og:description" content="Install a small agent on your Linux servers. Talk to them through Claude.ai or ChatGPT.">
+<meta property="og:title" content="SentinelX — Operate Linux, macOS and Windows servers from Claude.ai and ChatGPT">
+<meta property="og:description" content="Install a small agent on your Linux, macOS and Windows hosts. Talk to them through Claude.ai or ChatGPT.">
 <meta property="og:url" content="https://sentinelx.app/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="SentinelX">
@@ -471,8 +471,8 @@ footer .links {
   "alternateName": "SentinelX MCP",
   "url": "https://sentinelx.app/",
   "applicationCategory": "DeveloperApplication",
-  "operatingSystem": "Linux",
-  "description": "SentinelX is a hosted MCP service that lets Claude, ChatGPT and other LLMs operate your Linux servers through a small, open-source agent.",
+  "operatingSystem": "Linux, macOS, Windows",
+  "description": "SentinelX is a hosted MCP service that lets Claude, ChatGPT and other LLMs operate your Linux, macOS and Windows servers through a small, open-source agent.",
   "license": "https://www.apache.org/licenses/LICENSE-2.0",
   "isAccessibleForFree": true,
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
@@ -505,14 +505,14 @@ footer .links {
 
 <main>
   <header class="hero">
-    <h1>Operate your Linux servers from Claude.ai or ChatGPT.</h1>
+    <h1>Operate your Linux, macOS and Windows hosts from Claude.ai or ChatGPT.</h1>
 
     <p class="tagline">
       Install a small agent on your servers. Connect SentinelX as an MCP connector in your LLM. Then ask the LLM to check disk usage, restart a service, edit a config, or anything else you've allowed.
     </p>
 
-    <div class="cta"><span class="cta-cmd">curl -fsSL https://get.sentinelx.app | sudo bash</span><button class="cta-copy-btn" type="button" aria-label="Copy install command" data-copy="curl -fsSL https://get.sentinelx.app | sudo bash"><svg class="cta-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><svg class="cta-copy-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button></div>
-    <div class="cta-note">Linux only. Run as root. The agent runs as an unprivileged user after install.</div>
+    <div class="cta"><span class="cta-cmd">curl -fsSL https://get.sentinelx.app | bash</span><button class="cta-copy-btn" type="button" aria-label="Copy install command" data-copy="curl -fsSL https://get.sentinelx.app | bash"><svg class="cta-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><svg class="cta-copy-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button></div>
+    <div class="cta-note">Linux and macOS — one command auto-detects your OS. Windows uses a PowerShell installer (see step 1 below). On Linux, the agent runs as an unprivileged user after install.</div>
 
     <div class="hero-actions">
       <a class="btn btn-primary" href="https://mcp.sentinelx.app/dashboard">Open the dashboard <span class="btn-arrow" aria-hidden="true">→</span></a>
@@ -541,7 +541,7 @@ footer .links {
       <div class="step-num">1</div>
       <div class="step-body">
         <strong>Install the agent.</strong>
-        Run the command above on any Linux host. It clones the open-source agent, sets up a virtualenv, and registers a systemd service.
+        Run the command above on any Linux or macOS host. It installs the open-source agent in a virtualenv and registers it as a service — a systemd unit on Linux, a launchd daemon on macOS. On <strong>Windows</strong>, use the PowerShell installer instead: <code>iwr -useb https://get.sentinelx.app/install.ps1 -OutFile "$env:TEMP\sx.ps1"; powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1"</code> — it registers a Windows service (add <code>-User</code> for a no-admin per-user install).
       </div>
     </li>
     <li class="step">
@@ -700,7 +700,7 @@ footer .links {
   </table>
 
   <div class="callout">
-    <strong>Hub-side, not agent-side.</strong> These tools run inside the SentinelX hub, not on your Linux hosts. They're convenient bundled extras, not part of the open-source agent — credentials live in your hub account and never touch the agent's allowlist.
+    <strong>Hub-side, not agent-side.</strong> These tools run inside the SentinelX hub, not on your hosts. They're convenient bundled extras, not part of the open-source agent — credentials live in your hub account and never touch the agent's allowlist.
   </div>
 
   <h2>What's installed where</h2>
@@ -735,10 +735,10 @@ footer .links {
   </ul>
 
   <h2>Manual install</h2>
-  <p>If you'd rather not <code>curl | sudo bash</code>, fetch and inspect first:</p>
+  <p>If you'd rather not <code>curl | bash</code>, fetch and inspect first:</p>
   <pre><code>curl -fsSL https://get.sentinelx.app/install.sh -o install.sh
 less install.sh
-sudo bash install.sh</code></pre>
+bash install.sh</code></pre>
 
   <h2>Status</h2>
   <p>SentinelX is in beta. Hub status: <a href="https://mcp.sentinelx.app/healthz">healthz</a> · <a href="https://mcp.sentinelx.app/readyz">readyz</a></p>
