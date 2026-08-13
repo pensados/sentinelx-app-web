@@ -734,6 +734,15 @@ footer .links {
     <li><a href="https://github.com/pensados/sentinelx-cloud-installer"><code>sentinelx-cloud-installer</code></a> — what <code>get.sentinelx.app</code> serves</li>
   </ul>
 
+  <h2 id="windows">Install on Windows</h2>
+  <p>Windows uses a PowerShell installer instead of <code>curl | bash</code>. First make sure <strong>Python 3.12+</strong> and <strong>git</strong> are on <code>PATH</code> (from python.org and git-scm.com). Then, in PowerShell:</p>
+  <pre><code>iwr -useb https://get.sentinelx.app/install.ps1 -OutFile "$env:TEMP\sx.ps1"
+# service install — runs as a Windows service (LocalSystem) at boot; needs an elevated PowerShell:
+powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1"
+# ...or a per-user install — no admin, runs as you at logon (for locked-down machines):
+powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1" -User</code></pre>
+  <p>On corporate networks that block PyPI, add <code>-Bundle &lt;zip-or-url&gt;</code> to install from the offline wheel bundle attached to the latest GitHub release; the agent uses the Windows trust store, so a TLS-inspecting proxy’s CA is trusted automatically. After installing, enroll the host the same way — <code>mcp.sentinelx.app</code> → “+ Enroll a new host” → paste token.</p>
+
   <h2>Manual install</h2>
   <p>If you'd rather not <code>curl | bash</code>, fetch and inspect first:</p>
   <pre><code>curl -fsSL https://get.sentinelx.app/install.sh -o install.sh
