@@ -1,858 +1,340 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SentinelX — install &amp; operate your servers from an AI</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="apple-touch-icon" href="/favicon.png">
-<meta property="og:image" content="https://get.sentinelx.app/favicon.png">
-<meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SentinelX — Operate Linux, macOS and Windows servers from Claude.ai or ChatGPT">
-<meta name="twitter:description" content="Install a small agent on your Linux, macOS and Windows hosts. Talk to them through Claude.ai or ChatGPT.">
-<meta name="twitter:url" content="https://sentinelx.app/">
-<meta name="twitter:image" content="https://get.sentinelx.app/favicon.png">
+<link rel="icon" type="image/x-icon" href="/favicon.ico">
 
-<title>SentinelX — Operate Linux, macOS and Windows servers from Claude.ai and ChatGPT</title>
-<meta name="description" content="Install a small agent on your Linux, macOS and Windows hosts. Talk to them through Claude.ai or ChatGPT. SentinelX is a hosted MCP service that bridges your fleet to your LLM.">
-<link rel="canonical" href="https://sentinelx.app/">
+<meta name="description" content="Connect AI to your Linux, macOS and Windows servers via MCP. One-line install, OAuth via Google, multi-host dashboard. Open-source agent, Apache 2.0 license.">
+<meta name="keywords" content="sentinelx, MCP server, model context protocol, server agent, Claude MCP, ChatGPT MCP, AI ops, server automation, open source, OAuth">
 <meta name="author" content="pensa.ar">
 <meta name="robots" content="index, follow">
-<meta name="theme-color" content="#0e1116">
+<link rel="canonical" href="https://sentinelx.app/">
 
-<!-- Open Graph -->
-<meta property="og:title" content="SentinelX — Operate Linux, macOS and Windows servers from Claude.ai and ChatGPT">
-<meta property="og:description" content="Install a small agent on your Linux, macOS and Windows hosts. Talk to them through Claude.ai or ChatGPT.">
-<meta property="og:url" content="https://sentinelx.app/">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://sentinelx.app/">
+<meta property="og:title" content="SentinelX — AI agent for your Linux, macOS and Windows servers">
+<meta property="og:description" content="Connect Claude and ChatGPT to your Linux, macOS and Windows servers in 60 seconds. One-line install, OAuth via Google, multi-host dashboard.">
 <meta property="og:site_name" content="SentinelX">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://sentinelx.pensa.ar/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="SentinelX — operate your Linux, macOS and Windows servers from Claude.ai or ChatGPT">
 
-<style>
-:root {
-  --bg: #0e1116;
-  --bg-elev: #161b22;
-  --bg-code: #0d1117;
-  --border: #30363d;
-  --text: #e6edf3;
-  --text-dim: #8b949e;
-  --text-faint: #6e7681;
-  --accent: #58a6ff;
-  --accent-bright: #79c0ff;
-  --green: #7ee787;
-  --green-bright: #56d364;
-  --orange: #ffa657;
-  --max-width: 760px;
-}
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="SentinelX — AI agent for your Linux, macOS and Windows servers">
+<meta name="twitter:description" content="Connect Claude and ChatGPT to your Linux, macOS and Windows servers in 60 seconds. One-line install, OAuth via Google.">
+<meta name="twitter:image" content="https://sentinelx.pensa.ar/og-image.png">
+<meta name="twitter:image:alt" content="SentinelX — operate your Linux, macOS and Windows servers from Claude.ai or ChatGPT">
 
-* { box-sizing: border-box; }
-
-html { scroll-behavior: smooth; }
-
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  margin: 0;
-  line-height: 1.65;
-  font-size: 16px;
-  -webkit-font-smoothing: antialiased;
-}
-
-main {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 56px 24px 80px;
-}
-
-.hero {
-  margin-bottom: 56px;
-}
-
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 28px;
-}
-
-.brand-mark {
-  width: 36px;
-  height: 36px;
-  display: block;
-  object-fit: contain;
-}
-
-.brand-name {
-  font-size: 19px;
-  font-weight: 700;
-  letter-spacing: -0.2px;
-}
-
-h1 {
-  font-size: 38px;
-  line-height: 1.2;
-  margin: 0 0 16px;
-  font-weight: 700;
-  letter-spacing: -0.6px;
-}
-
-.tagline {
-  font-size: 18px;
-  color: var(--text-dim);
-  margin: 0 0 32px;
-  max-width: 580px;
-}
-
-.cta {
-  display: block;
-  background: var(--bg-code);
-  padding: 18px 22px;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, monospace;
-  font-size: 14.5px;
-  color: var(--green);
-  position: relative;
-  overflow-x: auto;
-}
-
-.cta::before {
-  content: "$";
-  color: var(--text-faint);
-  margin-right: 12px;
-  user-select: none;
-}
-
-/* Copy-to-clipboard button overlaid in the top-right of the .cta box.
-   The .cta is position:relative; the button anchors here. Padding-right
-   on .cta-cmd reserves space so the command never slides under the button
-   on narrow viewports. */
-.cta {
-  padding-right: 56px;
-}
-
-.cta-copy-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 32px;
-  height: 32px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text-faint);
-  cursor: pointer;
-  padding: 0;
-  transition: color 0.15s, background 0.15s, border-color 0.15s;
-}
-.cta-copy-btn:hover {
-  color: var(--green);
-  background: rgba(127, 255, 127, 0.05);
-  border-color: var(--green);
-}
-.cta-copy-btn:focus-visible {
-  outline: 2px solid var(--green);
-  outline-offset: 2px;
-}
-.cta-copy-check {
-  display: none;
-}
-.cta-copy-btn.copied {
-  color: var(--green);
-  border-color: var(--green);
-}
-.cta-copy-btn.copied .cta-copy-icon {
-  display: none;
-}
-.cta-copy-btn.copied .cta-copy-check {
-  display: inline-block;
-}
-
-.cta-note {
-  margin-top: 10px;
-  color: var(--text-faint);
-  font-size: 13px;
-}
-
-.os-install { margin: 0; }
-.os-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
-.os-tab { background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px; color: var(--text-faint); font-family: inherit; font-size: 13px; padding: 7px 14px; cursor: pointer; transition: color .15s, border-color .15s; }
-.os-tab:hover { color: var(--text-dim); }
-.os-tab.active { color: var(--accent-bright); border-bottom-color: var(--accent-bright); }
-.os-panel { display: none; }
-.os-panel.active { display: block; }
-.cta.cta-ps { white-space: pre; }
-.cta.cta-ps::before { content: "PS>"; }
-
-/* Secondary action row under the install CTA. Gives people who have
-   already installed the agent (or just want to look) a clear path into
-   the hosted dashboard at mcp.sentinelx.app. */
-.hero-actions {
-  margin-top: 22px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 12px 16px;
-  align-items: center;
-}
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 10px 18px;
-  border-radius: 8px;
-  font-size: 14.5px;
-  font-weight: 600;
-  text-decoration: none;
-  border: 1px solid var(--border);
-  transition: background 0.15s, border-color 0.15s, color 0.15s;
-}
-.btn-primary {
-  background: rgba(88, 166, 255, 0.12);
-  border-color: rgba(88, 166, 255, 0.4);
-  color: var(--accent-bright);
-}
-.btn-primary:hover {
-  background: rgba(88, 166, 255, 0.2);
-  border-color: var(--accent);
-}
-.btn-primary:focus-visible {
-  outline: 2px solid var(--accent);
-  outline-offset: 2px;
-}
-.btn-arrow {
-  transition: transform 0.15s;
-}
-.btn-primary:hover .btn-arrow {
-  transform: translateX(3px);
-}
-.hero-actions .hint {
-  color: var(--text-faint);
-  font-size: 13px;
-}
-
-/* Sticky top nav: full-width bar, inner content capped to --max-width so
-   it lines up with <main>. Brand left, Dashboard button right. */
-.topnav {
-  position: sticky;
-  top: 0;
-  z-index: 50;
-  background: rgba(14, 17, 22, 0.82);
-  backdrop-filter: saturate(180%) blur(10px);
-  -webkit-backdrop-filter: saturate(180%) blur(10px);
-  border-bottom: 1px solid var(--border);
-}
-.topnav-inner {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 12px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-.topnav-brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  text-decoration: none;
-  color: var(--text);
-}
-.topnav-logo {
-  width: 26px;
-  height: 26px;
-  display: block;
-  object-fit: contain;
-}
-.topnav-name {
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: -0.2px;
-}
-.topnav-actions {
-  display: inline-flex;
-  align-items: center;
-  gap: 14px;
-}
-.btn-sm {
-  padding: 7px 14px;
-  font-size: 13.5px;
-}
-
-@media (max-width: 600px) {
-  .topnav-inner { padding: 10px 20px; }
-}
-
-h2 {
-  font-size: 22px;
-  margin: 56px 0 16px;
-  font-weight: 700;
-  letter-spacing: -0.3px;
-}
-
-h3 {
-  font-size: 16px;
-  margin: 24px 0 6px;
-  font-weight: 600;
-  color: var(--text);
-}
-
-p { margin: 0 0 14px; }
-
-a {
-  color: var(--accent);
-  text-decoration: none;
-}
-a:hover { text-decoration: underline; }
-
-code {
-  background: var(--bg-code);
-  padding: 2px 7px;
-  border-radius: 5px;
-  font-size: 13.5px;
-  font-family: ui-monospace, SFMono-Regular, "SF Mono", Consolas, monospace;
-  color: var(--green);
-  border: 1px solid var(--border);
-}
-
-pre {
-  background: var(--bg-code);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 14px 18px;
-  overflow-x: auto;
-  font-size: 13px;
-  line-height: 1.55;
-  color: var(--text);
-  margin: 0 0 18px;
-}
-
-pre code {
-  background: transparent;
-  padding: 0;
-  border: 0;
-  color: inherit;
-  font-size: inherit;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin: 8px 0 18px;
-  font-size: 13.5px;
-}
-th, td {
-  text-align: left;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--border);
-  vertical-align: top;
-}
-th {
-  font-weight: 600;
-  color: var(--text);
-  background: var(--bg-elev);
-  border-bottom: 1px solid var(--border);
-}
-td code { font-size: 12.5px; padding: 1px 6px; }
-
-ul {
-  margin: 8px 0 18px;
-  padding-left: 22px;
-}
-li { margin: 4px 0; }
-
-.steps {
-  display: grid;
-  gap: 16px;
-  margin: 24px 0;
-  padding: 0;
-  list-style: none;
-}
-
-.step {
-  display: grid;
-  grid-template-columns: 36px 1fr;
-  gap: 16px;
-  align-items: start;
-}
-
-.step-num {
-  background: var(--bg-elev);
-  border: 1px solid var(--border);
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  font-size: 14px;
-  color: var(--accent);
-  flex-shrink: 0;
-}
-
-.step-body strong {
-  color: var(--text);
-  font-weight: 600;
-}
-
-.callout {
-  border-left: 3px solid var(--accent);
-  background: rgba(88, 166, 255, 0.06);
-  padding: 12px 16px;
-  border-radius: 0 6px 6px 0;
-  margin: 18px 0;
-  font-size: 14px;
-}
-
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 24px;
-  margin: 16px 0 8px;
-}
-
-@media (max-width: 600px) {
-  .grid-2 { grid-template-columns: 1fr; }
-  h1 { font-size: 30px; }
-  main { padding: 40px 20px 60px; }
-}
-
-.card {
-  background: var(--bg-elev);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 18px 20px;
-}
-
-.card h3 { margin-top: 0; }
-.card p:last-child { margin-bottom: 0; }
-
-footer {
-  border-top: 1px solid var(--border);
-  margin-top: 80px;
-  padding: 28px 0;
-  color: var(--text-faint);
-  font-size: 13.5px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-  align-items: center;
-  justify-content: space-between;
-}
-
-footer .links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 18px;
-}
-
-.beta-tag {
-  display: inline-block;
-  background: rgba(255, 166, 87, 0.1);
-  border: 1px solid rgba(255, 166, 87, 0.3);
-  color: var(--orange);
-  padding: 2px 9px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
-  vertical-align: middle;
-  margin-left: 10px;
-}
-.availon { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin: 6px 0 8px; }
-.availon-works { margin-bottom: 26px; }
-.availon-label { color: var(--text-faint); font-size: 0.82rem; }
-.availon-badge { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-elev); color: var(--text); font-size: 0.85rem; text-decoration: none; transition: border-color .15s ease, background .15s ease, color .15s ease; }
-.availon-badge svg { opacity: .85; flex-shrink: 0; }
-.availon-badge:hover { border-color: var(--accent); background: rgba(88,166,255,0.08); color: var(--accent-bright); }
-.availon-badge:hover svg { opacity: 1; }
-.availon-sep { width: 1px; height: 18px; background: var(--border); margin: 0 5px; flex-shrink: 0; }
-</style>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
   "name": "SentinelX",
   "alternateName": "SentinelX MCP",
-  "url": "https://sentinelx.app/",
+  "url": "https://sentinelx.pensa.ar/",
+  "isAccessibleForFree": true,
+  "description": "Managed MCP service that lets Claude, ChatGPT and other AI tools manage your Linux, macOS and Windows servers via the Model Context Protocol. One-line install, OAuth via Google, multi-host dashboard. Open-source agent.",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Linux, macOS, Windows",
-  "description": "SentinelX is a hosted MCP service that lets Claude, ChatGPT and other LLMs operate your Linux, macOS and Windows servers through a small, open-source agent.",
-  "license": "https://www.apache.org/licenses/LICENSE-2.0",
-  "isAccessibleForFree": true,
+  "license": "https://opensource.org/licenses/Apache-2.0",
+  "codeRepository": "https://github.com/pensados/sentinelx-cloud-core",
+  "author": { "@type": "Organization", "name": "pensa.ar", "url": "https://pensa.ar" },
   "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
-  "author": { "@type": "Organization", "name": "Pensa Software", "url": "https://pensa.ar" },
-  "publisher": { "@type": "Organization", "name": "Pensa Software", "url": "https://pensa.ar" },
   "sameAs": [
-    "https://sentinelx.pensa.ar/",
+    "https://sentinelx.app/",
     "https://get.sentinelx.app/",
     "https://github.com/pensados/sentinelx-cloud-core",
     "https://chatgpt.com/apps/sentinelx/asdk_app_69f63e01766881919640f03b5e7912a5"
   ]
 }
 </script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0e14; --bg2: #131821; --bg3: #1a212d;
+    --surface: #131821; --surface2: #1a212d;
+    --border: #1f2937; --border2: #2a3441;
+    --fg: #e6edf3; --fg2: #94a3b8; --fg3: #64748b;
+    --accent: #5eead4; --accent2: #2dd4bf;
+    --accent-dim: rgba(94,234,212,0.08); --accent-dim2: rgba(94,234,212,0.20);
+    --amber: #fbbf24; --blue: #60a5fa; --red: #f87171; --purple: #a78bfa;
+    --mono: 'IBM Plex Mono', monospace; --sans: 'IBM Plex Sans', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); background-image: radial-gradient(ellipse 900px 500px at 50% -120px, rgba(94,234,212,0.06), transparent 70%); background-attachment: fixed; color: var(--fg); font-family: var(--sans); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
+  body::before {
+    content: ''; position: fixed; inset: 0;
+    background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 48px 48px; opacity: 0.25; pointer-events: none; z-index: 0;
+  }
+  * { position: relative; z-index: 1; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
+  nav { border-bottom: 1px solid var(--border); backdrop-filter: blur(12px); background: rgba(10,14,20,0.85); position: sticky; top: 0; z-index: 100; }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem; max-width: 1100px; margin: 0 auto; }
+  .nav-logo { font-family: var(--mono); font-size: 0.9rem; font-weight: 600; color: var(--accent); letter-spacing: 0.05em; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+  .nav-logo::before { content: '▸'; animation: blink 1.2s step-end infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { font-family: var(--mono); font-size: 0.75rem; color: var(--fg2); text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--accent); }
+  .nav-cta { font-family: var(--mono); font-size: 0.75rem; color: var(--bg); background: var(--accent); padding: 0.4rem 1rem; text-decoration: none; font-weight: 600; letter-spacing: 0.05em; transition: background 0.2s; clip-path: polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%); }
+  .nav-cta:hover { background: var(--accent2); }
+  .nav-toggle-cb { display: none; }
+  .nav-toggle { display: none; }
+  @media (max-width: 820px) {
+    .nav-inner { flex-wrap: wrap; }
+    .nav-toggle { display: flex; flex-direction: column; justify-content: center; gap: 5px; width: 42px; height: 42px; margin-left: auto; cursor: pointer; }
+    .nav-toggle span { display: block; height: 2px; width: 24px; background: var(--accent); transition: transform 0.25s, opacity 0.25s; }
+    .nav-links { display: none; flex-basis: 100%; flex-direction: column; gap: 0; margin-top: 0.5rem; border-top: 1px solid var(--border); }
+    .nav-links li { width: 100%; }
+    .nav-links a { display: block; padding: 0.9rem 0.25rem; font-size: 0.8rem; border-bottom: 1px solid var(--border); }
+    .nav-cta { display: none; }
+    .nav-toggle-cb:checked ~ .nav-links { display: flex; }
+    .nav-toggle-cb:checked ~ .nav-cta { display: inline-flex; justify-content: center; flex-basis: 100%; margin-top: 0.75rem; }
+    .nav-toggle-cb:checked ~ .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-toggle-cb:checked ~ .nav-toggle span:nth-child(2) { opacity: 0; }
+    .nav-toggle-cb:checked ~ .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  }
+  h1 { font-family: var(--mono); font-size: clamp(2.2rem,5vw,3.8rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; color: var(--fg); margin-bottom: 0.5rem; }
+  h1 .dim { color: var(--fg3); font-weight: 300; } h1 .hi { color: var(--accent); }
+  .btn-primary { font-family: var(--mono); font-size: 0.85rem; font-weight: 600; color: var(--bg); background: var(--accent); padding: 0.75rem 1.75rem; text-decoration: none; letter-spacing: 0.05em; transition: all 0.2s; clip-path: polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%); display: inline-flex; align-items: center; gap: 0.5rem; }
+  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
+  .btn-secondary { font-family: var(--mono); font-size: 0.85rem; color: var(--accent); border: 1px solid var(--border2); padding: 0.75rem 1.75rem; text-decoration: none; letter-spacing: 0.05em; transition: all 0.2s; background: transparent; display: inline-flex; align-items: center; gap: 0.5rem; }
+  .btn-secondary:hover { border-color: var(--accent); background: var(--accent-dim); }
+  .arch-arrow { color: var(--fg3); font-size: 1.1rem; line-height: 1; }
+  section { padding: 5rem 0; border-top: 1px solid var(--border); }
+  .section-label { font-family: var(--mono); font-size: 0.7rem; color: var(--fg3); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.75rem; }
+  h2 { font-family: var(--mono); font-size: 1.6rem; font-weight: 500; color: var(--fg); margin-bottom: 1rem; letter-spacing: -0.01em; }
+  h2 .accent { color: var(--accent); }
+  @media (max-width: 900px) { .how-split { grid-template-columns: 1fr; gap: 2rem; } }
+  .security-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 1.5rem; margin-top: 2rem; }
+  .sec-card { border: 1px solid var(--border); padding: 1.5rem; background: var(--bg2); }
+  .sec-icon { font-size: 1.4rem; margin-bottom: 0.75rem; }
+  .sec-card h3 { font-family: var(--mono); font-size: 0.85rem; font-weight: 500; color: var(--fg); margin-bottom: 0.5rem; }
+  .sec-card p { font-size: 0.82rem; color: var(--fg2); font-weight: 300; line-height: 1.6; }
+  .spec-block { background: var(--bg2); border: 1px solid var(--border); padding: 1.5rem 1.75rem; box-shadow: 0 0 30px rgba(94,234,212,0.03); }
+  .spec-label { font-family: var(--mono); font-size: 0.7rem; color: var(--fg3); letter-spacing: 0.1em; margin-bottom: 1rem; }
+  .tool-list, .spec-list { display: flex; flex-direction: column; gap: 0.5rem; }
+  .tool-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 0.6rem; font-family: var(--mono); font-size: 0.78rem; line-height: 1.5; }
+  .tool-name { color: var(--accent); background: none; padding: 0; min-width: 168px; white-space: nowrap; }
+  .tool-desc { color: var(--fg3); }
+  .spec-foot { font-family: var(--mono); font-size: 0.75rem; color: var(--fg3); margin-top: 0.9rem; font-style: italic; }
+  .ask-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 2rem; }
+  .ask { background: var(--bg2); padding: 1.15rem 1.5rem; font-family: var(--mono); font-size: 0.85rem; color: var(--fg); line-height: 1.5; }
+  .ask::before { content: '\25B8  '; color: var(--accent); }
+  .doc { max-width: 800px; margin: 0 auto; padding: 4rem 2rem 3rem; }
+  .doc-head { margin-bottom: 3rem; }
+  .doc-head h1 { font-family: var(--mono); font-size: clamp(1.7rem, 4vw, 2.4rem); font-weight: 600; line-height: 1.15; letter-spacing: -0.02em; margin: 0.85rem 0 1.25rem; color: var(--fg); }
+  .doc-head h1 .accent { color: var(--accent); }
+  .doc-lead { color: var(--fg2); font-weight: 300; font-size: 1.05rem; line-height: 1.75; max-width: 68ch; }
+  .doc-section { margin: 3rem 0; scroll-margin-top: 80px; }
+  .doc-section h2 { font-family: var(--mono); font-size: 1.3rem; font-weight: 500; margin: 0 0 1.1rem; display: flex; align-items: center; gap: 0.75rem; letter-spacing: -0.01em; color: var(--fg); }
+  .doc-num { display: inline-flex; align-items: center; justify-content: center; width: 27px; height: 27px; font-size: 0.82rem; font-weight: 600; color: var(--bg); background: var(--accent); border-radius: 6px; flex: none; }
+  .doc-section p { color: var(--fg2); font-weight: 300; line-height: 1.75; margin: 0 0 1.1rem; }
+  .doc-section p strong { color: var(--fg); font-weight: 600; }
+  .doc-section a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--border2); }
+  .doc-section a:hover { border-color: var(--accent); }
+  .doc-section code { font-family: var(--mono); font-size: 0.85em; background: var(--surface); color: var(--accent); padding: 2px 6px; border-radius: 3px; }
+  .cmd { position: relative; background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; padding: 0.9rem 3rem 0.9rem 1.15rem; margin: 0 0 1.1rem; font-family: var(--mono); font-size: 0.82rem; line-height: 1.7; color: var(--fg); overflow-x: auto; white-space: pre; }
+  .cmd .prompt { color: var(--accent); user-select: none; }
+  .cmd .cmt { color: var(--fg3); font-style: italic; }
+  .cmd .k { color: var(--purple); } .cmd .s { color: var(--amber); }
+  .cmd .copy-btn { position: absolute; top: 8px; right: 8px; }
+  .doc-note { font-size: 0.9rem; color: var(--fg3); border-left: 2px solid var(--border2); padding: 0.15rem 0 0.15rem 1rem; margin: 0 0 1.1rem; line-height: 1.7; }
+  .doc-note a { color: var(--accent); border-bottom: none; }
+  .ref-links { display: flex; flex-wrap: wrap; gap: 0.6rem 1.75rem; font-family: var(--mono); font-size: 0.85rem; }
+  .ref-links a { color: var(--accent); text-decoration: none; border-bottom: none; }
+  .ref-links a:hover { text-decoration: underline; }
+  .doc .ask-grid { margin-top: 1.25rem; }
+
+  @media (max-width: 700px) { .mcp-split { grid-template-columns: 1fr; } }
+  .client-dot { width: 6px; height: 6px; background: var(--accent); flex-shrink: 0; }
+  .output-box { background: var(--bg); border: 1px solid var(--border); border-left: 3px solid var(--accent); padding: 1.5rem 2rem; font-family: var(--mono); font-size: 0.78rem; line-height: 1.9; color: var(--fg2); margin-top: 1rem; }
+  .output-box .hi { color: var(--accent); } .output-box .dim { color: var(--fg3); }
+
+  /* Self-hosted alternative — compact, intentionally smaller than the cloud sections */
+  .alt-card { background: var(--bg2); border: 1px solid var(--border); padding: 2rem; margin-top: 1rem; }
+  .alt-card h3 { font-family: var(--mono); font-size: 1rem; font-weight: 500; color: var(--fg); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.75rem; }
+  .alt-card > p { font-size: 0.9rem; color: var(--fg2); font-weight: 300; margin-bottom: 1.25rem; line-height: 1.6; max-width: 640px; }
+  .alt-card .install-cmd { background: var(--bg); border: 1px solid var(--border); padding: 0.75rem 1rem; font-family: var(--mono); font-size: 0.8rem; color: var(--fg); overflow-x: auto; white-space: nowrap; margin-bottom: 0.75rem; }
+  .alt-card .install-cmd .prompt { color: var(--accent); }
+  .alt-card .alt-actions { margin-top: 1rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+  .badge { font-size: 0.6rem; background: var(--accent); color: var(--bg); padding: 0.15rem 0.5rem; font-weight: 600; letter-spacing: 0.05em; }
+  .badge.gray { background: var(--surface2); color: var(--fg2); }
+
+  footer { border-top: 1px solid var(--border); padding: 3rem 2rem; margin-top: 2rem; }
+  .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
+  .footer-left { font-family: var(--mono); font-size: 0.75rem; color: var(--fg3); }
+  .footer-left strong { color: var(--accent); font-weight: 500; }
+  .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .footer-links a { font-family: var(--mono); font-size: 0.72rem; color: var(--fg3); text-decoration: none; letter-spacing: 0.05em; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--accent); }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+  ::-webkit-scrollbar{width:4px;height:4px} ::-webkit-scrollbar-track{background:var(--bg)} ::-webkit-scrollbar-thumb{background:var(--border2)} ::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+  code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); background: var(--accent-dim); padding: 0.1em 0.35em; }
+</style>
 </head>
 <body>
 
-<nav class="topnav">
-  <div class="topnav-inner">
-    <a class="topnav-brand" href="/">
-      <img src="/logo.svg" alt="SentinelX" class="topnav-logo">
-      <span class="topnav-name">SentinelX</span>
-      <span class="beta-tag">beta</span>
-    </a>
-    <div class="topnav-actions">
-      <a class="topnav-link" href="https://github.com/pensados/sentinelx-cloud-core" style="color:var(--text-dim);text-decoration:none;font-size:14px;">GitHub</a>
-      <a class="btn btn-primary btn-sm" href="https://mcp.sentinelx.app/dashboard">Dashboard <span class="btn-arrow" aria-hidden="true">→</span></a>
-    </div>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="#"><svg viewBox="0 0 512 512" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="m378.2 206.6h-32.7l-39.8 98.1q-29.6 72.7-45.9 100.2-16 27.5-40.7 46.9-35.9 28.3-83.2 28.3-50 0-81.1-31.6-31.1-31.6-31.1-82.1 0-67.5 49.2-117.9 26.6-27.3 66.6-43.8 39.9-16.8 79.1-16.8 18.9 0 30.4 8.6 11.5 8.4 11.5 22.3 0 14.6-12.4 23.4-7.2 5.3-27.5 7.2-47.4 4.3-76.8 21.8-24.4 14.6-38.6 38.3-14.1 23.4-14.1 49.5 0 26.6 13.7 42.3 13.8 15.6 37 15.6 29.2 0 50.5-24.6 21.3-24.7 46.9-87.6l83-204.1h-26q-33.1 0-33.1-23 0-16.2 11.5-25.1 11.8-9.1 32.8-9.1h91.2q45.9 0 67.7 17.5 22 17.2 22 53.3 0 44.1-34 72.1-24.6 20.3-76.1 20.3zm10.3-106l-19.8 48.8h19.3q38.3 0 38.3-31.1 0-17.7-21.8-17.7z"/></svg>SentinelX</a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle-cb" aria-hidden="true">
+    <label for="nav-toggle" class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></label>
+    <ul class="nav-links">
+      <li><a href="#install">Install</a></li>
+      <li><a href="#connect">Connect</a></li>
+      <li><a href="#operate">Operate</a></li>
+      <li><a href="#configure">Configure</a></li>
+      <li><a href="https://github.com/pensados/sentinelx-cloud-core" target="_blank">GitHub</a></li>
+    </ul>
+    <a class="nav-cta" href="https://mcp.sentinelx.app/dashboard" target="_blank">Dashboard →</a>
   </div>
 </nav>
 
-<main>
-  <header class="hero">
-    <h1>Operate your Linux, macOS and Windows hosts from Claude.ai or ChatGPT.</h1>
-
-    <p class="tagline">
-      Install a small agent on your servers. Connect SentinelX as an MCP connector in your LLM. Then ask the LLM to check disk usage, restart a service, edit a config, or anything else you've allowed.
-    </p>
-
-    <div class="os-install">
-      <div class="os-tabs" role="tablist">
-        <button class="os-tab active" data-os="unix" type="button">Linux / macOS</button>
-        <button class="os-tab" data-os="win" type="button">Windows</button>
-      </div>
-      <div class="os-panel active" data-os="unix">
-        <div class="cta"><span class="cta-cmd">curl -fsSL https://get.sentinelx.app | bash</span><button class="cta-copy-btn" type="button" aria-label="Copy install command" data-copy="curl -fsSL https://get.sentinelx.app | bash"><svg class="cta-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><svg class="cta-copy-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button></div>
-        <div class="cta-note">One command &mdash; auto-detects Linux or macOS. On Linux, the agent runs as an unprivileged user after install.</div>
-      </div>
-      <div class="os-panel" data-os="win">
-        <div class="cta cta-ps"><span class="cta-cmd">iwr -useb https://get.sentinelx.app/install.ps1 -OutFile "$env:TEMP\sx.ps1"
-powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1"</span><button class="cta-copy-btn" type="button" aria-label="Copy install command" data-copy='iwr -useb https://get.sentinelx.app/install.ps1 -OutFile "$env:TEMP\sx.ps1"; powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1"'><svg class="cta-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><svg class="cta-copy-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button></div>
-        <div class="cta-note">PowerShell &mdash; needs Python 3.12+ and <code>git</code>. Add <code>-User</code> for a no-admin install.</div>
-      </div>
-    </div>
-
-    <div class="hero-actions">
-      <a class="btn btn-primary" href="https://mcp.sentinelx.app/dashboard">Open the dashboard <span class="btn-arrow" aria-hidden="true">→</span></a>
-      <span class="hint">Sign in with Google or GitHub to enroll hosts and manage your fleet.</span>
-    </div>
+<div class="doc">
+  <header class="doc-head">
+    <div class="section-label">// operator's guide</div>
+    <h1>Run your servers from an AI, <span class="accent">safely.</span></h1>
+    <p class="doc-lead">SentinelX gives Claude, ChatGPT, or any MCP client an <strong>allowlisted, auditable</strong> shell on your Linux, macOS, and Windows hosts &mdash; over a single outbound WebSocket, no inbound ports. This is the short manual: install the agent, connect the hub, operate.</p>
   </header>
 
-  <div class="availon" aria-label="Available on">
-    <span class="availon-label">Available on</span>
-    <a class="availon-badge" href="https://github.com/mcp/app.sentinelx/sentinelx" target="_blank" rel="noopener"><svg viewBox="0 0 16 16" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg> GitHub MCP Registry</a>
-    <a class="availon-badge" href="https://chatgpt.com/apps/sentinelx/asdk_app_69f63e01766881919640f03b5e7912a5" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997z"/></svg> ChatGPT</a>
-  </div>
-  <div class="availon availon-works" aria-label="Works with">
-    <span class="availon-label">Works with</span>
-    <a class="availon-badge" href="#setup"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M17.3041 3.541h-3.6718l6.696 16.918H24Zm-10.6082 0L0 20.459h3.7442l1.3693-3.5527h7.0052l1.3693 3.5528h3.7442L10.5363 3.5409Zm-.3712 10.2232 2.2914-5.9456 2.2914 5.9456Z"/></svg> Claude</a>
-    <a class="availon-badge" href="#editors"><svg viewBox="0 0 128 128" width="15" height="15" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" clip-rule="evenodd" d="M90.767 127.126a7.968 7.968 0 0 0 6.35-.244l26.353-12.681a8 8 0 0 0 4.53-7.209V21.009a8 8 0 0 0-4.53-7.21L97.117 1.12a7.97 7.97 0 0 0-9.093 1.548l-50.45 46.026L15.6 32.013a5.328 5.328 0 0 0-6.807.302l-7.048 6.411a5.335 5.335 0 0 0-.006 7.888L20.796 64 1.74 81.387a5.336 5.336 0 0 0 .006 7.887l7.048 6.411a5.327 5.327 0 0 0 6.807.303l21.974-16.68 50.45 46.025a7.96 7.96 0 0 0 2.743 1.793Zm5.252-92.183L57.74 64l38.28 29.058V34.943Z"/></svg> VS Code</a>
-    <a class="availon-badge" href="#editors"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="M11.503.131 1.891 5.678a.84.84 0 0 0-.42.726v11.188c0 .3.162.575.42.724l9.609 5.55a1 1 0 0 0 .998 0l9.61-5.55a.84.84 0 0 0 .42-.724V6.404a.84.84 0 0 0-.42-.726L12.497.131a1.01 1.01 0 0 0-.996 0M2.657 6.338h18.55c.263 0 .43.287.297.515L12.23 22.918c-.062.107-.229.064-.229-.06V12.335a.59.59 0 0 0-.295-.51l-9.11-5.257c-.109-.063-.064-.23.061-.23"/></svg> Cursor</a>
-    <a class="availon-badge" href="#editors"><svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor" aria-hidden="true"><path d="m23.365 13.556-1.442-2.895V8.994c0-2.764-2.218-5.002-4.954-5.002h-2.464c.178-.367.276-.779.276-1.213A2.77 2.77 0 0 0 12.018 0a2.77 2.77 0 0 0-2.763 2.779c0 .434.098.846.276 1.213H7.067c-2.736 0-4.954 2.238-4.954 5.002v1.667L.64 13.549c-.149.29-.149.636 0 .927l1.472 2.855v1.667C2.113 21.762 4.33 24 7.067 24h9.902c2.736 0 4.954-2.238 4.954-5.002V17.33l1.44-2.865c.143-.286.143-.622.002-.91m-12.854 2.36a2.27 2.27 0 0 1-2.261 2.273 2.27 2.27 0 0 1-2.261-2.273v-4.042A2.27 2.27 0 0 1 8.249 9.6a2.267 2.267 0 0 1 2.262 2.274zm7.285 0a2.27 2.27 0 0 1-2.26 2.273 2.27 2.27 0 0 1-2.262-2.273v-4.042A2.267 2.267 0 0 1 15.535 9.6a2.267 2.267 0 0 1 2.261 2.274z"/></svg> Cline</a>
-    <a class="availon-badge" href="#editors"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg> Any MCP client</a>
-  </div>
+  <section id="install" class="doc-section">
+    <h2><span class="doc-num">1</span> Install the agent</h2>
+    <p>Run this on each host you want to operate. It builds a virtualenv, registers a service (systemd / launchd / Windows service), writes a starter config, and starts enrollment.</p>
+    <p><strong>Linux / macOS</strong> &mdash; one command, auto-detects your OS:</p>
+    <div class="cmd"><span class="prompt">$</span> curl -fsSL https://get.sentinelx.app | bash<button class="copy-btn" type="button" onclick="sxCopyCmd(this)" data-copy="curl -fsSL https://get.sentinelx.app | bash" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+    <p><strong>Windows</strong> &mdash; PowerShell (Python 3.12+ and <code>git</code> on <code>PATH</code>). Service install, in an <strong>elevated</strong> shell:</p>
+    <div class="cmd">iwr -useb https://get.sentinelx.app/install.ps1 -OutFile "$env:TEMP\sx.ps1"
+powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1"<button class="copy-btn" type="button" onclick="sxCopyCmd(this)" data-copy="iwr -useb https://get.sentinelx.app/install.ps1 -OutFile "$env:TEMP\sx.ps1"; powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1"" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+    <p>&hellip;or a no-admin, per-user install (locked-down machines):</p>
+    <div class="cmd">iwr -useb https://get.sentinelx.app/install.ps1 -OutFile "$env:TEMP\sx.ps1"
+powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1" -User<button class="copy-btn" type="button" onclick="sxCopyCmd(this)" data-copy="iwr -useb https://get.sentinelx.app/install.ps1 -OutFile "$env:TEMP\sx.ps1"; powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1" -User" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+    <p class="doc-note"><strong>Prerequisites</strong> &mdash; Linux: root + <code>git</code>, <code>python3</code>, <code>systemd</code>. macOS: none (Python via <code>uv</code>). Windows: Python 3.12+ and <code>git</code>. Behind a corporate proxy / blocked PyPI: add <code>-Bundle &lt;zip-or-url&gt;</code>. Every flag and the uninstall steps live in the <a href="https://github.com/pensados/sentinelx-cloud-installer">installer repo</a>.</p>
+  </section>
 
-  <h2 id="setup">How it works</h2>
+  <section id="enroll" class="doc-section">
+    <h2><span class="doc-num">2</span> Enroll the host</h2>
+    <p>The installer prints an enrollment URL. Open it, sign in at <code>mcp.sentinelx.app</code> with Google, click <em>Enroll a new host</em>, and paste the token back into the terminal. The host binds to your account and appears in the dashboard within seconds.</p>
+  </section>
 
-  <ol class="steps">
-    <li class="step">
-      <div class="step-num">1</div>
-      <div class="step-body">
-        <strong>Install the agent.</strong>
-        Use the command for your OS above &mdash; it installs the open-source agent in a virtualenv and registers it as a service: a systemd unit on Linux, a launchd daemon on macOS, a Windows service (or a per-user task with <code>-User</code>) on Windows.
-      </div>
-    </li>
-    <li class="step">
-      <div class="step-num">2</div>
-      <div class="step-body">
-        <strong>Sign in with Google.</strong>
-        The installer prints a URL. Open it, sign in with Google, copy the displayed token, and paste it back into the installer.
-      </div>
-    </li>
-    <li class="step">
-      <div class="step-num">3</div>
-      <div class="step-body">
-        <strong>Connect SentinelX in Claude.ai or ChatGPT.</strong><br>
-        <strong>ChatGPT:</strong> install <a href="https://chatgpt.com/apps/sentinelx/asdk_app_69f63e01766881919640f03b5e7912a5">SentinelX from the app directory</a> — one click Connect, authorize with the same Google account.<br>
-        <strong>Claude.ai:</strong> Settings → Connectors → Add custom MCP →
-        <code>https://mcp.sentinelx.app/mcp/mcp</code>
-        → authorize with the same Google account. Done.
-      </div>
-    </li>
-  </ol>
-
-  <div class="callout">
-    <strong>Multiple servers?</strong> Run the install command on each one. Your hosts get human-friendly aliases automatically (their hostname). Ask the LLM "list my servers" and it'll show all of them — pick which one to target by host_id, hostname, or a custom label.
-  </div>
-
-  <div class="callout">
-    <strong>Used to run this site.</strong> SentinelX edits <code>/var/www/get.sentinelx.app/index.html</code> directly from a Claude chat, with <code>git</code> tracking every change. Including this paragraph.
-  </div>
-
-  <!-- editor & CLI clients: drop-in JSON config -->
-  <style>
-    .cfg { margin: 20px 0; }
-    .cfg-head { font-size: 14px; margin-bottom: 8px; color: var(--text); }
-    .cfg-head strong { font-weight: 600; }
-    .cfg-head code { font-size: 12px; color: var(--text-dim); }
-    .cfg-note { font-size: 13px; color: var(--text-dim); margin: 4px 0 0; }
-    .cb-wrap { position: relative; }
-    .copy-btn { position: absolute; top: 8px; right: 8px; display: inline-flex; align-items: center; gap: 5px; background: var(--bg-elev); border: 1px solid var(--border); color: var(--text-dim); font-size: 11px; font-family: ui-monospace, monospace; padding: 3px 8px; border-radius: 5px; cursor: pointer; transition: color .15s, border-color .15s; }
-    .copy-btn:hover, .copy-btn.copied { color: var(--accent); border-color: var(--accent); }
-    .copy-btn svg { width: 11px; height: 11px; }
-  </style>
-
-  <h2 id="editors">Connect from your editor</h2>
-  <p>Claude and ChatGPT connect through their own UI. Editor and CLI clients read a small JSON config instead &mdash; same hub URL, one paste. The only thing that changes per client is the top-level key and how the transport field is spelled; get it wrong and the client silently falls back to the legacy SSE transport.</p>
-
-  <div class="cfg">
-    <div class="cfg-head"><strong>VS Code</strong> &nbsp;<code>~/.config/Code/User/mcp.json</code></div>
-    <div class="cb-wrap">
-      <button class="copy-btn" onclick="sxCopy(this)" aria-label="Copy config"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span class="copy-label">Copy</span></button>
-<pre><code>{
-  "servers": {
-    "sentinelx": {
-      "type": "http",
-      "url": "https://mcp.sentinelx.app/mcp/mcp"
+  <section id="connect" class="doc-section">
+    <h2><span class="doc-num">3</span> Connect your LLM</h2>
+    <p>Point your assistant at the hub &mdash; once per account, not per host. The connector URL is the same everywhere:</p>
+    <div class="cmd"><span class="s">https://mcp.sentinelx.app/mcp/mcp</span><button class="copy-btn" type="button" onclick="sxCopyCmd(this)" data-copy="https://mcp.sentinelx.app/mcp/mcp" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+    <p><strong>ChatGPT</strong> &mdash; install <a href="https://chatgpt.com/apps/sentinelx/asdk_app_69f63e01766881919640f03b5e7912a5">SentinelX from the app directory</a>, click <em>Connect</em>, sign in. No URL to paste.</p>
+    <p><strong>Claude.ai</strong> &mdash; Settings &rarr; Connectors &rarr; Add custom connector &rarr; paste the URL above, then authorize with Google.</p>
+    <p><strong>VS Code, Cursor, Cline &amp; other JSON clients</strong> &mdash; drop this into the client's MCP config (mind the transport key: VS Code uses <code>"type": "http"</code>, Cline uses <code>"type": "streamableHttp"</code>, Cursor needs only the URL):</p>
+    <div class="cmd">{
+  <span class="k">"mcpServers"</span>: {
+    <span class="k">"sentinelx"</span>: {
+      <span class="k">"url"</span>: <span class="s">"https://mcp.sentinelx.app/mcp/mcp"</span>
     }
   }
-}</code></pre>
+}</div>
+  </section>
+
+  <section id="operate" class="doc-section">
+    <h2><span class="doc-num">4</span> Operate</h2>
+    <p>Per host, the AI is handed a fixed set of tools &mdash; nothing else:</p>
+    <div class="spec-block">
+      <div class="tool-list">
+        <div class="tool-row"><code class="tool-name">sentinel_state</code> <span class="tool-desc">host facts</span></div>
+        <div class="tool-row"><code class="tool-name">sentinel_capabilities</code> <span class="tool-desc">what's allowed</span></div>
+        <div class="tool-row"><code class="tool-name">sentinel_exec</code> <span class="tool-desc">run an allowlisted command</span></div>
+        <div class="tool-row"><code class="tool-name">sentinel_edit</code> <span class="tool-desc">structured file edits</span></div>
+        <div class="tool-row"><code class="tool-name">sentinel_script_run</code> <span class="tool-desc">temp bash / python script</span></div>
+        <div class="tool-row"><code class="tool-name">sentinel_service</code> <span class="tool-desc">start / stop / restart / reload</span></div>
+        <div class="tool-row"><code class="tool-name">sentinel_upload_file</code> <span class="tool-desc">upload to host</span></div>
+        <div class="tool-row"><code class="tool-name">sentinel_list_hosts</code> <span class="tool-desc">multi-host fleet view</span></div>
+      </div>
+      <div class="spec-foot">&hellip;and more &mdash; see the agent's docs</div>
     </div>
-    <p class="cfg-note">Top-level key <code>servers</code>, transport <code>"http"</code>.</p>
-  </div>
-
-  <div class="cfg">
-    <div class="cfg-head"><strong>Cline</strong> &nbsp;<code>cline_mcp_settings.json</code></div>
-    <div class="cb-wrap">
-      <button class="copy-btn" onclick="sxCopy(this)" aria-label="Copy config"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span class="copy-label">Copy</span></button>
-<pre><code>{
-  "mcpServers": {
-    "sentinelx": {
-      "type": "streamableHttp",
-      "url": "https://mcp.sentinelx.app/mcp/mcp"
-    }
-  }
-}</code></pre>
+    <p>Then drive it in plain language:</p>
+    <div class="ask-grid">
+      <div class="ask">Restart nginx on the VPS.</div>
+      <div class="ask">How much disk is left on the storage box?</div>
+      <div class="ask">Which services are down across the fleet?</div>
+      <div class="ask">Edit the config and reload the service.</div>
+      <div class="ask">Tail the error log and tell me what broke.</div>
+      <div class="ask">Resolve the merge conflict in this repo.</div>
     </div>
-    <p class="cfg-note">Transport must be <code>"streamableHttp"</code> &mdash; camelCase, no hyphen. Omitting it or using <code>"http"</code> falls back to SSE (405).</p>
-  </div>
+  </section>
 
-  <div class="cfg">
-    <div class="cfg-head"><strong>Cursor</strong> &nbsp;<code>~/.cursor/mcp.json</code></div>
-    <div class="cb-wrap">
-      <button class="copy-btn" onclick="sxCopy(this)" aria-label="Copy config"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span class="copy-label">Copy</span></button>
-<pre><code>{
-  "mcpServers": {
-    "sentinelx": {
-      "url": "https://mcp.sentinelx.app/mcp/mcp"
-    }
-  }
-}</code></pre>
+  <section id="configure" class="doc-section">
+    <h2><span class="doc-num">5</span> Configure the allowlist</h2>
+    <p>Everything is <strong>deny-by-default</strong>. The agent runs only what <code>/etc/sentinelx/config.yaml</code> permits (next to the install on macOS/Windows). Edit it to widen or narrow the agent's reach:</p>
+    <div class="cmd"><span class="cmt"># /etc/sentinelx/config.yaml</span>
+<span class="k">exec:</span>
+  <span class="k">allow:</span>                <span class="cmt"># commands (prefix-matched)</span>
+    - systemctl status
+    - docker ps
+    - df -h
+<span class="k">services:</span>
+  <span class="k">allow:</span>                <span class="cmt"># units it may manage</span>
+    nginx: [status, restart, reload]
+<span class="k">paths:</span>
+  <span class="k">allow_edit:</span>           <span class="cmt"># files it may read / write</span>
+    - /etc/nginx/sites-available</div>
+    <p class="doc-note">The allowlist &mdash; not the model's good behavior &mdash; is the trust boundary. Blocked attempts are refused and logged. Full schema &amp; examples: <a href="https://github.com/pensados/sentinelx-cloud-core/blob/main/config.example.yaml">config.example.yaml</a>.</p>
+  </section>
+
+  <section id="reference" class="doc-section">
+    <h2>Reference</h2>
+    <div class="ref-links">
+      <a href="https://github.com/pensados/sentinelx-cloud-core">agent (open source) &#8599;</a>
+      <a href="https://github.com/pensados/sentinelx-cloud-installer">installer &#8599;</a>
+      <a href="https://github.com/pensados/sentinelx-cloud-protocol">protocol spec &#8599;</a>
+      <a href="https://mcp.sentinelx.app/dashboard">dashboard &#8599;</a>
+      <a href="https://sentinelx.pensa.ar/articles/">articles &#8599;</a>
+      <a href="https://modelcontextprotocol.io">MCP &#8599;</a>
     </div>
-    <p class="cfg-note"><code>url</code> only &mdash; Cursor auto-detects transport and handles OAuth. Note: Cursor caps ~40 active tools and SentinelX exposes 38, so disable ones you don't use or trim other servers.</p>
-  </div>
+  </section>
+</div>
 
-  <div class="callout">
-    <strong>Android Studio &mdash; known issue.</strong> Its built-in MCP client has a PKCE bug (the code_verifier doesn&#39;t match its own code_challenge), so the OAuth handshake fails on the client side. Nothing to fix server-side &mdash; use VS Code or another client until JetBrains ships a fix.
-  </div>
-  <div class="callout">
-    <strong>Windsurf &mdash; known issue.</strong> Windsurf's MCP client validates the OAuth issuer in the wrong place (it expects it in the token response body instead of the RFC 9207 callback parameter it already receives), so the token exchange fails on the client side. The config is correct &mdash; it'll connect once Windsurf ships the upstream fix (<a href="https://github.com/modelcontextprotocol/rust-sdk/issues/896" target="_blank" rel="noopener">rust-sdk#896</a>). Use Cursor or VS Code in the meantime.
-  </div>
-
-  <div class="callout" style="border-left-color: var(--green); background: rgba(126,231,135,0.06);">
-    <strong>One URL for every client:</strong> <code>https://mcp.sentinelx.app/mcp/mcp</code> &mdash; sign in with Google on first connect.
-  </div>
-
-  <script>
-    function sxCopy(btn){
-      var block = btn.parentElement.querySelector('pre');
-      if(!block) return;
-      var text = block.textContent.trim();
-      var lbl = btn.querySelector('.copy-label');
-      function feedback(){
-        btn.classList.add('copied');
-        if(lbl) lbl.textContent = 'Copied';
-        setTimeout(function(){ btn.classList.remove('copied'); if(lbl) lbl.textContent = 'Copy'; }, 1600);
-      }
-      if(navigator.clipboard && navigator.clipboard.writeText){
-        navigator.clipboard.writeText(text).then(feedback).catch(function(){ sxFallbackCopy(text); feedback(); });
-      } else { sxFallbackCopy(text); feedback(); }
-    }
-    function sxFallbackCopy(text){
-      try { var ta=document.createElement('textarea'); ta.value=text; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); } catch(e){}
-    }
-  </script>
-
-  <h2>What you can ask</h2>
-
-  <p>Once it's connected, you can talk to your servers in plain English (or whatever language). The LLM picks the right tool automatically:</p>
-
-  <pre><code># Health checks
-"Show me uptime and disk usage on my-vps"
-"Compare free memory across all my servers"
-
-# Operations
-"Restart nginx on prod-web and tell me when it's back"
-"Tail the last 50 lines of /var/log/syslog on db1"
-
-# Config edits
-"Update the worker_processes setting in my nginx config to 4"
-"Show me the diff before applying"</code></pre>
-
-  <h2 id="integrations">Integrations</h2>
-
-  <p>Beyond your hosts, the hub exposes a few <strong>third-party integrations</strong> as MCP tools — so the LLM can also send mail, post Telegram notifications, or edit DNS on your behalf. Each one needs credentials configured once on <a href="https://mcp.sentinelx.app">mcp.sentinelx.app</a>; the agent on your hosts is not involved.</p>
-
-  <table>
-    <thead><tr><th>Tool</th><th>What it does</th></tr></thead>
-    <tbody>
-      <tr><td><code>cloudflare_dns_list_zones</code></td><td>List Cloudflare zones the saved token can access</td></tr>
-      <tr><td><code>cloudflare_dns_list_records</code></td><td>List DNS records in a zone, optionally filtered</td></tr>
-      <tr><td><code>cloudflare_dns_create_record</code></td><td>Create a new DNS record</td></tr>
-      <tr><td><code>cloudflare_dns_update_record</code></td><td>Partially update an existing DNS record</td></tr>
-      <tr><td><code>cloudflare_dns_delete_record</code></td><td>Delete a DNS record</td></tr>
-      <tr><td><code>resend_send_email</code></td><td>Send a transactional or operational email via Resend</td></tr>
-      <tr><td><code>telegram_send_message</code></td><td>Send a text message to a Telegram chat using a saved bot</td></tr>
-      <tr><td><code>list_integrations</code></td><td>List the integrations the calling user has configured</td></tr>
-    </tbody>
-  </table>
-
-  <div class="callout">
-    <strong>Hub-side, not agent-side.</strong> These tools run inside the SentinelX hub, not on your hosts. They're convenient bundled extras, not part of the open-source agent — credentials live in your hub account and never touch the agent's allowlist.
-  </div>
-
-  <h2>What's installed where</h2>
-
-  <div class="grid-2">
-    <div class="card">
-      <h3>On your server</h3>
-      <p>The agent goes to <code>/opt/sentinelx-cloud-core</code> and runs as systemd unit <code>sentinelx-cloud-core.service</code> under user <code>sentinelx</code>.</p>
-      <p>Allowed commands live in <code>/etc/sentinelx/config.yaml</code> — you fully control what the LLM can do.</p>
+<footer>
+  <div class="footer-inner">
+    <div class="footer-left">
+      <strong>SentinelX</strong> · Apache 2.0-licensed agent<br>
+      a <a href="https://pensa.ar/legal/marca/" style="color:var(--accent);text-decoration:none;">Pensa Software®</a> product · built by <a href="https://pensa.ar" style="color:var(--accent);text-decoration:none;">pensa.ar</a>
     </div>
-    <div class="card">
-      <h3>In the cloud</h3>
-      <p>A hosted hub at <code>mcp.sentinelx.app</code> relays MCP tool calls between your LLM and your agents. Authentication is OAuth 2 + PKCE via Google.</p>
-      <p>Your agent connects out to the hub. No port forwarding, no inbound traffic to your server.</p>
+    <div class="footer-links">
+      <a href="https://get.sentinelx.app/about" target="_blank">install</a>
+      <a href="https://mcp.sentinelx.app/dashboard" target="_blank">dashboard</a>
+      <a href="https://github.com/pensados/sentinelx-cloud-core" target="_blank">agent (cloud)</a>
+      <a href="https://github.com/pensados/sentinelx-docker" target="_blank">docker (self-hosted)</a>
+      <a href="https://github.com/mcp/app.sentinelx/sentinelx" target="_blank">github mcp registry</a>
+      <a href="https://www.pulsemcp.com/servers/sentinelx" target="_blank">pulsemcp</a>
+      <a href="https://chatgpt.com/apps/sentinelx/asdk_app_69f63e01766881919640f03b5e7912a5" target="_blank">chatgpt app</a>
+      <a href="https://modelcontextprotocol.io" target="_blank">MCP</a>
     </div>
   </div>
-
-  <h2>Security model</h2>
-  <ul>
-    <li>The agent <strong>only opens outbound connections</strong>. Nothing inbound, no port to expose.</li>
-    <li>Commands are gated by an <strong>allowlist</strong> you maintain in <code>/etc/sentinelx/config.yaml</code>. The LLM cannot ask for what's not allowed.</li>
-    <li>Each host has its own identity JWT. Compromising one host doesn't grant access to others.</li>
-    <li>The agent code, the protocol, and the installer are <a href="https://github.com/pensados/sentinelx-cloud-core">open source</a>. Read the code before you install.</li>
-  </ul>
-
-  <h2>Open source</h2>
-  <p>The agent and its protocol are under Apache 2.0:</p>
-  <ul>
-    <li><a href="https://github.com/pensados/sentinelx-cloud-core"><code>sentinelx-cloud-core</code></a> — the agent that runs on your server</li>
-    <li><a href="https://github.com/pensados/sentinelx-cloud-protocol"><code>sentinelx-cloud-protocol</code></a> — wire format between agent and hub</li>
-    <li><a href="https://github.com/pensados/sentinelx-cloud-installer"><code>sentinelx-cloud-installer</code></a> — what <code>get.sentinelx.app</code> serves</li>
-  </ul>
-
-  <h2 id="windows">Install on Windows</h2>
-  <p>Windows uses a PowerShell installer instead of <code>curl | bash</code>. First make sure <strong>Python 3.12+</strong> and <strong>git</strong> are on <code>PATH</code> (from python.org and git-scm.com). Then, in PowerShell:</p>
-  <pre><code>iwr -useb https://get.sentinelx.app/install.ps1 -OutFile "$env:TEMP\sx.ps1"
-# service install — runs as a Windows service (LocalSystem) at boot; needs an elevated PowerShell:
-powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1"
-# ...or a per-user install — no admin, runs as you at logon (for locked-down machines):
-powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1" -User</code></pre>
-  <p>On corporate networks that block PyPI, add <code>-Bundle &lt;zip-or-url&gt;</code> to install from the offline wheel bundle attached to the latest GitHub release; the agent uses the Windows trust store, so a TLS-inspecting proxy’s CA is trusted automatically. After installing, enroll the host the same way — <code>mcp.sentinelx.app</code> → “+ Enroll a new host” → paste token.</p>
-
-  <h2>Manual install</h2>
-  <p>If you'd rather not <code>curl | bash</code>, fetch and inspect first:</p>
-  <pre><code>curl -fsSL https://get.sentinelx.app/install.sh -o install.sh
-less install.sh
-bash install.sh</code></pre>
-
-  <h2>Status</h2>
-  <p>SentinelX is in beta. Hub status: <a href="https://mcp.sentinelx.app/healthz">healthz</a> · <a href="https://mcp.sentinelx.app/readyz">readyz</a></p>
-
-  <footer>
-    <div>© 2026 SentinelX — a <a href="https://pensa.ar/legal/marca/" style="color:var(--accent);text-decoration:none;">Pensa Software®</a> product</div>
-    <div class="links">
-      <a href="https://mcp.sentinelx.app/dashboard">Dashboard</a>
-      <a href="/privacy">Privacy</a>
-      <a href="/terms">Terms</a>
-      <a href="https://github.com/pensados/sentinelx-cloud-core">GitHub</a>
-      <a href="https://github.com/mcp/app.sentinelx/sentinelx">GitHub MCP Registry</a>
-      <a href="https://www.pulsemcp.com/servers/sentinelx">PulseMCP</a>
-      <a href="https://chatgpt.com/apps/sentinelx/asdk_app_69f63e01766881919640f03b5e7912a5">ChatGPT app</a>
-      <a href="mailto:hello@pensa.ar">Contact</a>
-    </div>
-  </footer>
-</main>
+</footer>
 
 <script>
-  // Copy-to-clipboard for any .cta-copy-btn. We bind via delegation on
-  // document so future buttons added dynamically also work — and so a
-  // single listener handles both the hero CTA and any future code blocks
-  // with the same pattern.
-  document.addEventListener('click', async function (evt) {
-    const btn = evt.target.closest('.cta-copy-btn');
-    if (!btn) return;
-
-    const text = btn.getAttribute('data-copy') || '';
-    if (!text) return;
-
-    // Try the modern Clipboard API first. It requires a secure context
-    // (https) which we always have, but fall back to execCommand for the
-    // rare browser that doesn't expose it (or denies permission).
-    let copied = false;
-    try {
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        await navigator.clipboard.writeText(text);
-        copied = true;
-      }
-    } catch (_) {
-      // fall through to the fallback path
-    }
-
-    if (!copied) {
-      // Legacy fallback: temporarily inject a hidden textarea, select
-      // it, fire execCommand('copy'), and clean up. Works on iOS Safari
-      // and other browsers without async clipboard support.
-      const ta = document.createElement('textarea');
-      ta.value = text;
-      ta.setAttribute('readonly', '');
-      ta.style.position = 'absolute';
-      ta.style.left = '-9999px';
-      document.body.appendChild(ta);
-      ta.select();
-      try {
-        copied = document.execCommand('copy');
-      } catch (_) {
-        copied = false;
-      }
-      document.body.removeChild(ta);
-    }
-
-    if (!copied) return;
-
-    // Visual feedback: swap the icon to a checkmark for 1.5s.
-    btn.classList.add('copied');
-    btn.setAttribute('aria-label', 'Copied');
-    setTimeout(function () {
-      btn.classList.remove('copied');
-      btn.setAttribute('aria-label', 'Copy install command');
-    }, 1500);
-  });
-</script>
-<script>
-document.addEventListener('click', function(evt){
-  var tab = evt.target.closest('.os-tab'); if(!tab) return;
-  var root = tab.closest('.os-install'); if(!root) return;
-  var os = tab.getAttribute('data-os');
-  root.querySelectorAll('.os-tab').forEach(function(t){ t.classList.toggle('active', t === tab); });
+function sxTab(btn){
+  var os = btn.getAttribute('data-os');
+  var root = btn.closest('.install-hero');
+  root.querySelectorAll('.os-tab').forEach(function(t){ t.classList.toggle('active', t === btn); });
   root.querySelectorAll('.os-panel').forEach(function(p){ p.classList.toggle('active', p.getAttribute('data-os') === os); });
-});
+}
+function sxCopyCmd(btn){
+  var text = btn.getAttribute('data-copy'); if(!text) return;
+  function fb(){ btn.classList.add('copied'); var l=btn.querySelector('.copy-label'); if(l) l.textContent='Copied'; setTimeout(function(){ btn.classList.remove('copied'); if(l) l.textContent='Copy'; },1600); }
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(fb).catch(function(){ if(window.sxFallbackCopy) sxFallbackCopy(text); fb(); }); }
+  else { if(window.sxFallbackCopy) sxFallbackCopy(text); fb(); }
+}
 </script>
 </body>
 </html>
