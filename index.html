@@ -178,6 +178,16 @@ h1 {
   font-size: 13px;
 }
 
+.os-install { margin: 0; }
+.os-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 12px; }
+.os-tab { background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px; color: var(--text-faint); font-family: inherit; font-size: 13px; padding: 7px 14px; cursor: pointer; transition: color .15s, border-color .15s; }
+.os-tab:hover { color: var(--text-dim); }
+.os-tab.active { color: var(--accent-bright); border-bottom-color: var(--accent-bright); }
+.os-panel { display: none; }
+.os-panel.active { display: block; }
+.cta.cta-ps { white-space: pre; }
+.cta.cta-ps::before { content: "PS>"; }
+
 /* Secondary action row under the install CTA. Gives people who have
    already installed the agent (or just want to look) a clear path into
    the hosted dashboard at mcp.sentinelx.app. */
@@ -511,8 +521,21 @@ footer .links {
       Install a small agent on your servers. Connect SentinelX as an MCP connector in your LLM. Then ask the LLM to check disk usage, restart a service, edit a config, or anything else you've allowed.
     </p>
 
-    <div class="cta"><span class="cta-cmd">curl -fsSL https://get.sentinelx.app | bash</span><button class="cta-copy-btn" type="button" aria-label="Copy install command" data-copy="curl -fsSL https://get.sentinelx.app | bash"><svg class="cta-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><svg class="cta-copy-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button></div>
-    <div class="cta-note">Linux and macOS — one command auto-detects your OS. Windows uses a PowerShell installer (see step 1 below). On Linux, the agent runs as an unprivileged user after install.</div>
+    <div class="os-install">
+      <div class="os-tabs" role="tablist">
+        <button class="os-tab active" data-os="unix" type="button">Linux / macOS</button>
+        <button class="os-tab" data-os="win" type="button">Windows</button>
+      </div>
+      <div class="os-panel active" data-os="unix">
+        <div class="cta"><span class="cta-cmd">curl -fsSL https://get.sentinelx.app | bash</span><button class="cta-copy-btn" type="button" aria-label="Copy install command" data-copy="curl -fsSL https://get.sentinelx.app | bash"><svg class="cta-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><svg class="cta-copy-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button></div>
+        <div class="cta-note">One command &mdash; auto-detects Linux or macOS. On Linux, the agent runs as an unprivileged user after install.</div>
+      </div>
+      <div class="os-panel" data-os="win">
+        <div class="cta cta-ps"><span class="cta-cmd">iwr -useb https://get.sentinelx.app/install.ps1 -OutFile "$env:TEMP\sx.ps1"
+powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1"</span><button class="cta-copy-btn" type="button" aria-label="Copy install command" data-copy='iwr -useb https://get.sentinelx.app/install.ps1 -OutFile "$env:TEMP\sx.ps1"; powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1"'><svg class="cta-copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><svg class="cta-copy-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="20 6 9 17 4 12"></polyline></svg></button></div>
+        <div class="cta-note">PowerShell &mdash; needs Python 3.12+ and <code>git</code>. Add <code>-User</code> for a no-admin install.</div>
+      </div>
+    </div>
 
     <div class="hero-actions">
       <a class="btn btn-primary" href="https://mcp.sentinelx.app/dashboard">Open the dashboard <span class="btn-arrow" aria-hidden="true">→</span></a>
@@ -541,7 +564,7 @@ footer .links {
       <div class="step-num">1</div>
       <div class="step-body">
         <strong>Install the agent.</strong>
-        Run the command above on any Linux or macOS host. It installs the open-source agent in a virtualenv and registers it as a service — a systemd unit on Linux, a launchd daemon on macOS. On <strong>Windows</strong>, use the PowerShell installer instead: <code>iwr -useb https://get.sentinelx.app/install.ps1 -OutFile "$env:TEMP\sx.ps1"; powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1"</code> — it registers a Windows service (add <code>-User</code> for a no-admin per-user install).
+        Use the command for your OS above &mdash; it installs the open-source agent in a virtualenv and registers it as a service: a systemd unit on Linux, a launchd daemon on macOS, a Windows service (or a per-user task with <code>-User</code>) on Windows.
       </div>
     </li>
     <li class="step">
@@ -821,6 +844,15 @@ bash install.sh</code></pre>
       btn.setAttribute('aria-label', 'Copy install command');
     }, 1500);
   });
+</script>
+<script>
+document.addEventListener('click', function(evt){
+  var tab = evt.target.closest('.os-tab'); if(!tab) return;
+  var root = tab.closest('.os-install'); if(!root) return;
+  var os = tab.getAttribute('data-os');
+  root.querySelectorAll('.os-tab').forEach(function(t){ t.classList.toggle('active', t === tab); });
+  root.querySelectorAll('.os-panel').forEach(function(p){ p.classList.toggle('active', p.getAttribute('data-os') === os); });
+});
 </script>
 </body>
 </html>
