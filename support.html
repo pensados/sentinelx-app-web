@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+<meta property="og:image" content="https://get.sentinelx.app/logo.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://get.sentinelx.app/logo.png">
+
+<title>Support — SentinelX MCP</title>
+<meta name="theme-color" content="#0e1116">
+<style>
+:root {
+  --bg: #0e1116;
+  --bg-elev: #161b22;
+  --bg-code: #0d1117;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-dim: #8b949e;
+  --text-faint: #6e7681;
+  --accent: #58a6ff;
+  --green: #7ee787;
+  --orange: #ffa657;
+  --max-width: 760px;
+}
+* { box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  line-height: 1.7;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 56px 24px 80px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 36px;
+  text-decoration: none;
+  color: var(--text);
+}
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  display: block;
+}
+.brand-name {
+  font-size: 18px;
+  font-weight: 600;
+}
+h1 {
+  font-size: 32px;
+  margin: 0 0 8px;
+  letter-spacing: -0.02em;
+}
+h2 {
+  font-size: 20px;
+  margin: 36px 0 12px;
+  letter-spacing: -0.01em;
+}
+h3 {
+  font-size: 16px;
+  margin: 24px 0 8px;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+.last-updated {
+  color: var(--text-faint);
+  font-size: 14px;
+  margin: 0 0 32px;
+}
+p, li { color: var(--text); }
+ul { padding-left: 20px; }
+li { margin: 6px 0; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.92em;
+}
+footer {
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  color: var(--text-faint);
+  font-size: 14px;
+}
+footer .links { display: flex; gap: 20px; flex-wrap: wrap; }
+@media (max-width: 600px) {
+  main { padding: 32px 20px 64px; }
+  h1 { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+<main>
+<a href="/about" class="brand">
+  <img src="/favicon.svg" alt="SentinelX" class="brand-mark" width="32" height="32">
+  <div class="brand-name">SentinelX</div>
+</a>
+<h1>Support</h1>
+<p>Need help with SentinelX, hit a bug, or have a question about setup? Here's how to reach us.</p>
+
+<h2>Report a bug or request a feature</h2>
+<p>The fastest way to reach us about the agent, installer, or protocol is a GitHub issue. It helps to include your OS (Linux or macOS), the agent version (the <code>capabilities</code> op reports it), and steps to reproduce.</p>
+<p><a href="https://github.com/pensados/sentinelx-cloud-core/issues">github.com/pensados/sentinelx-cloud-core/issues</a></p>
+
+<h2>Questions and discussion</h2>
+<p>For setup help, usage questions, or ideas, GitHub Discussions is a good place — and answers there help other users too.</p>
+<p><a href="https://github.com/pensados/sentinelx-cloud-core/discussions">github.com/pensados/sentinelx-cloud-core/discussions</a></p>
+
+<h2>Email</h2>
+<p>Prefer email? Write to <a href="mailto:sentinelx@pensa.ar">sentinelx@pensa.ar</a>. For account questions or data-deletion requests, see the <a href="/privacy">Privacy Policy</a>.</p>
+
+<h2>Getting started</h2>
+<p>New to SentinelX? Install the open-source agent with one command on any Linux or macOS host — it auto-detects your OS:</p>
+<p><code>curl -fsSL https://get.sentinelx.app | bash</code></p>
+<p>Then add SentinelX as an MCP connector in your LLM. Full details are on the <a href="/about">home page</a>.</p>
+
+<h2>Security issues</h2>
+<p>Found a security vulnerability? Please report it privately to <a href="mailto:sentinelx@pensa.ar">sentinelx@pensa.ar</a> rather than opening a public issue, and we'll respond as quickly as we can.</p>
+
+<h2>Response times</h2>
+<p>SentinelX is maintained by a small team, and its agent is open source. We aim to reply within a few business days. Public GitHub issues and discussions often get the fastest input.</p>
+
+<footer>
+  <div>© 2026 SentinelX</div>
+  <div class="links">
+    <a href="/about">Home</a>
+    <a href="/privacy">Privacy</a>
+    <a href="/terms">Terms</a>
+    <a href="https://github.com/pensados/sentinelx-cloud-core">GitHub</a>
+    <a href="mailto:privacy@pensa.ar">Contact</a>
+  </div>
+</footer>
+</main>
+</body>
+</html>
