@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pricing — SentinelX MCP</title>
+<meta name="description" content="SentinelX founder pricing. Every plan includes all features — tiers differ only by how many hosts run at once. Free for 1 host. Founder prices locked for life.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="canonical" href="https://sentinelx.app/plans">
+<meta property="og:title" content="SentinelX MCP — Pricing">
+<meta property="og:description" content="Every plan includes all features — tiers differ only by how many hosts run at once. Free for 1 host. Founder prices locked for life.">
+<meta property="og:url" content="https://sentinelx.app/plans">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* Prices mirror the hub's billing/plans.py (single source of truth). Founder tier, locked. */
+  :root{
+    --bg:#0a0e14; --bg2:#131821; --bg3:#1a212d;
+    --border:#1f2937; --border2:#2a3441;
+    --fg:#e6edf3; --fg2:#94a3b8; --fg3:#64748b; --fg4:#475569;
+    --accent:#5eead4; --accent2:#2dd4bf; --accent-dim:rgba(94,234,212,0.08); --accent-dim2:rgba(94,234,212,0.20);
+    --amber:#fbbf24;
+    --mono:'IBM Plex Mono',monospace; --sans:'IBM Plex Sans',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);background-image:radial-gradient(ellipse 900px 500px at 50% -120px,rgba(94,234,212,0.06),transparent 70%);background-attachment:fixed;color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.6;overflow-x:hidden;}
+  .grid-bg{position:fixed;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:48px 48px;opacity:0.25;pointer-events:none;z-index:0;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 1.5rem;position:relative;z-index:1;}
+  a{color:var(--accent);text-decoration:none}
+  /* nav */
+  nav{border-bottom:1px solid var(--border);backdrop-filter:blur(12px);background:rgba(10,14,20,0.85);position:sticky;top:0;z-index:100;}
+  .nav-in{max-width:1080px;margin:0 auto;padding:0.9rem 1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+  .nav-logo{font-family:var(--mono);font-size:0.9rem;font-weight:600;color:var(--accent);letter-spacing:0.05em;display:flex;align-items:center;gap:0.5rem;}
+  .nav-links{display:flex;gap:1.4rem;list-style:none;align-items:center;}
+  .nav-links a{font-family:var(--mono);font-size:0.75rem;color:var(--fg2);letter-spacing:0.08em;text-transform:uppercase;transition:color 0.2s;}
+  .nav-links a:hover,.nav-links a.active{color:var(--accent);}
+  .nav-cta{font-family:var(--mono);font-size:0.75rem;color:var(--bg);background:var(--accent);padding:0.4rem 1rem;font-weight:600;letter-spacing:0.05em;transition:background 0.2s;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);}
+  .nav-cta:hover{background:var(--accent2);}
+  @media(max-width:720px){.nav-links{display:none}}
+  /* hero */
+  .hero{text-align:center;padding:4rem 0 2rem;}
+  .section-label{font-family:var(--mono);font-size:0.7rem;color:var(--fg3);letter-spacing:0.15em;text-transform:uppercase;margin-bottom:0.9rem;}
+  h1{font-family:var(--mono);font-size:clamp(2rem,5vw,3.2rem);font-weight:600;line-height:1.1;letter-spacing:-0.02em;margin-bottom:0.9rem;}
+  h1 .hi{color:var(--accent);}
+  .lead{color:var(--fg2);font-weight:300;font-size:1.05rem;max-width:60ch;margin:0 auto;}
+  /* toggle */
+  .toggle{display:inline-flex;background:var(--bg2);border:1px solid var(--border);border-radius:999px;padding:3px;margin:2rem 0 0.5rem;}
+  .toggle button{border:0;background:transparent;color:var(--fg2);cursor:pointer;font-family:var(--mono);font-size:0.78rem;font-weight:500;padding:0.5rem 1.2rem;border-radius:999px;letter-spacing:0.05em;transition:0.15s;}
+  .toggle button.on{background:var(--accent-dim2);color:var(--accent);}
+  .save{color:var(--amber);font-size:0.68rem;margin-left:0.4rem;}
+  /* cards */
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);margin:1.5rem 0 1rem;}
+  @media(max-width:860px){.cards{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:460px){.cards{grid-template-columns:1fr}}
+  .card{background:var(--bg2);padding:1.6rem 1.35rem;display:flex;flex-direction:column;position:relative;}
+  .card.pop{background:linear-gradient(180deg,rgba(94,234,212,0.05),var(--bg2));box-shadow:inset 0 0 0 1px var(--accent-dim2);}
+  .pop-tag{position:absolute;top:0;right:0;background:var(--accent);color:var(--bg);font-family:var(--mono);font-size:0.6rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:3px 8px;clip-path:polygon(6px 0,100% 0,100% 100%,0 100%);}
+  .c-name{font-family:var(--mono);font-size:1rem;font-weight:600;color:var(--fg);}
+  .c-hosts{font-family:var(--mono);font-size:0.72rem;color:var(--fg3);margin-bottom:1.1rem;letter-spacing:0.03em;}
+  .c-price{display:flex;align-items:baseline;gap:0.15rem;margin-bottom:0.2rem;}
+  .c-amt{font-family:var(--mono);font-size:1.9rem;font-weight:600;color:var(--fg);letter-spacing:-0.01em;}
+  .c-per{font-family:var(--mono);font-size:0.78rem;color:var(--fg3);}
+  .c-sub{font-family:var(--mono);font-size:0.68rem;color:var(--fg4);min-height:1rem;margin-bottom:1.2rem;}
+  .c-cta{margin-top:auto;font-family:var(--mono);font-size:0.78rem;font-weight:600;text-align:center;padding:0.6rem;letter-spacing:0.04em;transition:0.2s;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);}
+  .c-cta.solid{background:var(--accent);color:var(--bg);} .c-cta.solid:hover{background:var(--accent2);}
+  .c-cta.ghost{border:1px solid var(--border2);color:var(--accent);} .c-cta.ghost:hover{border-color:var(--accent);background:var(--accent-dim);}
+  /* table */
+  details.all{border:1px solid var(--border);background:var(--bg2);margin:1.5rem 0;}
+  details.all summary{cursor:pointer;padding:0.9rem 1.25rem;font-family:var(--mono);font-size:0.8rem;color:var(--fg2);list-style:none;letter-spacing:0.05em;}
+  details.all summary::-webkit-details-marker{display:none}
+  details.all summary::before{content:"▸ ";color:var(--fg3)} details.all[open] summary::before{content:"▾ "}
+  table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:0.8rem;}
+  th,td{text-align:left;padding:0.7rem 1.25rem;border-top:1px solid var(--border);}
+  th{color:var(--fg3);font-weight:500;font-size:0.68rem;text-transform:uppercase;letter-spacing:0.06em;}
+  th.num,td.num{text-align:right;} td.num{color:var(--fg2);}
+  td .go{color:var(--accent);font-size:0.75rem;}
+  .note{font-family:var(--mono);font-size:0.74rem;color:var(--fg3);line-height:1.7;text-align:center;max-width:70ch;margin:1.5rem auto 0;}
+  .note strong{color:var(--fg2);font-weight:500;}
+  footer{border-top:1px solid var(--border);margin-top:4rem;padding:2rem 0;text-align:center;font-family:var(--mono);font-size:0.72rem;color:var(--fg3);}
+  footer a{color:var(--fg2)} footer a:hover{color:var(--accent)}
+  .foot-links{display:flex;gap:1.2rem;justify-content:center;flex-wrap:wrap;margin-bottom:0.8rem;}
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<nav><div class="nav-in">
+  <a class="nav-logo" href="https://sentinelx.app/"><img src="https://get.sentinelx.app/logo.svg" width="20" height="20" alt=""><span>SentinelX <span style="color:var(--fg3);font-weight:400;">MCP</span></span></a>
+  <ul class="nav-links">
+    <li><a href="https://sentinelx.app/#install">Install</a></li>
+    <li><a href="https://sentinelx.app/#operate">Operate</a></li>
+    <li><a href="/plans" class="active">Pricing</a></li>
+    <li><a href="https://github.com/pensados/sentinelx-cloud-core" target="_blank">GitHub</a></li>
+  </ul>
+  <a class="nav-cta" href="https://mcp.sentinelx.app/dashboard">Dashboard →</a>
+</div></nav>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="section-label">Pricing</div>
+    <h1>Founder pricing, <span class="hi">locked for life</span></h1>
+    <p class="lead">Every plan includes all SentinelX features. Tiers differ only in how many hosts can run at the same time — connecting more is always free, you only pay to operate beyond your limit.</p>
+    <div class="toggle" id="toggle">
+      <button class="on" data-b="monthly">Monthly</button>
+      <button data-b="annual">Annual <span class="save">2 months free</span></button>
+    </div>
+  </section>
+
+  <section class="cards" id="cards"></section>
+
+  <details class="all">
+    <summary>Compare all tiers</summary>
+    <table>
+      <thead><tr><th>Plan</th><th class="num">Hosts</th><th class="num">Monthly</th><th class="num">Annual</th><th class="num">Per host</th><th></th></tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </details>
+
+  <p class="note"><strong>All features, every tier.</strong> SSO, integrations, audit, the full tool set — included everywhere. You're only choosing how many hosts run at once. Need more than 100? <a href="mailto:sentinelx-sales@pensa.ar">Talk to us</a> about Enterprise.</p>
+</div>
+
+<footer><div class="wrap">
+  <div class="foot-links">
+    <a href="https://sentinelx.app/">Home</a>
+    <a href="https://mcp.sentinelx.app/dashboard">Dashboard</a>
+    <a href="https://github.com/pensados/sentinelx-cloud-core" target="_blank">GitHub</a>
+    <a href="/terms">Terms</a>
+    <a href="/privacy">Privacy</a>
+  </div>
+  a <a href="https://pensa.ar/legal/marca/">Pensa Software®</a> product · built by <a href="https://pensa.ar">pensa.ar</a>
+</div></footer>
+
+<script>
+  var DASH = "https://mcp.sentinelx.app/dashboard";
+  // Founder ladder — mirrors billing/plans.py. [tier,label,hosts,monthly,annual]
+  var TIERS = [
+    ["free","Free",1,0,0],
+    ["starter","Starter",4,5,50],
+    ["plus","Plus",10,9,90],
+    ["pro","Pro",16,14,140],
+    ["team","Team",25,20,200],
+    ["business","Business",50,35,350],
+    ["fleet","Fleet",100,60,600],
+  ];
+  var ANCHORS = ["free","plus","team","fleet"], POPULAR = "plus";
+  var usd = function(n){ return "$" + n; };
+  var perHost = function(m,h){ return "$" + (m/h).toFixed(2); };  // real $/host, 2dp
+  var byTier = {}; TIERS.forEach(function(t){ byTier[t[0]]=t; });
+
+  function cardHTML(t){
+    var tier=t[0],label=t[1],hosts=t[2],m=t[3],a=t[4];
+    var free = (m===0);
+    var pop = (tier===POPULAR);
+    var amt = free ? "$0" : usd(m), per = free ? "forever" : "/mo";
+    var sub = free ? "1 host, no card" : (perHost(m,hosts) + "/host·mo");
+    var cta = free
+      ? '<a class="c-cta ghost" href="'+DASH+'">Get started</a>'
+      : '<a class="c-cta '+(pop?'solid':'ghost')+'" href="'+DASH+'">Get started</a>';
+    return '<div class="card'+(pop?' pop':'')+'">'+(pop?'<div class="pop-tag">Popular</div>':'')
+      +'<div class="c-name">'+label+'</div>'
+      +'<div class="c-hosts">'+hosts+' host'+(hosts>1?'s':'')+'</div>'
+      +'<div class="c-price"><span class="c-amt" data-m="'+(free?'$0':usd(m))+'" data-a="'+(free?'$0':usd(a))+'">'+amt+'</span>'
+      +'<span class="c-per" data-m="'+(free?'forever':'/mo')+'" data-a="'+(free?'forever':'/yr')+'">'+per+'</span></div>'
+      +'<div class="c-sub" data-m="'+sub+'" data-a="'+(free?'always free':'2 months free')+'">'+sub+'</div>'
+      +cta+'</div>';
+  }
+  function rowHTML(t){
+    var tier=t[0],label=t[1],hosts=t[2],m=t[3],a=t[4];
+    var mm = m===0?"Free":usd(m), aa = a===0?"—":usd(a), ph = m===0?"—":perHost(m,hosts);
+    return '<tr><td style="color:var(--fg)">'+label+'</td><td class="num">'+hosts+'</td>'
+      +'<td class="num">'+mm+'</td><td class="num">'+aa+'</td><td class="num">'+ph+'</td>'
+      +'<td class="num"><a class="go" href="'+DASH+'">Get started →</a></td></tr>';
+  }
+  document.getElementById("cards").innerHTML = ANCHORS.map(function(x){return cardHTML(byTier[x]);}).join("");
+  document.getElementById("rows").innerHTML = TIERS.map(rowHTML).join("")
+    + '<tr><td style="color:var(--fg)">Enterprise</td><td class="num">100+</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num"><a class="go" href="mailto:sentinelx-sales@pensa.ar">Contact →</a></td></tr>';
+
+  function apply(mode){
+    document.querySelectorAll("#toggle button").forEach(function(b){ b.classList.toggle("on", b.dataset.b===mode); });
+    var k = mode==="annual" ? "a" : "m";
+    document.querySelectorAll(".c-amt,.c-per,.c-sub").forEach(function(e){ if(e.dataset[k]!==undefined) e.textContent=e.dataset[k]; });
+  }
+  document.querySelectorAll("#toggle button").forEach(function(b){ b.addEventListener("click",function(){ apply(b.dataset.b); }); });
+</script>
+</body></html>
