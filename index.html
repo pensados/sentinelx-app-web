@@ -82,8 +82,9 @@
   nav { border-bottom: 1px solid var(--border); backdrop-filter: blur(12px); background: rgba(10,14,20,0.85); position: sticky; top: 0; z-index: 100; }
   .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem; max-width: 1100px; margin: 0 auto; }
   .nav-logo { font-family: var(--mono); font-size: 0.9rem; font-weight: 600; color: var(--accent); letter-spacing: 0.05em; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
-  .nav-logo::before { content: '▸'; animation: blink 1.2s step-end infinite; }
   @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+  .nav-logo .sx-cursor { animation: blink 1.2s step-end infinite; }
+  @media (prefers-reduced-motion: reduce) { .nav-logo .sx-cursor { animation: none; opacity: 1 } }
   .nav-links { display: flex; gap: 2rem; list-style: none; }
   .nav-links a { font-family: var(--mono); font-size: 0.75rem; color: var(--fg2); text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
   .nav-links a:hover { color: var(--accent); }
@@ -188,7 +189,7 @@
 
 <nav>
   <div class="nav-inner">
-    <a class="nav-logo" href="#"><svg viewBox="6 30 115 68" width="47" height="28" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g transform="translate(64 64) scale(1.35) skewX(-12)"><path d="M -13 -13 C -13 -21 -35 -22 -35 -10 C -35 -1 -13 0 -13 10 C -13 22 -35 21 -35 13" stroke-width="3.5"/><path d="M 0 -19 L 18 0 L 0 19" stroke-width="8"/><rect x="28" y="-10" width="8" height="20" rx="1" fill="currentColor" stroke="none"/></g></svg><span>SentinelX <span style="color:var(--fg3);font-weight:400;">MCP</span></span></a>
+    <a class="nav-logo" href="#"><svg viewBox="6 30 115 68" width="47" height="28" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g transform="translate(64 64) scale(1.35) skewX(-12)"><path d="M -13 -13 C -13 -21 -35 -22 -35 -10 C -35 -1 -13 0 -13 10 C -13 22 -35 21 -35 13" stroke-width="3.5"/><path d="M 0 -19 L 18 0 L 0 19" stroke-width="8"/><rect class="sx-cursor" x="28" y="-10" width="8" height="20" rx="1" fill="currentColor" stroke="none"/></g></svg><span>SentinelX <span style="color:var(--fg3);font-weight:400;">MCP</span></span></a>
     <input type="checkbox" id="nav-toggle" class="nav-toggle-cb" aria-hidden="true">
     <label for="nav-toggle" class="nav-toggle" aria-label="Toggle menu"><span></span><span></span><span></span></label>
     <ul class="nav-links">
