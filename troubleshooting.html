@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/favicon.png">
+<meta property="og:image" content="https://get.sentinelx.app/logo.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://get.sentinelx.app/logo.png">
+
+<title>Troubleshooting — SentinelX MCP</title>
+<meta name="description" content="Fixes for the problems SentinelX users actually hit: MCP login errors caused by antivirus, hosts that keep reconnecting, temporary -32603 errors, ChatGPT safety blocks, Manus setup and offline agents.">
+<link rel="canonical" href="https://sentinelx.app/troubleshooting">
+<meta name="theme-color" content="#0e1116">
+<style>
+:root {
+  --bg: #0e1116;
+  --bg-elev: #161b22;
+  --bg-code: #0d1117;
+  --border: #30363d;
+  --text: #e6edf3;
+  --text-dim: #8b949e;
+  --text-faint: #6e7681;
+  --accent: #58a6ff;
+  --green: #7ee787;
+  --orange: #ffa657;
+  --max-width: 760px;
+}
+* { box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  margin: 0;
+  line-height: 1.7;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 56px 24px 80px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 36px;
+  text-decoration: none;
+  color: var(--text);
+}
+.brand-mark {
+  width: 32px;
+  height: 32px;
+  display: block;
+}
+.brand-name {
+  font-size: 18px;
+  font-weight: 600;
+}
+h1 {
+  font-size: 32px;
+  margin: 0 0 8px;
+  letter-spacing: -0.02em;
+}
+h2 {
+  font-size: 20px;
+  margin: 36px 0 12px;
+  letter-spacing: -0.01em;
+}
+h3 {
+  font-size: 16px;
+  margin: 24px 0 8px;
+  color: var(--text-dim);
+  font-weight: 600;
+}
+.last-updated {
+  color: var(--text-faint);
+  font-size: 14px;
+  margin: 0 0 32px;
+}
+p, li { color: var(--text); }
+ul { padding-left: 20px; }
+li { margin: 6px 0; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.92em;
+}
+footer {
+  margin-top: 64px;
+  padding-top: 24px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  color: var(--text-faint);
+  font-size: 14px;
+}
+footer .links { display: flex; gap: 20px; flex-wrap: wrap; }
+@media (max-width: 600px) {
+  main { padding: 32px 20px 64px; }
+  h1 { font-size: 26px; }
+}
+pre {
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 14px 16px;
+  margin: 16px 0 20px;
+  overflow-x: auto;
+}
+pre code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: 0.86em;
+  line-height: 1.6;
+  white-space: pre;
+}
+h2 { scroll-margin-top: 16px; }
+</style>
+</head>
+<body>
+<main>
+<a href="/about" class="brand">
+  <img src="/favicon.svg" alt="SentinelX" class="brand-mark" width="32" height="32">
+  <div class="brand-name">SentinelX</div>
+</a>
+<h1>Troubleshooting</h1>
+<p class="last-updated">Updated October 3, 2026</p>
+<p>The problems people actually run into, the exact message you'll see, why it happens and what to do about it. Each section starts with the symptom, so you can search this page for the error you have. If none of them matches, see <a href="#still-stuck">Still stuck?</a></p>
+
+<h2 id="oauth-discovery">"OAuth metadata discovery failed … error decoding response body"</h2>
+<p>You add SentinelX to Codex (or another MCP client) and it fails before you ever see a login page:</p>
+<pre><code>Error: Metadata error: OAuth metadata discovery failed for https://mcp.sentinelx.app/mcp/mcp
+  Caused by: HTTP request failed: error decoding response body</code></pre>
+<p><strong>Why:</strong> security software on your computer is inspecting the client's HTTPS traffic and changing the responses it needs to sign in. The case we've confirmed is <strong>Norton 360</strong>: its <em>AI Protection → Web monitoring → MCP server scanning</em> option breaks the login. Other antivirus products that inspect HTTPS or MCP traffic can do the same. A plain <code>curl</code> to the same addresses often still works, because these products inspect each application differently.</p>
+<p><strong>Fix:</strong> exclude your MCP client's executable, or <code>mcp.sentinelx.app</code> and <code>keycloak.pensa.ar</code>, from that inspection. If your antivirus doesn't allow an exclusion, turn the MCP or HTTPS scanning option off. To confirm the cause, switch it off for a minute and try again.</p>
+
+<h2 id="russia-reconnects">A host in Russia reconnects every two or three minutes</h2>
+<p>The host shows as connected, then drops and comes back, over and over, about every 161 seconds. Commands that run at those moments can fail, and you may see <code>duplicate_session</code> in the agent's log.</p>
+<p><strong>Why:</strong> since June 2025, many internet providers in Russia throttle connections to services behind Cloudflare, cutting each connection after roughly 16&nbsp;KB. The agent's connection to SentinelX goes through Cloudflare by default, so it keeps stalling and reconnecting.</p>
+<p><strong>Fix:</strong> point the agent at our direct endpoint, which doesn't go through Cloudflare. On the host:</p>
+<pre><code>sudo sed -i 's#https://mcp.sentinelx.app#https://mcp-direct.sentinelx.app#' /etc/systemd/system/sentinelx-cloud-core.service /etc/sentinelx/identity.json
+sudo systemctl daemon-reload
+sudo systemctl restart sentinelx-cloud-core</code></pre>
+<p>This keeps your host id, enrollment and configuration; run the same commands with the two addresses swapped to go back. Nothing changes in ChatGPT or Claude: your connector keeps using the usual address. An HTTP proxy or a VPN outside Russia also works; the agent honors <code>HTTPS_PROXY</code> set in its service environment.</p>
+
+<h2 id="internal-error-32603">"-32603 Internal error" for a minute or two, then everything works</h2>
+<p>Several calls in a row fail with a generic internal error, and shortly after, they work again on their own.</p>
+<p><strong>Why:</strong> the hub is being updated. For about a minute and a half it stops accepting new calls while the ones already running finish, then it restarts, and agents reconnect by themselves within seconds. ChatGPT shows those refusals as a generic <code>-32603</code> error.</p>
+<p><strong>Fix:</strong> wait a minute and retry. If a long command was running at the time, check its result in your notifications before running it again, so it doesn't run twice.</p>
+
+<h2 id="blocked-by-openai">"This tool call was blocked by OpenAI…"</h2>
+<p>ChatGPT refuses to run a SentinelX operation with a message saying OpenAI blocked it or couldn't determine its safety level.</p>
+<p><strong>Why:</strong> that decision is made by ChatGPT's own safety layer, before the call leaves ChatGPT. The call never reaches SentinelX, so we have no record of it and can't change the outcome. It tends to happen on operations that change permissions, credentials or the agent's own configuration, and in unattended (scheduled) runs.</p>
+<p><strong>Fix:</strong> if you believe it's a mistake, use the feedback option on the blocked message so OpenAI sees it. For a change you, the owner, have decided to make, do it yourself outside the assistant: over SSH, or for the agent's policy, with <em>Edit config</em> on the host's card in your <a href="https://mcp.sentinelx.app/dashboard">dashboard</a>.</p>
+
+<h2 id="manus">Manus asks for a Client ID and Client Secret</h2>
+<p>Unlike ChatGPT and Claude, which register themselves, Manus's custom MCP settings ask you for OAuth credentials, and an invented Client ID fails at our sign-in page with <em>Client not found</em>.</p>
+<p><strong>Fix:</strong> register a client once, then copy the two values it returns into Manus:</p>
+<pre><code>curl -s https://keycloak.pensa.ar/realms/mcp/clients-registrations/openid-connect \
+  -H 'Content-Type: application/json' \
+  -d '{"client_name":"Manus","redirect_uris":["https://manus.im/api/webhook/mcp/callback"],"grant_types":["authorization_code","refresh_token"],"response_types":["code"]}'</code></pre>
+<p>Use <code>client_id</code> and <code>client_secret</code> from the response, keep <code>https://mcp.sentinelx.app/mcp/mcp</code> as the server URL, and sign in with the SentinelX account where your hosts are enrolled. If Manus asks for the authentication method, it's <code>client_secret_basic</code>.</p>
+
+<h2 id="host-offline">The host shows offline, but the agent's service is running</h2>
+<p>Your dashboard and your assistant say the host isn't connected, yet on the machine the service is active.</p>
+<p><strong>Why:</strong> usually an old agent. Versions before 0.11.12 don't detect a dead connection, so after a network change they can believe they're still connected and never reconnect. Older versions also lack later fixes for searches that ran without a time limit and kept the agent busy.</p>
+<p><strong>Fix:</strong> restart the agent to bring it back now, then update it from the <em>Managing your agent</em> section of your <a href="https://mcp.sentinelx.app/dashboard">dashboard</a>. On Linux:</p>
+<pre><code>sudo systemctl restart sentinelx-cloud-core</code></pre>
+
+<h2 id="still-stuck">Still stuck?</h2>
+<ul>
+  <li><strong>Ask your assistant to run SentinelX's diagnosis.</strong> Tell it something like "run SentinelX diagnose: my host keeps disconnecting". It checks our records for your account and names the cause when the evidence is clear.</li>
+  <li><strong>File a report from your assistant.</strong> Ask it to report the problem to SentinelX; it attaches the right context, and you'll get our answer by email and in the conversation.</li>
+  <li><strong>Everything else</strong> (GitHub issues, email, security reports) is on the <a href="/support">support page</a>.</li>
+</ul>
+
+<footer>
+  <div>© 2026 SentinelX</div>
+  <div class="links">
+    <a href="/about">Home</a>
+    <a href="/support">Support</a>
+    <a href="/privacy">Privacy</a>
+    <a href="/terms">Terms</a>
+    <a href="https://github.com/pensados/sentinelx-cloud-core">GitHub</a>
+    <a href="mailto:privacy@sentinelx.app">Contact</a>
+  </div>
+</footer>
+</main>
+</body>
+</html>
