@@ -145,6 +145,7 @@ h2 { scroll-margin-top: 16px; }
   Caused by: HTTP request failed: error decoding response body</code></pre>
 <p><strong>Why:</strong> security software on your computer is inspecting the client's HTTPS traffic and changing the responses it needs to sign in. The case we've confirmed is <strong>Norton 360</strong>: its <em>AI Protection → Web monitoring → MCP server scanning</em> option breaks the login. Other antivirus products that inspect HTTPS or MCP traffic can do the same. A plain <code>curl</code> to the same addresses often still works, because these products inspect each application differently.</p>
 <p><strong>Fix:</strong> exclude your MCP client's executable, or <code>mcp.sentinelx.app</code> and <code>keycloak.pensa.ar</code>, from that inspection. If your antivirus doesn't allow an exclusion, turn the MCP or HTTPS scanning option off. To confirm the cause, switch it off for a minute and try again.</p>
+<p>In the case we confirmed, only the sign-in was affected: with the option back on afterwards, regular calls kept working, so turning it off just while you sign in can be enough. You may need to repeat that whenever your client signs in from scratch, for example on a new machine.</p>
 
 <h2 id="russia-reconnects">A host in Russia reconnects every two or three minutes</h2>
 <p>The host shows as connected, then drops and comes back, over and over, about every 161 seconds. Commands that run at those moments can fail, and you may see <code>duplicate_session</code> in the agent's log.</p>
