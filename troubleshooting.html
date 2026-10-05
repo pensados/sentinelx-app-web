@@ -166,6 +166,12 @@ sudo systemctl restart sentinelx-cloud-core</code></pre>
 <p><strong>Why:</strong> that decision is made by ChatGPT's own safety layer, before the call leaves ChatGPT. The call never reaches SentinelX, so we have no record of it and can't change the outcome. It tends to happen on operations that change permissions, credentials or the agent's own configuration, and in unattended (scheduled) runs.</p>
 <p><strong>Fix:</strong> if you believe it's a mistake, use the feedback option on the blocked message so OpenAI sees it. For a change you, the owner, have decided to make, do it yourself outside the assistant: over SSH, or for the agent's policy, with <em>Edit config</em> on the host's card in your <a href="https://mcp.sentinelx.app/dashboard">dashboard</a>.</p>
 
+<h2 id="audio-metadata-only">Reading an audio file returns only its metadata in ChatGPT</h2>
+<p>You ask your assistant to listen to an MP3 or WAV with <code>sentinel_read_media</code>, and it only sees the file name, size and type, as if the audio were missing.</p>
+<p><strong>Why:</strong> SentinelX sends the audio itself, encoded inside the reply; that's why audio replies are hundreds of kilobytes or several megabytes. ChatGPT currently passes images from a tool to the model, but not audio, so the model only gets the text that comes with it.</p>
+<p><strong>Fix:</strong> process the audio on the host and bring back something the model can read or see: a transcript (for example with whisper), loudness figures from ffmpeg's ebur128 filter, or a spectrogram image, which <code>sentinel_read_media</code> does deliver:</p>
+<pre><code>ffmpeg -i recording.mp3 -lavfi showspectrumpic=s=1600x600 spectrogram.png</code></pre>
+
 <h2 id="manus">Manus asks for a Client ID and Client Secret</h2>
 <p>Unlike ChatGPT and Claude, which register themselves, Manus's custom MCP settings ask you for OAuth credentials, and an invented Client ID fails at our sign-in page with <em>Client not found</em>.</p>
 <p><strong>Fix:</strong> register a client once, then copy the two values it returns into Manus:</p>
