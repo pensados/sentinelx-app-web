@@ -147,14 +147,26 @@ h2 { scroll-margin-top: 16px; }
 <p><strong>Fix:</strong> exclude your MCP client's executable, or <code>mcp.sentinelx.app</code> and <code>keycloak.pensa.ar</code>, from that inspection. If your antivirus doesn't allow an exclusion, turn the MCP or HTTPS scanning option off. To confirm the cause, switch it off for a minute and try again.</p>
 <p>In the case we confirmed, only the sign-in was affected: with the option back on afterwards, regular calls kept working, so turning it off just while you sign in can be enough. You may need to repeat that whenever your client signs in from scratch, for example on a new machine.</p>
 
-<h2 id="russia-reconnects">A host in Russia reconnects every two or three minutes</h2>
-<p>The host shows as connected, then drops and comes back, over and over, about every 161 seconds. Commands that run at those moments can fail, and you may see <code>duplicate_session</code> in the agent's log.</p>
-<p><strong>Why:</strong> since June 2025, many internet providers in Russia throttle connections to services behind Cloudflare, cutting each connection after roughly 16&nbsp;KB. The agent's connection to SentinelX goes through Cloudflare by default, so it keeps stalling and reconnecting.</p>
-<p><strong>Fix:</strong> point the agent at our direct endpoint, which doesn't go through Cloudflare. On the host:</p>
+<h2 id="russia-reconnects"><a id="network-filtering"></a>A host in Russia, Iran or nearby keeps reconnecting, or never finishes connecting</h2>
+<p>The host shows as connected, then drops and comes back, over and over: in Russia about every 161 seconds, elsewhere at less regular intervals. Commands that run at those moments can fail, and you may see <code>duplicate_session</code> or <code>keepalive ping timeout</code> in the agent's log. On some networks the agent never finishes connecting at all: its log shows the hello sent and no welcome back.</p>
+<p><strong>Why:</strong> the agent's connection to SentinelX goes through Cloudflare by default, and some networks filter that path after the connection opens. Since June 2025, many providers in Russia cut each connection to services behind Cloudflare after roughly 16&nbsp;KB; networks in Iran and nearby countries show the same effect. The connection keeps stalling, and the agent keeps reconnecting.</p>
+<p><strong>Fix:</strong> point the agent at our direct endpoint, which doesn't go through Cloudflare on your side. Hosts in Russia and Iran that switched went from hundreds of reconnections a day to a handful. On the host:</p>
 <pre><code>sudo sed -i 's#https://mcp.sentinelx.app#https://mcp-direct.sentinelx.app#' /etc/systemd/system/sentinelx-cloud-core.service /etc/sentinelx/identity.json
 sudo systemctl daemon-reload
 sudo systemctl restart sentinelx-cloud-core</code></pre>
-<p>This keeps your host id, enrollment and configuration; run the same commands with the two addresses swapped to go back. Nothing changes in ChatGPT or Claude: your connector keeps using the usual address. An HTTP proxy or a VPN outside Russia also works; the agent honors <code>HTTPS_PROXY</code> set in its service environment.</p>
+<p>This keeps your host id, enrollment and configuration; run the same commands with the two addresses swapped to go back. Nothing changes in ChatGPT or Claude: your connector keeps using the usual address. If the direct endpoint is filtered on your network too, an HTTP proxy or a VPN outside the region also works; the agent honors <code>HTTPS_PROXY</code> set in its service environment.</p>
+
+<h2 id="wrong-addresses">The agent can't reach the hub: "hostname mismatch", or timeouts after a restart</h2>
+<p>The agent stops connecting, often right after a restart, with TLS errors such as a hostname mismatch, or with timeouts. The addresses your host gets for <code>mcp.sentinelx.app</code> aren't ours.</p>
+<p><strong>Why:</strong> on some networks the DNS answers are altered on the way, so the agent tries to reach servers that aren't SentinelX. Keep TLS verification on: it's what stops the agent from talking to the wrong server.</p>
+<p><strong>Fix:</strong> first see what the name really resolves to, asking a resolver over HTTPS so the local network can't change the answer, and compare it with what your host gets:</p>
+<pre><code>curl -s -H 'accept: application/dns-json' 'https://cloudflare-dns.com/dns-query?name=mcp.sentinelx.app&amp;type=A'
+curl -s -H 'accept: application/dns-json' 'https://cloudflare-dns.com/dns-query?name=mcp-direct.sentinelx.app&amp;type=A'
+getent hosts mcp.sentinelx.app</code></pre>
+<p>Then check whether the host can reach the real addresses, with verification still on (replace the addresses with the ones from the first step):</p>
+<pre><code>curl -sS -o /dev/null -w '%{http_code}\n' --resolve mcp.sentinelx.app:443:REAL_ADDRESS https://mcp.sentinelx.app/
+curl -sS -o /dev/null -w '%{http_code}\n' --resolve mcp-direct.sentinelx.app:443:REAL_ADDRESS https://mcp-direct.sentinelx.app/</code></pre>
+<p>If one of them answers, the network can reach us and only the name resolution is wrong. The cleanest fix is a resolver that isn't altered (DNS over HTTPS on the host), or an HTTP proxy or VPN outside the affected network. Pinning the addresses in <code>/etc/hosts</code> also works, but treat it as temporary: Cloudflare's addresses can change. If only the direct endpoint answers, switch the agent to it with the commands in <a href="#network-filtering">the section above</a>.</p>
 
 <h2 id="internal-error-32603">"-32603 Internal error" for a minute or two, then everything works</h2>
 <p>Several calls in a row fail with a generic internal error, and shortly after, they work again on their own.</p>
