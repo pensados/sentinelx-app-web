@@ -10,7 +10,7 @@
 <link rel="icon" type="image/x-icon" href="/favicon.ico">
 
 <meta name="description" content="Connect AI to your Linux, macOS and Windows servers via MCP. One-line install, OAuth via Google, multi-host dashboard. Open-source agent, Apache 2.0 license.">
-<meta name="keywords" content="sentinelx, MCP server, model context protocol, server agent, Claude MCP, ChatGPT MCP, AI ops, server automation, open source, OAuth">
+<meta name="keywords" content="sentinelx, MCP server, model context protocol, server agent, Claude MCP, ChatGPT MCP, Grok MCP, AI ops, server automation, open source, OAuth">
 <meta name="author" content="pensa.ar">
 <meta name="robots" content="index, follow">
 <link rel="canonical" href="https://sentinelx.app/">
@@ -18,19 +18,19 @@
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://sentinelx.app/">
 <meta property="og:title" content="SentinelX MCP — AI agent for your Linux, macOS and Windows servers">
-<meta property="og:description" content="Connect Claude and ChatGPT to your Linux, macOS and Windows servers in 60 seconds. One-line install, OAuth via Google, multi-host dashboard.">
+<meta property="og:description" content="Connect Claude, ChatGPT and Grok to your Linux, macOS and Windows servers in 60 seconds. One-line install, OAuth via Google, multi-host dashboard.">
 <meta property="og:site_name" content="SentinelX MCP">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://sentinelx.pensa.ar/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="SentinelX — operate your Linux, macOS and Windows servers from Claude.ai or ChatGPT">
+<meta property="og:image:alt" content="SentinelX — operate your Linux, macOS and Windows servers from Claude.ai, ChatGPT or Grok">
 
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="SentinelX — AI agent for your Linux, macOS and Windows servers">
-<meta name="twitter:description" content="Connect Claude and ChatGPT to your Linux, macOS and Windows servers in 60 seconds. One-line install, OAuth via Google.">
+<meta name="twitter:description" content="Connect Claude, ChatGPT and Grok to your Linux, macOS and Windows servers in 60 seconds. One-line install, OAuth via Google.">
 <meta name="twitter:image" content="https://sentinelx.pensa.ar/og-image.png">
-<meta name="twitter:image:alt" content="SentinelX — operate your Linux, macOS and Windows servers from Claude.ai or ChatGPT">
+<meta name="twitter:image:alt" content="SentinelX — operate your Linux, macOS and Windows servers from Claude.ai, ChatGPT or Grok">
 
 <script type="application/ld+json">
 {
@@ -40,7 +40,7 @@
   "alternateName": "SentinelX MCP",
   "url": "https://sentinelx.pensa.ar/",
   "isAccessibleForFree": true,
-  "description": "Managed MCP service that lets Claude, ChatGPT and other AI tools manage your Linux, macOS and Windows servers via the Model Context Protocol. One-line install, OAuth via Google, multi-host dashboard. Open-source agent.",
+  "description": "Managed MCP service that lets Claude, ChatGPT, Grok and other AI tools manage your Linux, macOS and Windows servers via the Model Context Protocol. One-line install, OAuth via Google, multi-host dashboard. Open-source agent.",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Linux, macOS, Windows",
   "codeRepository": "https://github.com/pensados/sentinelx-cloud-core",
@@ -208,7 +208,7 @@
   <header class="doc-head">
     <div class="section-label">// operator's guide</div>
     <h1>Run your servers from an AI, <span class="accent">safely.</span></h1>
-    <p class="doc-lead">SentinelX gives Claude, ChatGPT, or any MCP client an <strong>allowlisted, auditable</strong> shell on your Linux, macOS, and Windows hosts &mdash; over a single outbound WebSocket, no inbound ports. This is the short manual: install the agent, connect the hub, operate.</p>
+    <p class="doc-lead">SentinelX gives Claude, ChatGPT, Grok, or any MCP client an <strong>allowlisted, auditable</strong> shell on your Linux, macOS, and Windows hosts &mdash; over a single outbound WebSocket, no inbound ports. This is the short manual: install the agent, connect the hub, operate.</p>
   </header>
 
   <section id="install" class="doc-section">
@@ -236,6 +236,7 @@ powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1" -User<button class="
     <div class="cmd"><span class="s">https://mcp.sentinelx.app/mcp/mcp</span><button class="copy-btn" type="button" onclick="sxCopyCmd(this)" data-copy="https://mcp.sentinelx.app/mcp/mcp" aria-label="Copy"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
     <p><strong>ChatGPT</strong> &mdash; install <a href="https://chatgpt.com/apps/sentinelx/asdk_app_69f63e01766881919640f03b5e7912a5">SentinelX from the app directory</a>, click <em>Connect</em>, sign in. No URL to paste.</p>
     <p><strong>Claude.ai</strong> &mdash; Settings &rarr; Connectors &rarr; Add custom connector &rarr; paste the URL above, then authorize with Google.</p>
+    <p><strong>Grok</strong> &mdash; <a href="https://grok.com/connectors">grok.com/connectors</a> &rarr; New Connector &rarr; Custom &rarr; paste the URL above, then authorize with Google.</p>
     <p><strong>VS Code, Cursor, Cline &amp; other JSON clients</strong> &mdash; drop this into the client's MCP config (mind the transport key: VS Code uses <code>"type": "http"</code>, Cline uses <code>"type": "streamableHttp"</code>, Cursor needs only the URL):</p>
     <div class="cmd">{
   <span class="k">"mcpServers"</span>: {
