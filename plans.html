@@ -3,12 +3,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Pricing — SentinelX MCP</title>
-<meta name="description" content="SentinelX founder pricing. Every plan includes all features — tiers differ only by how many hosts run at once. Free for 1 host. Founder prices locked for life.">
+<meta name="description" content="SentinelX founder pricing. Paid plans add host sharing; tiers differ by how many hosts run at once. Free for 1 host. Founder prices locked for life.">
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="canonical" href="https://sentinelx.app/plans">
 <meta property="og:title" content="SentinelX MCP — Pricing">
-<meta property="og:description" content="Every plan includes all features — tiers differ only by how many hosts run at once. Free for 1 host. Founder prices locked for life.">
+<meta property="og:description" content="Paid plans add host sharing; tiers differ by how many hosts run at once. Free for 1 host. Founder prices locked for life.">
 <meta property="og:url" content="https://sentinelx.app/plans">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -62,6 +62,7 @@
   .c-amt{font-family:var(--mono);font-size:1.9rem;font-weight:600;color:var(--fg);letter-spacing:-0.01em;}
   .c-per{font-family:var(--mono);font-size:0.78rem;color:var(--fg3);}
   .c-sub{font-family:var(--mono);font-size:0.68rem;color:var(--fg4);min-height:1rem;margin-bottom:1.2rem;}
+  .c-feat{font-family:var(--mono);font-size:0.68rem;color:var(--fg2);margin:-0.6rem 0 1.2rem;}
   .c-cta{margin-top:auto;font-family:var(--mono);font-size:0.78rem;font-weight:600;text-align:center;padding:0.6rem;letter-spacing:0.04em;transition:0.2s;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);}
   .c-cta.solid{background:var(--accent);color:var(--bg);} .c-cta.solid:hover{background:var(--accent2);}
   .c-cta.ghost{border:1px solid var(--border2);color:var(--accent);} .c-cta.ghost:hover{border-color:var(--accent);background:var(--accent-dim);}
@@ -74,6 +75,7 @@
   th,td{text-align:left;padding:0.7rem 1.25rem;border-top:1px solid var(--border);}
   th{color:var(--fg3);font-weight:500;font-size:0.68rem;text-transform:uppercase;letter-spacing:0.06em;}
   th.num,td.num{text-align:right;} td.num{color:var(--fg2);}
+  th.ctr,td.ctr{text-align:center;} td.ctr{color:var(--fg2);}
   td .go{color:var(--accent);font-size:0.75rem;}
   .note{font-family:var(--mono);font-size:0.74rem;color:var(--fg3);line-height:1.7;text-align:center;max-width:70ch;margin:1.5rem auto 0;}
   .note strong{color:var(--fg2);font-weight:500;}
@@ -100,7 +102,7 @@
   <section class="hero">
     <div class="section-label">Pricing</div>
     <h1>Founder pricing, <span class="hi">locked for life</span></h1>
-    <p class="lead">Every plan includes all SentinelX features. Tiers differ only in how many hosts can run at the same time — connecting more is always free, you only pay to operate beyond your limit.</p>
+    <p class="lead">Every plan includes the full SentinelX tool set, and paid plans add host sharing. Tiers differ in how many hosts can run at the same time — connecting more is always free, you only pay to operate beyond your limit.</p>
     <div class="toggle" id="toggle">
       <button class="on" data-b="monthly">Monthly</button>
       <button data-b="annual">Annual <span class="save">2 months free</span></button>
@@ -112,12 +114,12 @@
   <details class="all">
     <summary>Compare all tiers</summary>
     <table>
-      <thead><tr><th>Plan</th><th class="num">Hosts</th><th class="num">Monthly</th><th class="num">Annual</th><th class="num">Per host</th><th></th></tr></thead>
+      <thead><tr><th>Plan</th><th class="num">Hosts</th><th class="ctr">Sharing</th><th class="num">Monthly</th><th class="num">Annual</th><th class="num">Per host</th><th></th></tr></thead>
       <tbody id="rows"></tbody>
     </table>
   </details>
 
-  <p class="note"><strong>All features, every tier.</strong> SSO, integrations, audit, the full tool set — included everywhere. You're only choosing how many hosts run at once. Need more than 100? <a href="mailto:sales@sentinelx.app">Talk to us</a> about Enterprise.</p>
+  <p class="note"><strong>Paid plans include host sharing.</strong> Invite other SentinelX accounts to a host, read-only (View) or with full control (Operate); the people you invite don't need a paid plan. Everything else — SSO, integrations, audit, the full tool set — is included on every tier. Need more than 100 hosts? <a href="mailto:sales@sentinelx.app">Talk to us</a> about Enterprise.</p>
 </div>
 
 <footer><div class="wrap">
@@ -163,18 +165,20 @@
       +'<div class="c-price"><span class="c-amt" data-m="'+(free?'$0':usd(m))+'" data-a="'+(free?'$0':usd(a))+'">'+amt+'</span>'
       +'<span class="c-per" data-m="'+(free?'forever':'/mo')+'" data-a="'+(free?'forever':'/yr')+'">'+per+'</span></div>'
       +'<div class="c-sub" data-m="'+sub+'" data-a="'+(free?'always free':'2 months free')+'">'+sub+'</div>'
+      +(free?'':'<div class="c-feat">✓ Host sharing</div>')
       +cta+'</div>';
   }
   function rowHTML(t){
     var tier=t[0],label=t[1],hosts=t[2],m=t[3],a=t[4];
     var mm = m===0?"Free":usd(m), aa = a===0?"—":usd(a), ph = m===0?"—":perHost(m,hosts);
     return '<tr><td style="color:var(--fg)">'+label+'</td><td class="num">'+hosts+'</td>'
+      +'<td class="ctr">'+(m===0?'—':'✓')+'</td>'
       +'<td class="num">'+mm+'</td><td class="num">'+aa+'</td><td class="num">'+ph+'</td>'
       +'<td class="num"><a class="go" href="'+DASH+'">Get started →</a></td></tr>';
   }
   document.getElementById("cards").innerHTML = ANCHORS.map(function(x){return cardHTML(byTier[x]);}).join("");
   document.getElementById("rows").innerHTML = TIERS.map(rowHTML).join("")
-    + '<tr><td style="color:var(--fg)">Enterprise</td><td class="num">100+</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num"><a class="go" href="mailto:sales@sentinelx.app">Contact →</a></td></tr>';
+    + '<tr><td style="color:var(--fg)">Enterprise</td><td class="num">100+</td><td class="ctr">✓</td><td class="num">—</td><td class="num">—</td><td class="num">—</td><td class="num"><a class="go" href="mailto:sales@sentinelx.app">Contact →</a></td></tr>';
 
   function apply(mode){
     document.querySelectorAll("#toggle button").forEach(function(b){ b.classList.toggle("on", b.dataset.b===mode); });
