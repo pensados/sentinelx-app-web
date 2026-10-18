@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0c1012">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4f7f6">
 <title>SentinelX MCP — install &amp; operate your servers from an AI</title>
 <script>document.documentElement.classList.add('js');</script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -58,244 +61,517 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Chivo:wght@400;500;600;700&family=Chivo+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
+  /* SentinelX: an operations console for one connection. Hairlines, no glow. Teal marks live state only. */
   :root {
-    --bg: #0a0e14; --bg2: #131821; --bg3: #1a212d;
-    --surface: #131821; --surface2: #1a212d;
-    --border: #1f2937; --border2: #2a3441;
-    --fg: #e6edf3; --fg2: #94a3b8; --fg3: #64748b;
-    --accent: #5eead4; --accent2: #2dd4bf;
-    --accent-dim: rgba(94,234,212,0.08); --accent-dim2: rgba(94,234,212,0.20);
-    --amber: #fbbf24; --blue: #60a5fa; --red: #f87171; --purple: #a78bfa;
-    --mono: 'IBM Plex Mono', monospace; --sans: 'IBM Plex Sans', sans-serif;
+    color-scheme: dark light;
+    --bg: #0c1012; --panel: #11171a; --panel-2: #172024; --line: #233033; --line-2: #33444a;
+    --text: #e3ebe8; --text-2: #a2b2ad; --text-3: #7d8f8a;
+    --accent: #5eead4; --accent-text: #5eead4; --accent-ink: #04211c; --accent-dim: rgba(94, 234, 212, 0.12); --signal: #5eead4;
+    --refused: #ff7b72;
+    --sans: 'Chivo', ui-sans-serif, system-ui, sans-serif;
+    --mono: 'Chivo Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+    --head-h: 3.5rem; --gutter: 15rem;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   }
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body { background: var(--bg); background-image: radial-gradient(ellipse 900px 500px at 50% -120px, rgba(94,234,212,0.06), transparent 70%); background-attachment: fixed; color: var(--fg); font-family: var(--sans); font-size: 16px; line-height: 1.6; overflow-x: hidden; }
-  body::before {
-    content: ''; position: fixed; inset: 0;
-    background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 48px 48px; opacity: 0.25; pointer-events: none; z-index: 0;
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f4f7f6; --panel: #ffffff; --panel-2: #eaf0ee; --line: #d3dcd9; --line-2: #b4c2be;
+      --text: #0d1513; --text-2: #46554f; --text-3: #5c6b66;
+      --accent: #5eead4; --accent-text: #0b7a6b; --accent-ink: #04211c; --accent-dim: rgba(11, 122, 107, 0.10); --signal: #0b7a6b;
+      --refused: #c2261f;
+    }
   }
-  * { position: relative; z-index: 1; }
-  .container { max-width: 1100px; margin: 0 auto; padding: 0 2rem; }
-  nav { border-bottom: 1px solid var(--border); backdrop-filter: blur(12px); background: rgba(10,14,20,0.85); position: sticky; top: 0; z-index: 100; }
-  .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 1rem 2rem; max-width: 1100px; margin: 0 auto; }
-  .nav-logo { font-family: var(--mono); font-size: 0.9rem; font-weight: 600; color: var(--accent); letter-spacing: 0.05em; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
-  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
-  .nav-logo .sx-cursor { animation: blink 1.2s step-end infinite; }
-  @media (prefers-reduced-motion: reduce) { .nav-logo .sx-cursor { animation: none; opacity: 1 } }
-  .nav-links { display: flex; gap: 2rem; list-style: none; }
-  .nav-links a { font-family: var(--mono); font-size: 0.75rem; color: var(--fg2); text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
-  .nav-links a:hover { color: var(--accent); }
-  /* The slanted fill lives on ::before so clip-path never clips the focus ring */
-  .nav-cta { display: inline-block; font-family: var(--mono); font-size: 0.75rem; color: var(--bg); padding: 0.4rem 1rem; text-decoration: none; font-weight: 600; letter-spacing: 0.05em; }
-  .nav-cta::before { content: ''; position: absolute; inset: 0; z-index: -1; background: var(--accent); transition: background 0.2s; clip-path: polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%); }
-  .nav-cta:hover::before { background: var(--accent2); }
-  :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-  .nav-toggle { display: none; }
-  @media (max-width: 820px) {
-    .nav-inner { flex-wrap: wrap; }
-    .nav-toggle { flex-direction: column; justify-content: center; align-items: center; gap: 5px; width: 44px; height: 44px; margin-left: auto; padding: 0; background: none; border: 0; cursor: pointer; }
-    .js .nav-toggle { display: flex; }
-    .nav-toggle span { display: block; height: 2px; width: 24px; background: var(--accent); transition: transform 0.25s, opacity 0.25s; }
-    .nav-links { flex-basis: 100%; flex-direction: column; gap: 0; margin-top: 0.5rem; border-top: 1px solid var(--border); }
-    .nav-links li { width: 100%; }
-    .nav-links a { display: block; padding: 0.9rem 0.25rem; font-size: 0.8rem; border-bottom: 1px solid var(--border); }
-    .nav-cta { display: inline-flex; justify-content: center; flex-basis: 100%; margin-top: 0.75rem; }
-    .js .nav-links, .js .nav-cta { display: none; }
-    .js .nav-inner.open .nav-links { display: flex; }
-    .js .nav-inner.open .nav-cta { display: inline-flex; }
-    .nav-inner.open .nav-toggle span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-    .nav-inner.open .nav-toggle span:nth-child(2) { opacity: 0; }
-    .nav-inner.open .nav-toggle span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
-  }
-  h1 { font-family: var(--mono); font-size: clamp(2.2rem,5vw,3.8rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; color: var(--fg); margin-bottom: 0.5rem; }
-  h1 .dim { color: var(--fg3); font-weight: 300; } h1 .hi { color: var(--accent); }
-  .btn-primary { font-family: var(--mono); font-size: 0.85rem; font-weight: 600; color: var(--bg); background: var(--accent); padding: 0.75rem 1.75rem; text-decoration: none; letter-spacing: 0.05em; transition: all 0.2s; clip-path: polygon(10px 0%,100% 0%,calc(100% - 10px) 100%,0% 100%); display: inline-flex; align-items: center; gap: 0.5rem; }
-  .btn-primary:hover { background: var(--accent2); transform: translateY(-1px); }
-  .btn-secondary { font-family: var(--mono); font-size: 0.85rem; color: var(--accent); border: 1px solid var(--border2); padding: 0.75rem 1.75rem; text-decoration: none; letter-spacing: 0.05em; transition: all 0.2s; background: transparent; display: inline-flex; align-items: center; gap: 0.5rem; }
-  .btn-secondary:hover { border-color: var(--accent); background: var(--accent-dim); }
-  .arch-arrow { color: var(--fg3); font-size: 1.1rem; line-height: 1; }
-  section { padding: 5rem 0; border-top: 1px solid var(--border); }
-  .section-label { font-family: var(--mono); font-size: 0.7rem; color: var(--fg3); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.75rem; }
-  h2 { font-family: var(--mono); font-size: 1.6rem; font-weight: 500; color: var(--fg); margin-bottom: 1rem; letter-spacing: -0.01em; }
-  h2 .accent { color: var(--accent); }
-  @media (max-width: 900px) { .how-split { grid-template-columns: 1fr; gap: 2rem; } }
-  .security-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(260px,1fr)); gap: 1.5rem; margin-top: 2rem; }
-  .sec-card { border: 1px solid var(--border); padding: 1.5rem; background: var(--bg2); }
-  .sec-icon { font-size: 1.4rem; margin-bottom: 0.75rem; }
-  .sec-card h3 { font-family: var(--mono); font-size: 0.85rem; font-weight: 500; color: var(--fg); margin-bottom: 0.5rem; }
-  .sec-card p { font-size: 0.82rem; color: var(--fg2); font-weight: 300; line-height: 1.6; }
-  .spec-block { background: var(--bg2); border: 1px solid var(--border); padding: 1.5rem 1.75rem; box-shadow: 0 0 30px rgba(94,234,212,0.03); }
-  .spec-label { font-family: var(--mono); font-size: 0.7rem; color: var(--fg3); letter-spacing: 0.1em; margin-bottom: 1rem; }
-  .tool-list, .spec-list { display: flex; flex-direction: column; gap: 0.5rem; }
-  .tool-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.3rem 0.6rem; font-family: var(--mono); font-size: 0.78rem; line-height: 1.5; }
-  .tool-name { color: var(--accent); background: none; padding: 0; min-width: 168px; white-space: nowrap; }
-  .tool-desc { color: var(--fg3); }
-  .spec-foot { font-family: var(--mono); font-size: 0.75rem; color: var(--fg3); margin-top: 0.9rem; font-style: italic; }
-  .ask-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); margin-top: 2rem; }
-  .ask { background: var(--bg2); padding: 1.15rem 1.5rem; font-family: var(--mono); font-size: 0.85rem; color: var(--fg); line-height: 1.5; }
-  .ask::before { content: '\25B8  '; color: var(--accent); }
-  .doc { max-width: 800px; margin: 0 auto; padding: 4rem 2rem 3rem; }
-  .doc-head { margin-bottom: 3rem; }
-  .doc-head h1 { font-family: var(--mono); font-size: clamp(1.7rem, 4vw, 2.4rem); font-weight: 600; line-height: 1.15; letter-spacing: -0.02em; margin: 0.85rem 0 1.25rem; color: var(--fg); }
-  .doc-head h1 .accent { color: var(--accent); }
-  .doc-lead { color: var(--fg2); font-weight: 300; font-size: 1.05rem; line-height: 1.75; max-width: 68ch; }
-  .doc-section { margin: 3rem 0; scroll-margin-top: 80px; }
-  .doc-section h2 { font-family: var(--mono); font-size: 1.3rem; font-weight: 500; margin: 0 0 1.1rem; display: flex; align-items: center; gap: 0.75rem; letter-spacing: -0.01em; color: var(--fg); }
-  .doc-num { display: inline-flex; align-items: center; justify-content: center; width: 27px; height: 27px; font-size: 0.82rem; font-weight: 600; color: var(--bg); background: var(--accent); border-radius: 6px; flex: none; }
-  .doc-section p { color: var(--fg2); font-weight: 300; line-height: 1.75; margin: 0 0 1.1rem; }
-  .doc-section p strong { color: var(--fg); font-weight: 600; }
-  .doc-section a { color: var(--accent); text-decoration: none; border-bottom: 1px solid var(--border2); }
-  .doc-section a:hover { border-color: var(--accent); }
-  .doc-section code { font-family: var(--mono); font-size: 0.85em; background: var(--surface); color: var(--accent); padding: 2px 6px; border-radius: 3px; }
-  .cmd { position: relative; background: var(--bg2); border: 1px solid var(--border); border-radius: 6px; padding: 0.9rem 3rem 0.9rem 1.15rem; margin: 0 0 1.1rem; font-family: var(--mono); font-size: 0.82rem; line-height: 1.7; color: var(--fg); overflow-x: auto; white-space: pre; }
-  .cmd .prompt { color: var(--accent); user-select: none; }
-  .cmd .cmt { color: var(--fg3); font-style: italic; }
-  .cmd .k { color: var(--purple); } .cmd .s { color: var(--amber); }
-  .cmd-block { position: relative; margin: 0 0 1.1rem; }
-  .cmd-block .cmd { margin: 0; }
-  .copy-btn { position: absolute; top: 6px; right: 6px; z-index: 2; display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0; background: var(--bg2); color: var(--fg2); border: 1px solid var(--border2); border-radius: 4px; cursor: pointer; transition: color 0.15s, border-color 0.15s, background 0.15s; }
-  .copy-btn svg { width: 16px; height: 16px; pointer-events: none; }
-  .copy-btn .i-ok { display: none; }
-  .copy-btn:hover { color: var(--accent); border-color: var(--accent); background: var(--bg3); }
-  .copy-btn.copied { color: var(--accent); border-color: var(--accent); }
-  .copy-btn.copied .i-copy { display: none; }
-  .copy-btn.copied .i-ok { display: block; }
-  @media (pointer: coarse) {
-    .copy-btn { width: 44px; height: 44px; top: 3px; right: 3px; }
-    .cmd-block .cmd { padding-right: 3.75rem; }
-  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: calc(var(--head-h) + 1rem); -webkit-text-size-adjust: 100%; scrollbar-color: var(--line-2) var(--bg); }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 1.0625rem; line-height: 1.6; caret-color: var(--accent-text); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  a { color: inherit; text-decoration: underline; text-decoration-color: var(--line-2); text-decoration-thickness: 1px; text-underline-offset: 0.2em; transition: color 0.15s, text-decoration-color 0.15s; }
+  a:hover { color: var(--accent-text); text-decoration-color: currentColor; }
+  :focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+  code, kbd, pre { font-family: var(--mono); }
+  p code, li code { white-space: nowrap; }
+  code { font-size: 0.88em; color: var(--text); background: var(--panel-2); border: 1px solid var(--line); padding: 0.05em 0.35em; border-radius: 3px; }
+  strong { font-weight: 600; color: var(--text); }
+  p { margin: 0 0 1rem; }
   .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
-  .doc-note { font-size: 0.9rem; color: var(--fg3); border-left: 2px solid var(--border2); padding: 0.15rem 0 0.15rem 1rem; margin: 0 0 1.1rem; line-height: 1.7; }
-  .doc-note a { color: var(--accent); border-bottom: none; }
-  .ref-links { display: flex; flex-wrap: wrap; gap: 0.6rem 1.75rem; font-family: var(--mono); font-size: 0.85rem; }
-  .ref-links a { color: var(--accent); text-decoration: none; border-bottom: none; }
-  .ref-links a:hover { text-decoration: underline; }
-  .doc .ask-grid { margin-top: 1.25rem; }
+  .i-ext { width: 0.8em; height: 0.8em; flex: none; vertical-align: -0.05em; margin-left: 0.2em; }
+  .label { font-family: var(--mono); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); margin: 0 0 0.75rem; line-height: 1.4; }
 
-  @media (max-width: 700px) { .mcp-split { grid-template-columns: 1fr; } }
-  .client-dot { width: 6px; height: 6px; background: var(--accent); flex-shrink: 0; }
-  .output-box { background: var(--bg); border: 1px solid var(--border); border-left: 3px solid var(--accent); padding: 1.5rem 2rem; font-family: var(--mono); font-size: 0.78rem; line-height: 1.9; color: var(--fg2); margin-top: 1rem; }
-  .output-box .hi { color: var(--accent); } .output-box .dim { color: var(--fg3); }
+  /* ---------- header ---------- */
+  .top { position: sticky; top: 0; z-index: 20; background: var(--bg); border-bottom: 1px solid var(--line); }
+  .top-inner { max-width: 78rem; margin: 0 auto; padding: 0 2rem; height: var(--head-h); display: flex; align-items: center; gap: 2rem; }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; font-weight: 700; font-size: 1.15rem; letter-spacing: -0.01em; text-decoration: none; white-space: nowrap; min-height: 44px; color: var(--text); }
+  .brand:hover { color: var(--text); }
+  .brand .logo { width: 2rem; height: auto; color: var(--accent-text); }
+  .nav-sections, .nav-pages { display: none; margin: 0; padding: 0; list-style: none; gap: 1.5rem; }
+  .nav-sections a, .nav-pages a { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.06em; text-decoration: none; color: var(--text-2); padding: 0.4rem 0; display: inline-flex; align-items: center; }
+  .nav-sections a:hover, .nav-pages a:hover { color: var(--accent-text); }
+  .nav-site { margin-left: auto; }
+  .dash { display: inline-flex; align-items: center; min-height: 36px; padding: 0 0.85rem; border: 1px solid var(--line-2); border-radius: 4px; font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.04em; text-decoration: none; color: var(--text); white-space: nowrap; }
+  .dash:hover { border-color: var(--accent-text); color: var(--accent-text); }
+  .menu-btn { display: inline-flex; align-items: center; gap: 0.55rem; min-height: 44px; padding: 0 0.25rem; background: none; border: 0; color: var(--text-2); font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; }
+  .menu-btn:hover { color: var(--text); }
+  .menu-btn .bars { display: inline-flex; flex-direction: column; gap: 4px; }
+  .menu-btn .bars i { display: block; width: 16px; height: 1.5px; background: currentColor; transition: transform 0.2s var(--ease-out), opacity 0.2s; }
+  .top.open .menu-btn .bars i:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+  .top.open .menu-btn .bars i:nth-child(2) { opacity: 0; }
+  .top.open .menu-btn .bars i:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+  .menu { border-top: 1px solid var(--line); padding: 1rem 2rem 1.5rem; display: grid; grid-template-columns: 1fr 1fr; gap: 0 2rem; }
+  .js .menu { display: none; }
+  .js .top.open .menu { display: grid; }
+  .menu ul { margin: 0; padding: 0; list-style: none; }
+  .menu a { display: block; padding: 0.6rem 0; font-family: var(--mono); font-size: 0.85rem; letter-spacing: 0.04em; text-decoration: none; color: var(--text-2); }
+  .menu a:hover { color: var(--accent-text); }
+  @media (min-width: 1240px) {
+    .nav-sections, .nav-pages { display: flex; }
+    .menu-btn, .menu, .js .top.open .menu { display: none; }
+  }
+  @media (max-width: 480px) { .dash { display: none; } }
 
-  /* Self-hosted alternative — compact, intentionally smaller than the cloud sections */
-  .alt-card { background: var(--bg2); border: 1px solid var(--border); padding: 2rem; margin-top: 1rem; }
-  .alt-card h3 { font-family: var(--mono); font-size: 1rem; font-weight: 500; color: var(--fg); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.75rem; }
-  .alt-card > p { font-size: 0.9rem; color: var(--fg2); font-weight: 300; margin-bottom: 1.25rem; line-height: 1.6; max-width: 640px; }
-  .alt-card .install-cmd { background: var(--bg); border: 1px solid var(--border); padding: 0.75rem 1rem; font-family: var(--mono); font-size: 0.8rem; color: var(--fg); overflow-x: auto; white-space: nowrap; margin-bottom: 0.75rem; }
-  .alt-card .install-cmd .prompt { color: var(--accent); }
-  .alt-card .alt-actions { margin-top: 1rem; display: flex; gap: 1rem; flex-wrap: wrap; }
-  .badge { font-size: 0.6rem; background: var(--accent); color: var(--bg); padding: 0.15rem 0.5rem; font-weight: 600; letter-spacing: 0.05em; }
-  .badge.gray { background: var(--surface2); color: var(--fg2); }
+  /* ---------- page ---------- */
+  .page { max-width: 78rem; margin: 0 auto; padding: 0 2rem; }
 
-  footer { border-top: 1px solid var(--border); padding: 3rem 2rem; margin-top: 2rem; }
-  .footer-inner { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; }
-  .footer-left { font-family: var(--mono); font-size: 0.75rem; color: var(--fg3); }
-  .footer-left strong { color: var(--accent); font-weight: 500; }
-  .footer-links { display: flex; gap: 1.5rem; flex-wrap: wrap; }
-  .footer-links a { font-family: var(--mono); font-size: 0.72rem; color: var(--fg3); text-decoration: none; letter-spacing: 0.05em; transition: color 0.2s; }
-  .footer-links a:hover { color: var(--accent); }
-  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
-  ::-webkit-scrollbar{width:4px;height:4px} ::-webkit-scrollbar-track{background:var(--bg)} ::-webkit-scrollbar-thumb{background:var(--border2)} ::-webkit-scrollbar-thumb:hover{background:var(--accent)}
-  code { font-family: var(--mono); font-size: 0.85em; color: var(--accent); background: var(--accent-dim); padding: 0.1em 0.35em; }
+  /* ---------- preface ---------- */
+  .preface { padding: 1.5rem 0 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 1.75rem; }
+  .hero h1 { font-weight: 500; font-size: clamp(2rem, 1.2rem + 2.3vw, 2.9rem); line-height: 1.1; letter-spacing: -0.025em; margin: 0; max-width: 42ch; text-wrap: balance; }
+  .hero h1 b { font-weight: 700; }
+  .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; }
+  .claim .ct { font-size: 1.15rem; font-weight: 600; letter-spacing: -0.01em; margin: 0 0 0.3rem; line-height: 1.3; }
+  .claim p { color: var(--text-2); margin: 0 0 0.6rem; max-width: 58ch; }
+
+  .install { padding: 1rem 1.25rem 1.25rem; }
+  .ph { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; margin: 0 0 0.85rem; }
+  .ph .label { margin: 0; color: var(--text-2); }
+  .os-switch { display: none; gap: 3px; padding: 3px; border: 1px solid var(--line-2); border-radius: 6px; margin: 0 0 0.9rem; width: fit-content; max-width: 100%; }
+  .js .os-switch { display: inline-flex; flex-wrap: wrap; }
+  .os-switch button { font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.02em; min-height: 36px; padding: 0 0.85rem; background: transparent; color: var(--text-2); border: 0; border-radius: 4px; cursor: pointer; transition: color 0.15s, background 0.15s; }
+
+  .os-switch button:hover { color: var(--text); }
+  .os-switch button[aria-pressed="true"] { color: var(--accent-text); background: var(--accent-dim); box-shadow: inset 0 0 0 1px var(--accent-text); }
+  @media (max-width: 519px) {
+    .js .os-switch { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: 100%; }
+    .os-switch button { white-space: normal; line-height: 1.25; padding: 0.35rem 0.4rem; min-height: 44px; }
+  }
+  .syn-cmd .note { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.04em; color: var(--text-3); margin: 0 0 0.4rem; }
+  .syn-cmd { margin: 0 0 0.6rem; }
+
+  .js .syn-stack .syn-cmd { margin: 0; }
+  .js .syn-cmd.is-off { display: none; }
+
+  .syn-cmd pre { margin: 0; font-size: clamp(0.85rem, 0.76rem + 0.25vw, 0.95rem); font-weight: 500; line-height: 1.6; padding: 0.85rem 1rem; background: var(--bg); border: 1px solid var(--line); border-radius: 4px; color: var(--text); white-space: pre-wrap; overflow-wrap: normal; overflow-x: auto; }
+  .syn-cmd pre code { font: inherit; background: none; border: 0; padding: 0; color: inherit; }
+  .prompt { color: var(--accent-text); user-select: none; }
+  .syn-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem; margin: 1rem 0 0; }
+  .btn-primary { display: inline-flex; align-items: center; gap: 0.55rem; min-height: 46px; padding: 0 1.15rem; background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 4px; font-family: var(--sans); font-weight: 600; font-size: 1rem; cursor: pointer; transition: filter 0.15s; }
+  .btn-primary:hover { filter: brightness(1.08); }
+  .btn-primary svg { width: 17px; height: 17px; }
+  .btn-primary .i-ok, .btn-primary.copied .i-copy { display: none; }
+  .btn-primary.copied .i-ok { display: block; }
+  .no-js-hide { display: none; }
+  .js .no-js-hide { display: inline-flex; }
+  .read { font-size: 0.95rem; color: var(--text-2); display: inline-flex; align-items: center; min-height: 44px; }
+
+  /* link map: telemetry, not illustration */
+  .map { margin: 0.25rem 0 0; padding: 1rem 1rem 0.75rem; }
+  .map-head { display: flex; justify-content: space-between; gap: 1rem; font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); margin: 0 0 0.6rem; }
+  .map-head .live { display: inline-flex; align-items: center; gap: 0.45rem; color: var(--accent-text); }
+  .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--signal); flex: none; }
+  .wiring { width: 100%; height: auto; display: block; overflow: visible; }
+  .wiring .node { fill: var(--bg); stroke: var(--line-2); stroke-width: 1; }
+  .wiring .node-hub { fill: var(--panel-2); stroke: var(--text-3); }
+  .wiring .t-k { font-family: var(--mono); font-size: 13px; letter-spacing: 0.1em; fill: var(--text-3); }
+  .wiring .t-name { font-family: var(--sans); font-size: 19px; font-weight: 600; fill: var(--text); }
+  .wiring .t-meta { font-family: var(--mono); font-size: 13.5px; fill: var(--text-2); }
+  .wiring .t-link { font-family: var(--mono); font-size: 13.5px; fill: var(--accent-text); }
+  .wiring .t-none { font-family: var(--mono); font-size: 13.5px; fill: var(--text-2); }
+  .wiring .link { stroke: var(--accent-text); stroke-width: 1.5; fill: none; }
+  .wiring .flow { stroke: var(--signal); stroke-width: 3; fill: none; stroke-dasharray: 2 14; stroke-linecap: round; opacity: 0.9; }
+  .wiring .head { fill: var(--accent-text); }
+  .wiring .live-dot { fill: var(--signal); }
+  .wiring .x { stroke: var(--text-3); stroke-width: 1.5; }
+  @media (prefers-reduced-motion: no-preference) {
+    .wiring .flow { animation: flow 1.6s linear infinite; }
+    .wiring .flow-rev { animation-name: flow-rev; }
+  }
+  @keyframes flow { to { stroke-dashoffset: -32; } }
+  @keyframes flow-rev { to { stroke-dashoffset: 32; } }
+  .wiring-v { display: none; max-width: 22rem; margin: 0 auto; }
+  @media (max-width: 639px) { .wiring-h { display: none; } .wiring-v { display: block; } }
+
+  /* audit_events panel */
+  .audit-panel { overflow: hidden; }
+  .audit-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.25rem 1rem; padding: 0.6rem 1rem; border-bottom: 1px solid var(--line); font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-3); }
+  .audit-head .src { color: var(--text-2); }
+  .audit-wrap { overflow-x: auto; }
+  .audit { border-collapse: collapse; width: 100%; font-family: var(--mono); font-size: 0.8rem; line-height: 1.5; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .audit th { text-align: left; font-weight: 500; font-size: 0.72rem; letter-spacing: 0.08em; color: var(--text-3); padding: 0.55rem 1.1rem 0.45rem 0; border-bottom: 1px solid var(--line); }
+  .audit td { padding: 0.38rem 1.1rem 0.38rem 0; border-bottom: 1px solid var(--line); color: var(--text-2); vertical-align: top; }
+  .audit tr:last-child td { border-bottom: 0; }
+  .audit th:first-child, .audit td:first-child { padding-left: 1rem; }
+  .audit td.cmd-cell { color: var(--text); }
+  .st { display: inline-flex; align-items: center; gap: 0.45rem; font-weight: 600; }
+  .st::before { content: ""; width: 7px; height: 7px; flex: none; }
+  .st-ok { color: var(--accent-text); } .st-ok::before { background: var(--signal); border-radius: 50%; }
+  .st-refused { color: var(--refused); } .st-refused::before { background: var(--refused); }
+  .err { color: var(--refused); }
+
+  .clients { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 0.4rem; }
+  .clients li { font-family: var(--mono); font-size: 0.8rem; padding: 0.2rem 0.6rem; border: 1px solid var(--line-2); border-radius: 3px; color: var(--text); }
+
+  .status { display: grid; grid-template-columns: 1fr 1fr; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }
+  .status > * { padding: 0.75rem 1rem; font-family: var(--mono); font-size: 0.82rem; color: var(--text); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: 0.55rem; }
+  .status > *:nth-child(odd) { border-right: 1px solid var(--line); }
+  .status > *:nth-last-child(-n+2) { border-bottom: 0; }
+  .status a { text-decoration: underline; text-decoration-color: var(--line-2); text-decoration-thickness: 1px; }
+  .status a:hover, .status a:focus-visible { text-decoration-color: currentColor; }
+
+  @media (min-width: 960px) {
+    .preface { grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: 1rem 1.75rem; grid-template-areas: "hero hero" "install c1" "c2 c2" "c3 c3" "status status"; }
+    .hero { grid-area: hero; padding-bottom: 0.5rem; } .install-col { grid-area: install; } .c1 { grid-area: c1; } .c2 { grid-area: c2; } .c3 { grid-area: c3; } .status { grid-area: status; }
+    .install-col { display: flex; flex-direction: column; } .install-col .install { flex: 1; display: flex; flex-direction: column; } .install .syn-actions { margin-top: auto; padding-top: 1rem; }
+    .c2-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 1rem; margin: 0 0 0.75rem; }
+    .c2-head .ct, .c2-head p { margin: 0; }
+    .c3 .claim { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem 1rem; }
+    .c3 .claim .ct, .c3 .claim p { margin: 0; }
+    .status { grid-template-columns: repeat(4, 1fr); }
+    .status > * { border-bottom: 0; border-right: 1px solid var(--line); }
+    .status > *:last-child { border-right: 0; }
+  }
+  @media (max-width: 959px) {
+    .audit, .audit tbody, .audit tr, .audit td { display: block; white-space: normal; }
+    .audit thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .audit tr { padding: 0.6rem 1rem; border-bottom: 1px solid var(--line); }
+    .audit tr:last-child { border-bottom: 0; }
+    .audit td, .audit td:first-child { padding: 0.08rem 0; border: 0; overflow-wrap: anywhere; }
+    .audit td[data-k] { display: grid; grid-template-columns: 15ch minmax(0, 1fr); column-gap: 0.5rem; }
+    .audit td[data-k]::before { content: attr(data-k); color: var(--text-3); }
+    .audit td:not([data-k]) { display: none; }
+    .audit-wrap { overflow: visible; }
+  }
+
+  /* ---------- runbook ---------- */
+  .manual { margin-top: 4rem; border-top: 1px solid var(--line); }
+  .msect { padding: 2.75rem 0; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.25rem 2rem; }
+  .msect:last-child { border-bottom: 0; }
+  .msect h2 { font-family: var(--mono); font-size: 0.85rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); margin: 0 0 1rem; line-height: 1.5; }
+  .msect h2 .n { color: var(--text-3); margin-right: 0.75rem; }
+  .msect .body > p, .msect .body > ul { max-width: 68ch; }
+  @media (min-width: 960px) {
+    .msect { grid-template-columns: var(--gutter) minmax(0, 1fr); }
+    .msect h2 { margin: 0.2rem 0 0; position: sticky; top: calc(var(--head-h) + 1.5rem); align-self: start; }
+  }
+  /* The copy button gets its own column, so scrolling text never runs under it. */
+  .cmd-block { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; margin: 0 0 1.1rem; max-width: 52rem; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; }
+  .cmd { margin: 0; font-family: var(--mono); font-size: 0.85rem; line-height: 1.65; padding: 0.85rem 1rem; color: var(--text); white-space: pre; overflow-x: auto; }
+  @media (max-width: 959px) {
+    .cmd { padding-right: 1.75rem; -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 1.5rem), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 1.5rem), transparent); }
+  }
+  .cmd .k { color: var(--text); font-weight: 600; } .cmd .s { color: var(--text-2); } .cmd .cmt { color: var(--text-3); }
+  .copy-btn { margin: 0.4rem 0.4rem 0.4rem 0; display: inline-flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; padding: 0; background: var(--panel-2); color: var(--text-2); border: 1px solid var(--line-2); border-radius: 4px; cursor: pointer; transition: color 0.15s, border-color 0.15s; }
+  .copy-btn svg { width: 16px; height: 16px; pointer-events: none; }
+  .copy-btn .i-ok, .copy-btn.copied .i-copy { display: none; }
+  .copy-btn:hover, .copy-btn.copied { color: var(--accent-text); border-color: var(--accent-text); }
+  .copy-btn.copied .i-ok { display: block; }
+  .doc-note { font-size: 0.95rem; color: var(--text-2); }
+  .tools { margin: 0 0 1rem; padding: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); max-width: 46rem; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); overflow: hidden; }
+  .tools dt, .tools dd { margin: 0; padding: 0.5rem 1rem; border-bottom: 1px solid var(--line); }
+  .tools dt { font-family: var(--mono); font-size: 0.85rem; color: var(--text); }
+  .tools dd { color: var(--text-2); font-size: 0.95rem; }
+  .tools dt:last-of-type, .tools dd:last-of-type { border-bottom: 0; }
+  .tools-foot { color: var(--text-3); font-family: var(--mono); font-size: 0.8rem; margin: 0 0 1.75rem; }
+  .asks { margin: 0 0 1rem; padding: 0; list-style: none; columns: 2 19rem; column-gap: 2.5rem; max-width: 52rem; }
+  .asks li { break-inside: avoid; color: var(--text); padding: 0.3rem 0; }
+  .asks li::before { content: "\201C"; color: var(--text-3); } .asks li::after { content: "\201D"; color: var(--text-3); }
+  .security { margin: 0 0 1rem; padding: 0; list-style: none; max-width: 68ch; }
+  .security li { padding: 0.65rem 0; border-bottom: 1px solid var(--line); color: var(--text-2); }
+  .security li:last-child { border-bottom: 0; }
+  .seealso { margin: 0; padding: 0; list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem 1.75rem; }
+  .seealso a { display: inline-flex; align-items: center; min-height: 36px; font-family: var(--mono); font-size: 0.85rem; color: var(--text-2); }
+  @media (max-width: 640px) {
+    .page, .top-inner, .foot-inner, .menu { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .tools { grid-template-columns: 1fr; }
+    .tools dt { border-bottom: 0; padding-bottom: 0; }
+  }
+
+  /* ---------- foot ---------- */
+  footer { border-top: 1px solid var(--line); margin-top: 1rem; }
+  .foot-inner { max-width: 78rem; margin: 0 auto; padding: 1.5rem 2rem 2.5rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem 2rem; }
+  .foot-id { font-size: 0.95rem; color: var(--text-2); }
+  .foot-id strong { color: var(--text); }
+  .foot-links { display: flex; flex-wrap: wrap; gap: 0 1.25rem; margin: 0; padding: 0; list-style: none; }
+  .foot-links a { display: inline-block; padding: 0.35rem 0; font-family: var(--mono); font-size: 0.78rem; color: var(--text-3); text-decoration: none; }
+  .foot-links a:hover { color: var(--accent-text); }
 </style>
 </head>
 <body>
 
-<nav>
-  <div class="nav-inner">
-    <a class="nav-logo" href="#"><svg viewBox="6 30 115 68" width="47" height="28" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><g transform="translate(64 64) scale(1.35) skewX(-12)"><path d="M -13 -13 C -13 -21 -35 -22 -35 -10 C -35 -1 -13 0 -13 10 C -13 22 -35 21 -35 13" stroke-width="3.5"/><path d="M 0 -19 L 18 0 L 0 19" stroke-width="8"/><rect class="sx-cursor" x="28" y="-10" width="8" height="20" rx="1" fill="currentColor" stroke="none"/></g></svg><span>SentinelX <span style="color:var(--fg3);font-weight:400;">MCP</span></span></a>
-    <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="nav-menu" aria-label="Menu"><span></span><span></span><span></span></button>
-    <ul class="nav-links" id="nav-menu">
-      <li><a href="#install">Install</a></li>
-      <li><a href="#connect">Connect</a></li>
-      <li><a href="#operate">Operate</a></li>
-      <li><a href="#configure">Configure</a></li>
-      <li><a href="https://sentinelx.app/plans">Pricing</a></li>
-      <li><a href="https://github.com/pensados/sentinelx-cloud-core" target="_blank">GitHub</a></li>
-    </ul>
-    <a class="nav-cta" href="https://mcp.sentinelx.app/dashboard" target="_blank">Dashboard →</a>
+<a class="sr-only" href="#main">Skip to the manual</a>
+
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="/" aria-label="SentinelX, home"><svg class="logo" viewBox="14 112 474 288" aria-hidden="true" focusable="false"><path fill="currentColor" d="M300.9 126.4L384.1 239.6Q389.5 247 387.6 256Q385.7 265 377.1 272.4L245.8 385.6Q237.9 392.4 227.6 392.7Q217.2 392.9 211.9 386.5Q209 383.2 208.1 379Q207.1 374.7 208 369.9Q208.9 365 211.4 360.7Q214 356.4 218.1 352.8L330.4 256L259.3 159.2Q256.7 155.6 255.9 151.3Q255.2 147 256.4 142.1Q257.5 137.2 260.3 133Q263.1 128.8 267.4 125.5Q275.4 119.1 285.7 119.4Q295.9 119.7 300.9 126.4ZM184.6 178.5Q186.8 167.8 173.7 160.5Q158.8 152.1 135.3 153.2Q79.1 155.7 70.5 196.4Q66.3 215.9 117.6 243.1Q148.9 259.7 160.4 270.4Q181.7 290.1 176.3 315.6Q169.8 346.1 141.2 363.8Q117.7 378.3 87.1 379.7Q58.2 381 39 370.2Q15.5 357.1 20.5 333.5Q21.5 328.9 25 326Q28.6 323 33.1 323Q37.2 323 39.7 326.2Q42.2 329.4 41.4 333.5Q39.1 344.2 52.2 351.5Q67.2 359.9 90.6 358.8Q146.8 356.3 155.4 315.6Q158.7 300.3 144.1 286.9Q134.1 277.6 104.6 261.9Q75.3 246.4 64.7 236.9Q44.8 219 49.6 196.4Q56.1 165.9 84.7 148.2Q108.2 133.7 138.8 132.3Q167.7 131 187 141.8Q210.4 154.9 205.4 178.5Q204.5 183.1 200.9 186Q197.3 188.9 192.8 188.9Q188.7 188.9 186.2 185.8Q183.7 182.6 184.6 178.5ZM441.5 196.4Q438.9 196.4 436.9 198.1Q434.8 199.7 434.3 202.4L411.5 309.6Q411 311.9 412.4 313.8Q413.9 315.6 416.2 315.6L451.9 315.6Q454.6 315.6 456.6 313.9Q458.6 312.3 459.2 309.6L482 202.4Q482.4 200.1 481 198.2Q479.6 196.4 477.3 196.4L441.5 196.4Z"/></svg><span>SentinelX</span></a>
+    <nav aria-label="Sections">
+      <ul class="nav-sections">
+        <li><a href="#install">install</a></li>
+        <li><a href="#enroll">enroll</a></li>
+        <li><a href="#connect">connect</a></li>
+        <li><a href="#operate">operate</a></li>
+        <li><a href="#configure">configure</a></li>
+        <li><a href="#security">security</a></li>
+      </ul>
+    </nav>
+    <nav aria-label="Site" class="nav-site">
+      <ul class="nav-pages">
+        <li><a href="/plans">pricing</a></li>
+        <li><a href="/troubleshooting">troubleshooting</a></li>
+        <li><a href="/support">support</a></li>
+      </ul>
+    </nav>
+    <a class="dash" href="https://mcp.sentinelx.app/dashboard" target="_blank" rel="noopener">Dashboard<svg class="i-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a>
+    <button type="button" class="menu-btn" aria-expanded="false" aria-controls="menu"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>Menu</button>
   </div>
-</nav>
+  <div class="menu" id="menu">
+    <ul aria-label="Sections">
+      <li><a href="#install">install</a></li>
+      <li><a href="#enroll">enroll</a></li>
+      <li><a href="#connect">connect</a></li>
+      <li><a href="#operate">operate</a></li>
+      <li><a href="#configure">configure</a></li>
+      <li><a href="#security">security</a></li>
+      <li><a href="#reference">reference</a></li>
+    </ul>
+    <ul aria-label="Site">
+      <li><a href="/plans">pricing</a></li>
+      <li><a href="/troubleshooting">troubleshooting</a></li>
+      <li><a href="/support">support</a></li>
+      <li><a href="https://mcp.sentinelx.app/dashboard" target="_blank" rel="noopener">dashboard<svg class="i-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></li>
+    </ul>
+  </div>
+</header>
 
-<div class="doc">
-  <header class="doc-head">
-    <div class="section-label">// operator's guide</div>
-    <h1>Run your servers from an AI, <span class="accent">safely.</span></h1>
-    <p class="doc-lead">SentinelX gives Claude, ChatGPT, Grok, or any MCP client an <strong>allowlisted, auditable</strong> shell on your Linux, macOS, and Windows hosts &mdash; over a single outbound WebSocket, no inbound ports. This is the short manual: install the agent, connect the hub, operate.</p>
-  </header>
+<main class="page" id="top">
 
-  <section id="install" class="doc-section">
-    <h2><span class="doc-num">1</span> Install the agent</h2>
-    <p>Run this on each host you want to operate. It builds a virtualenv, registers a service (systemd / launchd / Windows service), writes a starter config, and starts enrollment.</p>
-    <p><strong>Linux / macOS</strong> &mdash; one command, auto-detects your OS:</p>
-    <div class="cmd-block"><div class="cmd"><span class="prompt">$</span> curl -fsSL https://get.sentinelx.app | bash</div><button class="copy-btn" type="button" onclick="sxCopyCmd(this)" data-copy="curl -fsSL https://get.sentinelx.app | bash" aria-label="Copy command"><svg class="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></div>
-    <p><strong>Windows</strong> &mdash; PowerShell (Python 3.12+ and <code>git</code> on <code>PATH</code>). Service install, in an <strong>elevated</strong> shell:</p>
-    <div class="cmd-block"><div class="cmd">iwr -useb https://get.sentinelx.app/install.ps1 -OutFile "$env:TEMP\sx.ps1"
+  <div class="preface">
+    <div class="hero">
+      <h1><b>SentinelX</b> &mdash; your AI operates your servers.</h1>
+    </div>
+
+    <section class="install-col" aria-labelledby="h-install-now">
+      <div class="panel install">
+        <div class="ph"><h2 class="label" id="h-install-now">install the agent</h2></div>
+        <div class="os-switch" role="group" aria-label="Operating system">
+          <button type="button" data-os="unix" aria-pressed="true">Linux / macOS</button>
+          <button type="button" data-os="win" aria-pressed="false">Windows</button>
+          <button type="button" data-os="winuser" aria-pressed="false">Windows, no admin</button>
+        </div>
+        <div class="syn-stack">
+          <div class="syn-cmd" data-os="unix">
+            <p class="note">On each host, as root:</p>
+            <pre id="cmd-unix"><code><span class="prompt">$ </span>curl -fsSL https://get.sentinelx.app | bash</code></pre>
+          </div>
+          <div class="syn-cmd" data-os="win">
+            <p class="note">In an elevated PowerShell:</p>
+            <pre id="cmd-win"><code>iwr -useb https://get.sentinelx.app/install.ps1 -OutFile "$env:TEMP\sx.ps1"
+powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1"</code></pre>
+          </div>
+          <div class="syn-cmd" data-os="winuser">
+            <p class="note">Per user, no admin rights:</p>
+            <pre id="cmd-winuser"><code>iwr -useb https://get.sentinelx.app/install.ps1 -OutFile "$env:TEMP\sx.ps1"
+powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1" -User</code></pre>
+          </div>
+        </div>
+        <div class="syn-actions">
+          <button type="button" class="btn-primary no-js-hide" id="syn-copy" data-target="cmd-unix" data-copy="curl -fsSL https://get.sentinelx.app | bash" onclick="sxCopyCmd(this)"><svg class="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Copy install command</button>
+          <a class="read" id="syn-read" href="https://github.com/pensados/sentinelx-cloud-installer/blob/main/install.sh" target="_blank" rel="noopener">Read the installer<svg class="i-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="c1" aria-labelledby="h-c1">
+      <div class="claim">
+        <h2 class="ct" id="h-c1">No inbound ports.</h2>
+        <p>The agent opens one outbound WebSocket to the hub and listens on no port, so it works behind NAT and firewalls.</p>
+      </div>
+      <div class="panel map">
+        <div class="map-head" aria-hidden="true"><span>link map</span><span class="live"><span class="dot"></span>outbound only</span></div>
+        <svg class="wiring wiring-h" viewBox="0 26 660 132" role="img" aria-labelledby="map-t">
+          <title id="map-t">Your host connects out to the SentinelX hub over one WebSocket; your assistant connects to the same hub through its MCP connector. Nothing connects in to the host.</title>
+          <rect class="node" x="0.5" y="40.5" width="170" height="104" rx="4"/>
+          <text class="t-k" x="14" y="62">HOST</text>
+          <circle class="live-dot" cx="156" cy="57" r="3.5"/>
+          <text class="t-name" x="14" y="92">your host</text>
+          <text class="t-meta" x="14" y="114">agent</text>
+          <text class="t-none" x="14" y="133">inbound: none</text>
+          <rect class="node node-hub" x="245.5" y="30.5" width="170" height="124" rx="4"/>
+          <text class="t-k" x="259" y="52">HUB</text>
+          <circle class="live-dot" cx="401" cy="47" r="3.5"/>
+          <text class="t-name" x="259" y="92">SentinelX</text>
+          <text class="t-meta" x="259" y="114">mcp.sentinelx.app</text>
+          <rect class="node" x="489.5" y="40.5" width="170" height="104" rx="4"/>
+          <text class="t-k" x="503" y="62">CLIENT</text>
+          <circle class="live-dot" cx="645" cy="57" r="3.5"/>
+          <text class="t-name" x="503" y="92">your assistant</text>
+          <text class="t-meta" x="503" y="114">MCP connector</text>
+          <line class="link" x1="171" y1="92" x2="240" y2="92"/>
+          <line class="flow" x1="174" y1="92" x2="236" y2="92"/>
+          <path class="head" d="M236 87 L245 92 L236 97 Z"/>
+          <line class="link" x1="489" y1="92" x2="420" y2="92"/>
+          <line class="flow flow-rev" x1="424" y1="92" x2="486" y2="92"/>
+          <path class="head" d="M424 87 L415 92 L424 97 Z"/>
+          <text class="t-link" x="208" y="78" text-anchor="middle">wss</text>
+          <text class="t-link" x="208" y="114" text-anchor="middle">out</text>
+          <text class="t-link" x="452" y="78" text-anchor="middle">mcp</text>
+          <text class="t-link" x="452" y="114" text-anchor="middle">https</text>
+        </svg>
+        <svg class="wiring wiring-v" viewBox="0 0 320 470" role="img" aria-labelledby="map-vt">
+          <title id="map-vt">Your host connects out to the SentinelX hub over one WebSocket; your assistant connects to the same hub through its MCP connector. Nothing connects in to the host.</title>
+          <rect class="node" x="40.5" y="0.5" width="240" height="96" rx="4"/>
+          <text class="t-k" x="54" y="22">HOST</text>
+          <circle class="live-dot" cx="266" cy="17" r="3.5"/>
+          <text class="t-name" x="54" y="52">your host</text>
+          <text class="t-meta" x="54" y="74">agent · inbound: none</text>
+          <line class="link" x1="160" y1="97" x2="160" y2="174"/>
+          <line class="flow" x1="160" y1="100" x2="160" y2="170"/>
+          <path class="head" d="M155 170 L160 179 L165 170 Z"/>
+          <text class="t-link" x="172" y="135">wss · out</text>
+          <rect class="node node-hub" x="40.5" y="180.5" width="240" height="106" rx="4"/>
+          <text class="t-k" x="54" y="202">HUB</text>
+          <circle class="live-dot" cx="266" cy="197" r="3.5"/>
+          <text class="t-name" x="54" y="238">SentinelX</text>
+          <text class="t-meta" x="54" y="262">mcp.sentinelx.app</text>
+          <line class="link" x1="160" y1="368" x2="160" y2="292"/>
+          <line class="flow flow-rev" x1="160" y1="296" x2="160" y2="364"/>
+          <path class="head" d="M155 296 L160 287 L165 296 Z"/>
+          <text class="t-link" x="172" y="333">mcp · https</text>
+          <rect class="node" x="40.5" y="370.5" width="240" height="96" rx="4"/>
+          <text class="t-k" x="54" y="392">CLIENT</text>
+          <circle class="live-dot" cx="266" cy="387" r="3.5"/>
+          <text class="t-name" x="54" y="422">your assistant</text>
+          <text class="t-meta" x="54" y="444">MCP connector</text>
+        </svg>
+      </div>
+    </section>
+
+    <section class="c2" aria-labelledby="h-c2">
+      <div class="claim c2-head">
+        <h2 class="ct" id="h-c2">You decide what runs. Every attempt is logged.</h2>
+        <p>The hub records every attempt, refused ones included.</p>
+      </div>
+      <div class="panel audit-panel">
+        <div class="audit-head" aria-hidden="true"><span class="src">audit_events</span><span>example · real rows · host anonymized</span></div>
+        <div class="audit-wrap" tabindex="0" role="region" aria-label="Example audit rows">
+          <table class="audit">
+            <caption class="sr-only">Example: real rows from the hub&rsquo;s audit log, host anonymized.</caption>
+            <thead><tr><th scope="col">ts</th><th scope="col">host</th><th scope="col">op</th><th scope="col">ok</th><th scope="col">command</th><th scope="col">error_signature</th></tr></thead>
+            <tbody>
+              <tr><td data-k="ts">2026-10-18T03:58:51Z</td><td data-k="host">linux-host</td><td data-k="op">exec</td><td data-k="ok"><span class="st st-refused">refused</span></td><td data-k="command" class="cmd-cell">iptables -L -n</td><td data-k="error_signature" class="err">command not in allowlist: iptables</td></tr>
+              <tr><td data-k="ts">2026-10-18T03:58:54Z</td><td data-k="host">linux-host</td><td data-k="op">exec</td><td data-k="ok"><span class="st st-refused">refused</span></td><td data-k="command" class="cmd-cell">crontab -l</td><td data-k="error_signature" class="err">command not in allowlist: crontab</td></tr>
+              <tr><td data-k="ts">2026-10-18T03:58:56Z</td><td data-k="host">linux-host</td><td data-k="op">exec</td><td data-k="ok"><span class="st st-ok">ok</span></td><td data-k="command" class="cmd-cell">systemctl is-active nginx</td><td></td></tr>
+              <tr><td data-k="ts">2026-10-18T03:58:58Z</td><td data-k="host">linux-host</td><td data-k="op">exec</td><td data-k="ok"><span class="st st-ok">ok</span></td><td data-k="command" class="cmd-cell">df -h /</td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="c3" aria-labelledby="h-c3">
+      <div class="claim">
+        <h2 class="ct" id="h-c3">Any AI client, one hub.</h2>
+        <p>One connector URL, once per account:</p>
+        <ul class="clients">
+          <li>ChatGPT</li><li>Codex</li><li>Claude</li><li>Claude Code</li><li>Grok</li><li>Cursor</li><li>OpenCode</li><li>VS Code</li><li>Cline</li>
+        </ul>
+      </div>
+    </section>
+
+    <div class="status" aria-label="At a glance">
+      <span><a href="/plans">Free for 1 host, no card</a></span>
+      <span><a href="https://github.com/pensados/sentinelx-cloud-core" target="_blank" rel="noopener">Open-source agent, Apache-2.0</a></span>
+      <span>3,000+ servers connected</span>
+      <span><a href="https://chatgpt.com/apps/sentinelx/asdk_app_69f63e01766881919640f03b5e7912a5" target="_blank" rel="noopener">Listed in ChatGPT apps</a></span>
+    </div>
+  </div>
+
+  <div class="manual" id="main">
+
+    <section id="install" class="msect" aria-labelledby="h-install">
+      <h2 id="h-install"><span class="n">01</span>Install the agent</h2>
+      <div class="body">
+        <p>Run this on each host you want to operate. It builds a virtualenv, registers a service (systemd / launchd / Windows service), writes a starter config, and starts enrollment.</p>
+        <p><strong>Linux / macOS</strong> &mdash; one command, auto-detects your OS:</p>
+        <div class="cmd-block"><div class="cmd"><span class="prompt">$</span> curl -fsSL https://get.sentinelx.app | bash</div><button class="copy-btn" type="button" onclick="sxCopyCmd(this)" data-copy="curl -fsSL https://get.sentinelx.app | bash" aria-label="Copy command"><svg class="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></div>
+        <p><strong>Windows</strong> &mdash; PowerShell (Python 3.12+ and <code>git</code> on <code>PATH</code>). Service install, in an <strong>elevated</strong> shell:</p>
+        <div class="cmd-block"><div class="cmd">iwr -useb https://get.sentinelx.app/install.ps1 -OutFile "$env:TEMP\sx.ps1"
 powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1"</div><button class="copy-btn" type="button" onclick="sxCopyCmd(this)" data-copy="iwr -useb https://get.sentinelx.app/install.ps1 -OutFile &quot;$env:TEMP\sx.ps1&quot;; powershell -ExecutionPolicy Bypass -File &quot;$env:TEMP\sx.ps1&quot;" aria-label="Copy command"><svg class="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></div>
-    <p>&hellip;or a no-admin, per-user install (locked-down machines):</p>
-    <div class="cmd-block"><div class="cmd">iwr -useb https://get.sentinelx.app/install.ps1 -OutFile "$env:TEMP\sx.ps1"
+        <p>&hellip;or a no-admin, per-user install (locked-down machines):</p>
+        <div class="cmd-block"><div class="cmd">iwr -useb https://get.sentinelx.app/install.ps1 -OutFile "$env:TEMP\sx.ps1"
 powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1" -User</div><button class="copy-btn" type="button" onclick="sxCopyCmd(this)" data-copy="iwr -useb https://get.sentinelx.app/install.ps1 -OutFile &quot;$env:TEMP\sx.ps1&quot;; powershell -ExecutionPolicy Bypass -File &quot;$env:TEMP\sx.ps1&quot; -User" aria-label="Copy command"><svg class="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></div>
-    <p class="doc-note"><strong>Prerequisites</strong> &mdash; Linux: root + <code>git</code>, <code>python3</code>, <code>systemd</code>. macOS: none (Python via <code>uv</code>). Windows: Python 3.12+ and <code>git</code>. Behind a corporate proxy / blocked PyPI: add <code>-Bundle &lt;zip-or-url&gt;</code>. Every flag and the uninstall steps live in the <a href="https://github.com/pensados/sentinelx-cloud-installer">installer repo</a>.</p>
-  </section>
+        <p class="doc-note"><strong>Prerequisites</strong> &mdash; Linux: root + <code>git</code>, <code>python3</code>, <code>systemd</code>. macOS: none (Python via <code>uv</code>). Windows: Python 3.12+ and <code>git</code>. Behind a corporate proxy / blocked PyPI: add <code>-Bundle &lt;zip-or-url&gt;</code>. Every flag and the uninstall steps live in the <a href="https://github.com/pensados/sentinelx-cloud-installer">installer repo</a>.</p>
+      </div>
+    </section>
 
-  <section id="enroll" class="doc-section">
-    <h2><span class="doc-num">2</span> Enroll the host</h2>
-    <p>The installer prints an enrollment URL. Open it, sign in at <code>mcp.sentinelx.app</code> with Google, click <em>Enroll a new host</em>, and paste the token back into the terminal. The host binds to your account and appears in the dashboard within seconds.</p>
-  </section>
+    <section id="enroll" class="msect" aria-labelledby="h-enroll">
+      <h2 id="h-enroll"><span class="n">02</span>Enroll the host</h2>
+      <div class="body">
+        <p>The installer prints an enrollment URL. Open it, sign in at <code>mcp.sentinelx.app</code> with Google, click <em>Enroll a new host</em>, and paste the token back into the terminal. The host binds to your account and appears in the dashboard within seconds.</p>
+      </div>
+    </section>
 
-  <section id="connect" class="doc-section">
-    <h2><span class="doc-num">3</span> Connect your LLM</h2>
-    <p>Point your assistant at the hub &mdash; once per account, not per host. The connector URL is the same everywhere:</p>
-    <div class="cmd-block"><div class="cmd"><span class="s">https://mcp.sentinelx.app/mcp/mcp</span></div><button class="copy-btn" type="button" onclick="sxCopyCmd(this)" data-copy="https://mcp.sentinelx.app/mcp/mcp" aria-label="Copy connector URL"><svg class="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></div>
-    <p><strong>ChatGPT</strong> &mdash; install <a href="https://chatgpt.com/apps/sentinelx/asdk_app_69f63e01766881919640f03b5e7912a5">SentinelX from the app directory</a>, click <em>Connect</em>, sign in. No URL to paste.</p>
-    <p><strong>Claude.ai</strong> &mdash; Settings &rarr; Connectors &rarr; Add custom connector &rarr; paste the URL above, then authorize with Google.</p>
-    <p><strong>Grok</strong> &mdash; <a href="https://grok.com/connectors">grok.com/connectors</a> &rarr; New Connector &rarr; Custom &rarr; paste the URL above, then authorize with Google.</p>
-    <p><strong>VS Code, Cursor, Cline &amp; other JSON clients</strong> &mdash; drop this into the client's MCP config (mind the transport key: VS Code uses <code>"type": "http"</code>, Cline uses <code>"type": "streamableHttp"</code>, Cursor needs only the URL):</p>
-    <div class="cmd-block"><div class="cmd">{
+    <section id="connect" class="msect" aria-labelledby="h-connect">
+      <h2 id="h-connect"><span class="n">03</span>Connect your LLM</h2>
+      <div class="body">
+        <p>Point your assistant at the hub &mdash; once per account, not per host. The connector URL is the same everywhere:</p>
+        <div class="cmd-block"><div class="cmd"><span class="s">https://mcp.sentinelx.app/mcp/mcp</span></div><button class="copy-btn" type="button" onclick="sxCopyCmd(this)" data-copy="https://mcp.sentinelx.app/mcp/mcp" aria-label="Copy connector URL"><svg class="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></div>
+        <p><strong>ChatGPT</strong> &mdash; install <a href="https://chatgpt.com/apps/sentinelx/asdk_app_69f63e01766881919640f03b5e7912a5">SentinelX from the app directory</a>, click <em>Connect</em>, sign in. No URL to paste.</p>
+        <p><strong>Claude.ai</strong> &mdash; Settings &rarr; Connectors &rarr; Add custom connector &rarr; paste the URL above, then authorize with Google.</p>
+        <p><strong>Grok</strong> &mdash; <a href="https://grok.com/connectors">grok.com/connectors</a> &rarr; New Connector &rarr; Custom &rarr; paste the URL above, then authorize with Google.</p>
+        <p><strong>VS Code, Cursor, Cline &amp; other JSON clients</strong> &mdash; drop this into the client's MCP config (mind the transport key: VS Code uses <code>"type": "http"</code>, Cline uses <code>"type": "streamableHttp"</code>, Cursor needs only the URL):</p>
+        <div class="cmd-block"><div class="cmd">{
   <span class="k">"mcpServers"</span>: {
     <span class="k">"sentinelx"</span>: {
       <span class="k">"url"</span>: <span class="s">"https://mcp.sentinelx.app/mcp/mcp"</span>
     }
   }
 }</div><button class="copy-btn" type="button" onclick="sxCopyCmd(this)" aria-label="Copy config"><svg class="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></div>
-  </section>
-
-  <section id="operate" class="doc-section">
-    <h2><span class="doc-num">4</span> Operate</h2>
-    <p>Per host, the AI is handed a fixed set of tools &mdash; nothing else:</p>
-    <div class="spec-block">
-      <div class="tool-list">
-        <div class="tool-row"><code class="tool-name">sentinel_state</code> <span class="tool-desc">host facts</span></div>
-        <div class="tool-row"><code class="tool-name">sentinel_capabilities</code> <span class="tool-desc">what's allowed</span></div>
-        <div class="tool-row"><code class="tool-name">sentinel_exec</code> <span class="tool-desc">run a shell command, per the host&rsquo;s policy</span></div>
-        <div class="tool-row"><code class="tool-name">sentinel_edit</code> <span class="tool-desc">structured file edits</span></div>
-        <div class="tool-row"><code class="tool-name">sentinel_script_run</code> <span class="tool-desc">temp bash / python script</span></div>
-        <div class="tool-row"><code class="tool-name">sentinel_service_status</code> <span class="tool-desc">is it running, does it start at boot</span></div>
-        <div class="tool-row"><code class="tool-name">sentinel_restart</code> <span class="tool-desc">restart an allowed service</span></div>
-        <div class="tool-row"><code class="tool-name">sentinel_upload_file</code> <span class="tool-desc">upload to host</span></div>
-        <div class="tool-row"><code class="tool-name">sentinel_list_hosts</code> <span class="tool-desc">multi-host fleet view</span></div>
       </div>
-      <div class="spec-foot">&hellip;and more &mdash; see the agent's docs</div>
-    </div>
-    <p>Then drive it in plain language:</p>
-    <div class="ask-grid">
-      <div class="ask">Restart nginx on the VPS.</div>
-      <div class="ask">How much disk is left on the storage box?</div>
-      <div class="ask">Which services are down across the fleet?</div>
-      <div class="ask">Edit the config and reload the service.</div>
-      <div class="ask">Tail the error log and tell me what broke.</div>
-      <div class="ask">Resolve the merge conflict in this repo.</div>
-    </div>
-  </section>
+    </section>
 
-  <section id="configure" class="doc-section">
-    <h2><span class="doc-num">5</span> Configure the allowlist</h2>
-    <p>Everything is <strong>deny-by-default</strong>. The agent runs only what <code>/etc/sentinelx/config.yaml</code> permits (next to the install on macOS/Windows). Edit it to widen or narrow the agent's reach:</p>
-    <div class="cmd"><span class="cmt"># /etc/sentinelx/config.yaml</span>
+    <section id="operate" class="msect" aria-labelledby="h-operate">
+      <h2 id="h-operate"><span class="n">04</span>Operate</h2>
+      <div class="body">
+        <p>Per host, the AI is handed a fixed set of tools &mdash; nothing else:</p>
+        <dl class="tools">
+          <dt>sentinel_state</dt><dd>host facts</dd>
+          <dt>sentinel_capabilities</dt><dd>what's allowed</dd>
+          <dt>sentinel_exec</dt><dd>run a shell command, per the host&rsquo;s policy</dd>
+          <dt>sentinel_edit</dt><dd>structured file edits</dd>
+          <dt>sentinel_script_run</dt><dd>temp bash / python script</dd>
+          <dt>sentinel_service_status</dt><dd>is it running, does it start at boot</dd>
+          <dt>sentinel_restart</dt><dd>restart an allowed service</dd>
+          <dt>sentinel_upload_file</dt><dd>upload to host</dd>
+          <dt>sentinel_list_hosts</dt><dd>multi-host fleet view</dd>
+        </dl>
+        <p class="tools-foot">&hellip;and more &mdash; see the agent's docs</p>
+        <p>Then drive it in plain language:</p>
+        <ul class="asks">
+          <li>Restart nginx on the VPS.</li>
+          <li>How much disk is left on the storage box?</li>
+          <li>Which services are down across the fleet?</li>
+          <li>Edit the config and reload the service.</li>
+          <li>Tail the error log and tell me what broke.</li>
+          <li>Resolve the merge conflict in this repo.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="configure" class="msect" aria-labelledby="h-configure">
+      <h2 id="h-configure"><span class="n">05</span>Configure the allowlist</h2>
+      <div class="body">
+        <p>Everything is <strong>deny-by-default</strong>. The agent runs only what <code>/etc/sentinelx/config.yaml</code> permits (next to the install on macOS/Windows). Edit it to widen or narrow the agent's reach:</p>
+        <div class="cmd-block"><div class="cmd"><span class="cmt"># /etc/sentinelx/config.yaml</span>
 <span class="k">exec_mode:</span> allowlist      <span class="cmt"># or strict / unrestricted</span>
 <span class="k">allowed_commands:</span>             <span class="cmt"># whole words; every command in a chain</span>
   - systemctl status
@@ -307,60 +583,86 @@ powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1" -User</div><button c
 <span class="k">file_ops:</span>                     <span class="cmt"># paths it may read / write</span>
   <span class="k">paths:</span>
     - <span class="k">path:</span> /etc/nginx/sites-available
-      <span class="k">access:</span> rw</div>
-    <p class="doc-note">You decide what runs, not the model: the agent executes only what this file allows, and every attempt, refused ones included, is logged. With <code>exec_mode: allowlist</code> (the default), every command in a line must be on the list; on trusted development hosts, <code>exec_mode: unrestricted</code> lets it run anything under the agent's account. <code>sentinel_script_run</code> isn't limited by the list: where the list must hold, turn it off with <code>disabled_ops: [script_run]</code>. Either way, the agent's OS account is the outer limit. Full schema &amp; examples: <a href="https://github.com/pensados/sentinelx-cloud-core/blob/main/config.example.yaml">config.example.yaml</a>.</p>
-  </section>
+      <span class="k">access:</span> rw</div></div>
+        <p class="doc-note">You decide what runs, not the model: the agent executes only what this file allows, and every attempt, refused ones included, is logged. With <code>exec_mode: allowlist</code> (the default), every command in a line must be on the list; on trusted development hosts, <code>exec_mode: unrestricted</code> lets it run anything under the agent's account. <code>sentinel_script_run</code> isn't limited by the list: where the list must hold, turn it off with <code>disabled_ops: [script_run]</code>. Either way, the agent's OS account is the outer limit. Full schema &amp; examples: <a href="https://github.com/pensados/sentinelx-cloud-core/blob/main/config.example.yaml">config.example.yaml</a>.</p>
+      </div>
+    </section>
 
-  <section id="reference" class="doc-section">
-    <h2>Reference</h2>
-    <div class="ref-links">
-      <a href="https://github.com/pensados/sentinelx-cloud-core">agent (open source) &#8599;</a>
-      <a href="https://github.com/pensados/sentinelx-cloud-installer">installer &#8599;</a>
-      <a href="https://github.com/pensados/sentinelx-cloud-protocol">protocol spec &#8599;</a>
-      <a href="https://mcp.sentinelx.app/dashboard">dashboard &#8599;</a>
-      <a href="https://sentinelx.pensa.ar/articles/">articles &#8599;</a>
-      <a href="https://modelcontextprotocol.io">MCP &#8599;</a>
-    </div>
-  </section>
-</div>
+    <section id="security" class="msect" aria-labelledby="h-security">
+      <h2 id="h-security">Security</h2>
+      <div class="body">
+        <p>What the agent may do is set on the host, in <code>/etc/sentinelx/config.yaml</code>:</p>
+        <ul class="security">
+          <li><strong>The allowlist.</strong> With <code>exec_mode: allowlist</code> (the default), every command in a line must be on the list.</li>
+          <li><strong>Logged attempts.</strong> The hub records every attempt, refused ones included.</li>
+          <li><strong>Scripts.</strong> <code>sentinel_script_run</code> isn't limited by the allowlist; where the list must hold, turn it off with <code>disabled_ops: [script_run]</code>.</li>
+          <li><strong>The OS account.</strong> The agent's OS account is the outer limit: what that account can't do, the agent can't do.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="reference" class="msect" aria-labelledby="h-reference">
+      <h2 id="h-reference">Reference</h2>
+      <div class="body">
+        <ul class="seealso">
+          <li><a href="https://github.com/pensados/sentinelx-cloud-core">agent (open source)<svg class="i-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></li>
+          <li><a href="https://github.com/pensados/sentinelx-cloud-installer">installer<svg class="i-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></li>
+          <li><a href="https://github.com/pensados/sentinelx-cloud-protocol">protocol spec<svg class="i-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></li>
+          <li><a href="https://mcp.sentinelx.app/dashboard">dashboard<svg class="i-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></li>
+          <li><a href="https://sentinelx.pensa.ar/articles/">articles<svg class="i-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></li>
+          <li><a href="https://modelcontextprotocol.io">MCP<svg class="i-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</main>
 
 <footer>
-  <div class="footer-inner">
-    <div class="footer-left">
-      <strong>SentinelX</strong> · Apache 2.0-licensed agent<br>
-      a <a href="https://pensa.ar/legal/marca/" style="color:var(--accent);text-decoration:none;">Pensa Software®</a> product · built by <a href="https://pensa.ar" style="color:var(--accent);text-decoration:none;">pensa.ar</a>
-    </div>
-    <div class="footer-links">
-      <a href="https://get.sentinelx.app/about" target="_blank">install</a>
-      <a href="https://mcp.sentinelx.app/dashboard" target="_blank">dashboard</a>
-      <a href="https://github.com/pensados/sentinelx-cloud-core" target="_blank">agent (cloud)</a>
-      <a href="https://github.com/pensados/sentinelx-docker" target="_blank">docker (self-hosted)</a>
-      <a href="https://github.com/mcp/app.sentinelx/sentinelx" target="_blank">github mcp registry</a>
-      <a href="https://www.pulsemcp.com/servers/sentinelx" target="_blank">pulsemcp</a>
-      <a href="https://chatgpt.com/apps/sentinelx/asdk_app_69f63e01766881919640f03b5e7912a5" target="_blank">chatgpt app</a>
-      <a href="https://modelcontextprotocol.io" target="_blank">MCP</a>
-      <a href="/support">support</a>
-      <a href="/troubleshooting">troubleshooting</a>
-      <a href="/privacy">privacy</a>
-      <a href="/terms">terms</a>
-    </div>
+  <div class="foot-inner">
+    <div class="foot-id"><strong>SentinelX</strong> · Apache 2.0-licensed agent<br>a <a href="https://pensa.ar/legal/marca/">Pensa Software®</a> product · built by <a href="https://pensa.ar">pensa.ar</a></div>
+    <ul class="foot-links">
+      <li><a href="https://get.sentinelx.app/about" target="_blank" rel="noopener">install</a></li>
+      <li><a href="https://mcp.sentinelx.app/dashboard" target="_blank" rel="noopener">dashboard</a></li>
+      <li><a href="https://github.com/pensados/sentinelx-cloud-core" target="_blank" rel="noopener">agent (cloud)</a></li>
+      <li><a href="https://github.com/pensados/sentinelx-docker" target="_blank" rel="noopener">docker (self-hosted)</a></li>
+      <li><a href="https://github.com/mcp/app.sentinelx/sentinelx" target="_blank" rel="noopener">github mcp registry</a></li>
+      <li><a href="https://www.pulsemcp.com/servers/sentinelx" target="_blank" rel="noopener">pulsemcp</a></li>
+      <li><a href="https://chatgpt.com/apps/sentinelx/asdk_app_69f63e01766881919640f03b5e7912a5" target="_blank" rel="noopener">chatgpt app</a></li>
+      <li><a href="https://modelcontextprotocol.io" target="_blank" rel="noopener">MCP</a></li>
+      <li><a href="/support">support</a></li>
+      <li><a href="/troubleshooting">troubleshooting</a></li>
+      <li><a href="/privacy">privacy</a></li>
+      <li><a href="/terms">terms</a></li>
+    </ul>
   </div>
 </footer>
 <div id="sx-status" class="sr-only" role="status" aria-live="polite"></div>
 
 <script>
-function sxTab(btn){
-  var os = btn.getAttribute('data-os');
-  var root = btn.closest('.install-hero');
-  root.querySelectorAll('.os-tab').forEach(function(t){ t.classList.toggle('active', t === btn); });
-  root.querySelectorAll('.os-panel').forEach(function(p){ p.classList.toggle('active', p.getAttribute('data-os') === os); });
-}
 (function(){
-  var inner = document.querySelector('.nav-inner'), toggle = document.querySelector('.nav-toggle');
-  function setOpen(open){ inner.classList.toggle('open', open); toggle.setAttribute('aria-expanded', open ? 'true' : 'false'); }
-  toggle.addEventListener('click', function(){ setOpen(!inner.classList.contains('open')); });
-  inner.addEventListener('click', function(e){ if(e.target.closest('.nav-links a, .nav-cta')) setOpen(false); });
-  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && inner.classList.contains('open')){ setOpen(false); toggle.focus(); } });
+  var head = document.querySelector('.top'), btn = document.querySelector('.menu-btn');
+  function setOpen(open){ head.classList.toggle('open', open); btn.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+  btn.addEventListener('click', function(){ setOpen(!head.classList.contains('open')); });
+  head.addEventListener('click', function(e){ if(e.target.closest('.menu a')) setOpen(false); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && head.classList.contains('open')){ setOpen(false); btn.focus(); } });
+})();
+(function(){
+  var copies = {
+    unix: 'curl -fsSL https://get.sentinelx.app | bash',
+    win: 'iwr -useb https://get.sentinelx.app/install.ps1 -OutFile "$env:TEMP\\sx.ps1"; powershell -ExecutionPolicy Bypass -File "$env:TEMP\\sx.ps1"',
+    winuser: 'iwr -useb https://get.sentinelx.app/install.ps1 -OutFile "$env:TEMP\\sx.ps1"; powershell -ExecutionPolicy Bypass -File "$env:TEMP\\sx.ps1" -User'
+  };
+  var installer = { unix: 'install.sh', win: 'install.ps1', winuser: 'install.ps1' };
+  var copyBtn = document.getElementById('syn-copy'), read = document.getElementById('syn-read');
+  var buttons = document.querySelectorAll('.os-switch button');
+  function choose(os){
+    buttons.forEach(function(x){ x.setAttribute('aria-pressed', x.getAttribute('data-os') === os ? 'true' : 'false'); });
+    document.querySelectorAll('.syn-cmd').forEach(function(c){ c.classList.toggle('is-off', c.getAttribute('data-os') !== os); });
+    copyBtn.setAttribute('data-copy', copies[os]); copyBtn.setAttribute('data-target', 'cmd-' + os);
+    read.href = 'https://github.com/pensados/sentinelx-cloud-installer/blob/main/' + installer[os];
+  }
+  buttons.forEach(function(b){ b.addEventListener('click', function(){ choose(b.getAttribute('data-os')); }); });
+  choose('unix');
 })();
 function sxAnnounce(msg){ var s=document.getElementById('sx-status'); s.textContent=''; setTimeout(function(){ s.textContent=msg; },50); }
 function sxFallbackCopy(text){
@@ -370,7 +672,8 @@ function sxFallbackCopy(text){
   document.body.removeChild(ta); return ok;
 }
 function sxCopyCmd(btn){
-  var block = btn.closest('.cmd-block'), cmd = block.querySelector('.cmd');
+  var block = btn.closest('.cmd-block');
+  var cmd = block ? block.querySelector('.cmd') : document.getElementById(btn.getAttribute('data-target'));
   var text = btn.getAttribute('data-copy') || cmd.innerText.replace(/\s+$/,'');
   function done(){
     btn.classList.add('copied'); sxAnnounce('Copied to clipboard');
