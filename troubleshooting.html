@@ -50,7 +50,7 @@
   a:hover { color: var(--accent-text); text-decoration-color: currentColor; }
   :focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
   code, kbd, pre { font-family: var(--mono); }
-  p code, li code { white-space: nowrap; }
+  @media (min-width: 641px) { p code, li code { white-space: nowrap; } }
   code { font-size: 0.88em; color: var(--text); background: var(--panel-2); border: 1px solid var(--line); padding: 0.05em 0.35em; border-radius: 3px; }
   strong { font-weight: 600; color: var(--text); }
   em { font-style: italic; }
@@ -100,7 +100,7 @@
   .page-head h1 b { font-weight: 700; }
   .page-head p { color: var(--text-2); max-width: 64ch; }
   .page-head p:last-child { margin-bottom: 0; }
-  .page-head .meta { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); margin: 0 0 1rem; }
+  .page-head .meta { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); margin: -0.25rem 0 1.25rem; }
 
   /* ---------- runbook sections ---------- */
   .msect { padding: 2.5rem 0; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.25rem 2rem; }
@@ -108,6 +108,7 @@
   .msect h2 { font-family: var(--mono); font-size: 0.85rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); margin: 0 0 1rem; line-height: 1.5; }
   .msect .body > p, .msect .body > ul { max-width: 68ch; }
   .msect .body > :last-child { margin-bottom: 0; }
+  .msect .body > :first-child { margin-top: 0; }
   @media (min-width: 960px) {
     .msect { grid-template-columns: var(--gutter) minmax(0, 1fr); }
     .msect h2 { margin: 0.2rem 0 0; position: sticky; top: calc(var(--head-h) + 1.5rem); align-self: start; }
@@ -194,8 +195,8 @@
 
 <main class="page">
   <div class="page-head">
-    <p class="meta">Updated October 3, 2026</p>
     <h1>Troubleshooting</h1>
+    <p class="meta">Updated October 3, 2026</p>
     <p>The problems people actually run into, the exact message you'll see, why it happens and what to do about it. Each section starts with the symptom, so you can search this page for the error you have. If none of them matches, see <a href="#still-stuck">Still stuck?</a></p>
   </div>
 
