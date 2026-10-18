@@ -290,7 +290,7 @@ powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1" -User<button class="
   <span class="k">paths:</span>
     - <span class="k">path:</span> /etc/nginx/sites-available
       <span class="k">access:</span> rw</div>
-    <p class="doc-note">The policy &mdash; not the model's good behavior &mdash; is the trust boundary. With <code>exec_mode: allowlist</code> (the default), every command in a line must be on the list; on trusted development hosts, <code>exec_mode: unrestricted</code> lets it run anything under the agent's account. <code>sentinel_script_run</code> isn't limited by the list: where the list must hold, turn it off with <code>disabled_ops: [script_run]</code>. Either way, the agent's OS account is the outer limit. Blocked attempts are refused and logged. Full schema &amp; examples: <a href="https://github.com/pensados/sentinelx-cloud-core/blob/main/config.example.yaml">config.example.yaml</a>.</p>
+    <p class="doc-note">You decide what runs, not the model: the agent executes only what this file allows, and every attempt, refused ones included, is logged. With <code>exec_mode: allowlist</code> (the default), every command in a line must be on the list; on trusted development hosts, <code>exec_mode: unrestricted</code> lets it run anything under the agent's account. <code>sentinel_script_run</code> isn't limited by the list: where the list must hold, turn it off with <code>disabled_ops: [script_run]</code>. Either way, the agent's OS account is the outer limit. Full schema &amp; examples: <a href="https://github.com/pensados/sentinelx-cloud-core/blob/main/config.example.yaml">config.example.yaml</a>.</p>
   </section>
 
   <section id="reference" class="doc-section">
