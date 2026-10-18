@@ -3,6 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="dark light">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0c1012">
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#f4f7f6">
+<script>document.documentElement.classList.add('js');</script>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="apple-touch-icon" href="/favicon.png">
@@ -13,209 +17,339 @@
 <title>Troubleshooting — SentinelX MCP</title>
 <meta name="description" content="Fixes for the problems SentinelX users actually hit: MCP login errors caused by antivirus, hosts that keep reconnecting, temporary -32603 errors, ChatGPT safety blocks, Manus setup and offline agents.">
 <link rel="canonical" href="https://sentinelx.app/troubleshooting">
-<meta name="theme-color" content="#0e1116">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Chivo:wght@400;500;600;700&family=Chivo+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-:root {
-  --bg: #0e1116;
-  --bg-elev: #161b22;
-  --bg-code: #0d1117;
-  --border: #30363d;
-  --text: #e6edf3;
-  --text-dim: #8b949e;
-  --text-faint: #6e7681;
-  --accent: #58a6ff;
-  --green: #7ee787;
-  --orange: #ffa657;
-  --max-width: 760px;
-}
-* { box-sizing: border-box; }
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  margin: 0;
-  line-height: 1.7;
-  font-size: 16px;
-  -webkit-font-smoothing: antialiased;
-}
-main {
-  max-width: var(--max-width);
-  margin: 0 auto;
-  padding: 56px 24px 80px;
-}
-.brand {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 36px;
-  text-decoration: none;
-  color: var(--text);
-}
-.brand-mark {
-  width: 32px;
-  height: 32px;
-  display: block;
-}
-.brand-name {
-  font-size: 18px;
-  font-weight: 600;
-}
-h1 {
-  font-size: 32px;
-  margin: 0 0 8px;
-  letter-spacing: -0.02em;
-}
-h2 {
-  font-size: 20px;
-  margin: 36px 0 12px;
-  letter-spacing: -0.01em;
-}
-h3 {
-  font-size: 16px;
-  margin: 24px 0 8px;
-  color: var(--text-dim);
-  font-weight: 600;
-}
-.last-updated {
-  color: var(--text-faint);
-  font-size: 14px;
-  margin: 0 0 32px;
-}
-p, li { color: var(--text); }
-ul { padding-left: 20px; }
-li { margin: 6px 0; }
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
-code {
-  background: var(--bg-code);
-  border: 1px solid var(--border);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 0.92em;
-}
-footer {
-  margin-top: 64px;
-  padding-top: 24px;
-  border-top: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 16px;
-  color: var(--text-faint);
-  font-size: 14px;
-}
-footer .links { display: flex; gap: 20px; flex-wrap: wrap; }
-@media (max-width: 600px) {
-  main { padding: 32px 20px 64px; }
-  h1 { font-size: 26px; }
-}
-pre {
-  background: var(--bg-code);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 14px 16px;
-  margin: 16px 0 20px;
-  overflow-x: auto;
-}
-pre code {
-  background: none;
-  border: none;
-  padding: 0;
-  font-size: 0.86em;
-  line-height: 1.6;
-  white-space: pre;
-}
-h2 { scroll-margin-top: 16px; }
+  /* SentinelX: an operations console for one connection. Tokens copied verbatim from index.html (see DESIGN.md). */
+  :root {
+    color-scheme: dark light;
+    --bg: #0c1012; --panel: #11171a; --panel-2: #172024; --line: #233033; --line-2: #33444a;
+    --text: #e3ebe8; --text-2: #a2b2ad; --text-3: #7d8f8a;
+    --accent: #5eead4; --accent-text: #5eead4; --accent-ink: #04211c; --accent-dim: rgba(94, 234, 212, 0.12); --signal: #5eead4;
+    --refused: #ff7b72;
+    --sans: 'Chivo', ui-sans-serif, system-ui, sans-serif;
+    --mono: 'Chivo Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+    --head-h: 3.5rem; --gutter: 15rem;
+    --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f4f7f6; --panel: #ffffff; --panel-2: #eaf0ee; --line: #d3dcd9; --line-2: #b4c2be;
+      --text: #0d1513; --text-2: #46554f; --text-3: #5c6b66;
+      --accent: #5eead4; --accent-text: #0b7a6b; --accent-ink: #04211c; --accent-dim: rgba(11, 122, 107, 0.04); --signal: #0b7a6b;
+      --refused: #c2261f;
+    }
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; scroll-padding-top: calc(var(--head-h) + 1rem); -webkit-text-size-adjust: 100%; scrollbar-color: var(--line-2) var(--bg); }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { margin: 0; background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 1.0625rem; line-height: 1.6; caret-color: var(--accent-text); }
+  ::selection { background: var(--accent); color: var(--accent-ink); }
+  a { color: inherit; text-decoration: underline; text-decoration-color: var(--line-2); text-decoration-thickness: 1px; text-underline-offset: 0.2em; transition: color 0.15s, text-decoration-color 0.15s; }
+  a:hover { color: var(--accent-text); text-decoration-color: currentColor; }
+  :focus-visible { outline: 2px solid var(--accent-text); outline-offset: 3px; }
+  code, kbd, pre { font-family: var(--mono); }
+  p code, li code { white-space: nowrap; }
+  code { font-size: 0.88em; color: var(--text); background: var(--panel-2); border: 1px solid var(--line); padding: 0.05em 0.35em; border-radius: 3px; }
+  strong { font-weight: 600; color: var(--text); }
+  em { font-style: italic; }
+  p { margin: 0 0 1rem; }
+  .sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  .i-ext { width: 0.8em; height: 0.8em; flex: none; vertical-align: -0.05em; margin-left: 0.2em; }
+  .label { font-family: var(--mono); font-size: 0.75rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); margin: 0 0 0.75rem; line-height: 1.4; }
+  .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--signal); flex: none; }
+
+  /* ---------- header ---------- */
+  .top { position: sticky; top: 0; z-index: 20; background: var(--bg); border-bottom: 1px solid var(--line); }
+  .top-inner { max-width: 78rem; margin: 0 auto; padding: 0 2rem; height: var(--head-h); display: flex; align-items: center; gap: 2rem; }
+  .brand { display: inline-flex; align-items: center; gap: 0.6rem; font-weight: 700; font-size: 1.15rem; letter-spacing: -0.01em; text-decoration: none; white-space: nowrap; min-height: 44px; color: var(--text); }
+  .brand:hover { color: var(--text); }
+  .brand .logo { width: 2rem; height: auto; color: var(--accent-text); }
+  .nav-site { margin-left: auto; }
+  .nav-pages { display: none; margin: 0; padding: 0; list-style: none; gap: 1.5rem; }
+  .nav-pages a { font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.06em; text-decoration: none; color: var(--text-2); padding: 0.4rem 0; display: inline-flex; align-items: center; }
+  .nav-pages a:hover { color: var(--accent-text); }
+  .nav-pages a[aria-current="page"] { color: var(--text); text-decoration: underline; text-decoration-color: var(--accent-text); text-underline-offset: 0.45em; }
+  .dash { display: inline-flex; align-items: center; min-height: 36px; padding: 0 0.85rem; border: 1px solid var(--line-2); border-radius: 4px; font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.04em; text-decoration: none; color: var(--text); white-space: nowrap; }
+  .dash:hover { border-color: var(--accent-text); color: var(--accent-text); }
+  .menu-btn { display: inline-flex; align-items: center; gap: 0.55rem; min-height: 44px; padding: 0 0.25rem; background: none; border: 0; color: var(--text-2); font-family: var(--mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; }
+  .menu-btn:hover { color: var(--text); }
+  .menu-btn .bars { display: inline-flex; flex-direction: column; gap: 4px; }
+  .menu-btn .bars i { display: block; width: 16px; height: 1.5px; background: currentColor; transition: transform 0.2s var(--ease-out), opacity 0.2s; }
+  .top.open .menu-btn .bars i:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+  .top.open .menu-btn .bars i:nth-child(2) { opacity: 0; }
+  .top.open .menu-btn .bars i:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+  .menu { border-top: 1px solid var(--line); padding: 1rem 2rem 1.5rem; }
+  .js .menu { display: none; }
+  .js .top.open .menu { display: block; }
+  .menu ul { margin: 0; padding: 0; list-style: none; columns: 2; column-gap: 2rem; }
+  .menu a { display: block; padding: 0.6rem 0; font-family: var(--mono); font-size: 0.85rem; letter-spacing: 0.04em; text-decoration: none; color: var(--text-2); }
+  .menu a:hover { color: var(--accent-text); }
+  .menu a[aria-current="page"] { color: var(--text); }
+  @media (min-width: 780px) {
+    .nav-pages { display: flex; }
+    .menu-btn, .menu, .js .top.open .menu { display: none; }
+  }
+  @media (max-width: 480px) { .dash { display: none; } }
+
+  /* ---------- page ---------- */
+  .page { max-width: 78rem; margin: 0 auto; padding: 0 2rem; }
+  .page-head { padding: 3rem 0 2.25rem; border-bottom: 1px solid var(--line); }
+  .page-head h1 { font-weight: 500; font-size: clamp(2rem, 1.2rem + 2.3vw, 2.9rem); line-height: 1.1; letter-spacing: -0.025em; margin: 0 0 1rem; max-width: 30ch; text-wrap: balance; }
+  .page-head h1 b { font-weight: 700; }
+  .page-head p { color: var(--text-2); max-width: 64ch; }
+  .page-head p:last-child { margin-bottom: 0; }
+  .page-head .meta { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-3); margin: 0 0 1rem; }
+
+  /* ---------- runbook sections ---------- */
+  .msect { padding: 2.5rem 0; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.25rem 2rem; }
+  .msect:last-child { border-bottom: 0; }
+  .msect h2 { font-family: var(--mono); font-size: 0.85rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text); margin: 0 0 1rem; line-height: 1.5; }
+  .msect .body > p, .msect .body > ul { max-width: 68ch; }
+  .msect .body > :last-child { margin-bottom: 0; }
+  @media (min-width: 960px) {
+    .msect { grid-template-columns: var(--gutter) minmax(0, 1fr); }
+    .msect h2 { margin: 0.2rem 0 0; position: sticky; top: calc(var(--head-h) + 1.5rem); align-self: start; }
+  }
+  .body ul { padding-left: 1.2rem; }
+  .body li { margin: 0 0 0.6rem; }
+
+  /* ---------- command block: the copy button gets its own column ---------- */
+  .cmd-block { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; margin: 0 0 1.1rem; max-width: 52rem; background: var(--panel); border: 1px solid var(--line); border-radius: 4px; }
+  .cmd { margin: 0; font-family: var(--mono); font-size: 0.85rem; line-height: 1.65; padding: 0.85rem 1rem; color: var(--text); white-space: pre; overflow-x: auto; }
+  .cmd-block.is-out .cmd { color: var(--text-2); }
+  .prompt { color: var(--accent-text); user-select: none; }
+  @media (max-width: 959px) {
+    .cmd { padding-right: 1.75rem; -webkit-mask-image: linear-gradient(to right, var(--text) calc(100% - 1.5rem), transparent); mask-image: linear-gradient(to right, var(--text) calc(100% - 1.5rem), transparent); }
+  }
+  .copy-btn { margin: 0.4rem 0.4rem 0.4rem 0; display: inline-flex; align-items: center; justify-content: center; width: 2.5rem; height: 2.5rem; padding: 0; background: var(--panel-2); color: var(--text-2); border: 1px solid var(--line-2); border-radius: 4px; cursor: pointer; transition: color 0.15s, border-color 0.15s; }
+  .copy-btn svg { width: 16px; height: 16px; pointer-events: none; }
+  .copy-btn .i-ok, .copy-btn.copied .i-copy { display: none; }
+  .copy-btn:hover, .copy-btn.copied { color: var(--accent-text); border-color: var(--accent-text); }
+  .copy-btn.copied .i-ok { display: block; }
+
+  @media (max-width: 640px) {
+    .page, .top-inner, .foot-inner, .menu { padding-left: 1.25rem; padding-right: 1.25rem; }
+    .page-head { padding-top: 2rem; }
+  }
+
+  /* ---------- foot ---------- */
+  footer { border-top: 1px solid var(--line); margin-top: 1rem; }
+  .foot-inner { max-width: 78rem; margin: 0 auto; padding: 1.5rem 2rem 2.5rem; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem 2rem; }
+  .foot-id { font-size: 0.95rem; color: var(--text-2); }
+  .foot-id strong { color: var(--text); }
+  .foot-links { display: flex; flex-wrap: wrap; gap: 0 1.25rem; margin: 0; padding: 0; list-style: none; }
+  .foot-links a { display: inline-block; padding: 0.35rem 0; font-family: var(--mono); font-size: 0.78rem; color: var(--text-3); text-decoration: none; }
+  .foot-links a:hover { color: var(--accent-text); }
+
+  /* ---------- troubleshooting: symptom index + issues ---------- */
+  .ts { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 3rem; padding-top: 2rem; }
+  .toc { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 1rem 1.1rem 0.6rem; margin: 0 0 1rem; }
+  .toc ul { margin: 0; padding: 0; list-style: none; }
+  .toc li { padding: 0.45rem 0; border-top: 1px solid var(--line); font-size: 0.92rem; line-height: 1.4; }
+  .toc li:first-child { border-top: 0; }
+  .toc a { color: var(--text-2); text-decoration: none; }
+  .toc a:hover { color: var(--accent-text); }
+  .issue { padding: 2.25rem 0; border-bottom: 1px solid var(--line); }
+  .issue:last-child { border-bottom: 0; }
+  .issue h2 { font-size: 1.15rem; font-weight: 600; letter-spacing: -0.015em; line-height: 1.3; margin: 0 0 1rem; max-width: 46ch; scroll-margin-top: calc(var(--head-h) + 1rem); }
+  .issue > p, .issue > ul { max-width: 68ch; }
+  .issue ul { padding-left: 1.2rem; }
+  .issue li { margin: 0 0 0.7rem; }
+  .issue > :last-child { margin-bottom: 0; }
+  @media (min-width: 1100px) {
+    .ts { grid-template-columns: var(--gutter) minmax(0, 1fr); }
+    .toc { position: sticky; top: calc(var(--head-h) + 1.5rem); align-self: start; margin: 2.25rem 0 0; max-height: calc(100vh - var(--head-h) - 3rem); overflow-y: auto; }
+  }
 </style>
 </head>
 <body>
-<main>
-<a href="/about" class="brand">
-  <img src="/favicon.svg" alt="SentinelX" class="brand-mark" width="32" height="32">
-  <div class="brand-name">SentinelX</div>
-</a>
-<h1>Troubleshooting</h1>
-<p class="last-updated">Updated October 3, 2026</p>
-<p>The problems people actually run into, the exact message you'll see, why it happens and what to do about it. Each section starts with the symptom, so you can search this page for the error you have. If none of them matches, see <a href="#still-stuck">Still stuck?</a></p>
 
-<h2 id="oauth-discovery">"OAuth metadata discovery failed … error decoding response body"</h2>
-<p>You add SentinelX to Codex (or another MCP client) and it fails before you ever see a login page:</p>
-<pre><code>Error: Metadata error: OAuth metadata discovery failed for https://mcp.sentinelx.app/mcp/mcp
-  Caused by: HTTP request failed: error decoding response body</code></pre>
-<p><strong>Why:</strong> security software on your computer is inspecting the client's HTTPS traffic and changing the responses it needs to sign in. The case we've confirmed is <strong>Norton 360</strong>: its <em>AI Protection → Web monitoring → MCP server scanning</em> option breaks the login. Other antivirus products that inspect HTTPS or MCP traffic can do the same. A plain <code>curl</code> to the same addresses often still works, because these products inspect each application differently.</p>
-<p><strong>Fix:</strong> exclude your MCP client's executable, or <code>mcp.sentinelx.app</code> and <code>keycloak.pensa.ar</code>, from that inspection. If your antivirus doesn't allow an exclusion, turn the MCP or HTTPS scanning option off. To confirm the cause, switch it off for a minute and try again.</p>
-<p>In the case we confirmed, only the sign-in was affected: with the option back on afterwards, regular calls kept working, so turning it off just while you sign in can be enough. You may need to repeat that whenever your client signs in from scratch, for example on a new machine.</p>
+<header class="top">
+  <div class="top-inner">
+    <a class="brand" href="/" aria-label="SentinelX, home"><svg class="logo" viewBox="14 112 474 288" aria-hidden="true" focusable="false"><path fill="currentColor" d="M300.9 126.4L384.1 239.6Q389.5 247 387.6 256Q385.7 265 377.1 272.4L245.8 385.6Q237.9 392.4 227.6 392.7Q217.2 392.9 211.9 386.5Q209 383.2 208.1 379Q207.1 374.7 208 369.9Q208.9 365 211.4 360.7Q214 356.4 218.1 352.8L330.4 256L259.3 159.2Q256.7 155.6 255.9 151.3Q255.2 147 256.4 142.1Q257.5 137.2 260.3 133Q263.1 128.8 267.4 125.5Q275.4 119.1 285.7 119.4Q295.9 119.7 300.9 126.4ZM184.6 178.5Q186.8 167.8 173.7 160.5Q158.8 152.1 135.3 153.2Q79.1 155.7 70.5 196.4Q66.3 215.9 117.6 243.1Q148.9 259.7 160.4 270.4Q181.7 290.1 176.3 315.6Q169.8 346.1 141.2 363.8Q117.7 378.3 87.1 379.7Q58.2 381 39 370.2Q15.5 357.1 20.5 333.5Q21.5 328.9 25 326Q28.6 323 33.1 323Q37.2 323 39.7 326.2Q42.2 329.4 41.4 333.5Q39.1 344.2 52.2 351.5Q67.2 359.9 90.6 358.8Q146.8 356.3 155.4 315.6Q158.7 300.3 144.1 286.9Q134.1 277.6 104.6 261.9Q75.3 246.4 64.7 236.9Q44.8 219 49.6 196.4Q56.1 165.9 84.7 148.2Q108.2 133.7 138.8 132.3Q167.7 131 187 141.8Q210.4 154.9 205.4 178.5Q204.5 183.1 200.9 186Q197.3 188.9 192.8 188.9Q188.7 188.9 186.2 185.8Q183.7 182.6 184.6 178.5ZM441.5 196.4Q438.9 196.4 436.9 198.1Q434.8 199.7 434.3 202.4L411.5 309.6Q411 311.9 412.4 313.8Q413.9 315.6 416.2 315.6L451.9 315.6Q454.6 315.6 456.6 313.9Q458.6 312.3 459.2 309.6L482 202.4Q482.4 200.1 481 198.2Q479.6 196.4 477.3 196.4L441.5 196.4Z"/></svg><span>SentinelX</span></a>
+    <nav aria-label="Site" class="nav-site">
+      <ul class="nav-pages">
+        <li><a href="/#install">install</a></li>
+        <li><a href="/plans">pricing</a></li>
+        <li><a href="/troubleshooting" aria-current="page">troubleshooting</a></li>
+        <li><a href="/support">support</a></li>
+      </ul>
+    </nav>
+    <a class="dash" href="https://mcp.sentinelx.app/dashboard" target="_blank" rel="noopener">Dashboard<svg class="i-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a>
+    <button type="button" class="menu-btn" aria-expanded="false" aria-controls="menu"><span class="bars" aria-hidden="true"><i></i><i></i><i></i></span>Menu</button>
+  </div>
+  <div class="menu" id="menu">
+    <ul aria-label="Site">
+      <li><a href="/">home</a></li>
+      <li><a href="/#install">install</a></li>
+      <li><a href="/plans">pricing</a></li>
+      <li><a href="/troubleshooting" aria-current="page">troubleshooting</a></li>
+      <li><a href="/support">support</a></li>
+      <li><a href="https://mcp.sentinelx.app/dashboard" target="_blank" rel="noopener">dashboard<svg class="i-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a></li>
+    </ul>
+  </div>
+</header>
 
-<h2 id="russia-reconnects"><a id="network-filtering"></a>A host in Russia, Iran or nearby keeps reconnecting, or never finishes connecting</h2>
-<p>The host shows as connected, then drops and comes back, over and over: in Russia about every 161 seconds, elsewhere at less regular intervals. Commands that run at those moments can fail, and you may see <code>duplicate_session</code> or <code>keepalive ping timeout</code> in the agent's log. On some networks the agent never finishes connecting at all: its log shows the hello sent and no welcome back.</p>
-<p><strong>Why:</strong> the agent's connection to SentinelX goes through Cloudflare by default, and some networks filter that path after the connection opens. Since June 2025, many providers in Russia cut each connection to services behind Cloudflare after roughly 16&nbsp;KB; networks in Iran and nearby countries show the same effect. The connection keeps stalling, and the agent keeps reconnecting.</p>
-<p><strong>Fix:</strong> point the agent at our direct endpoint, which doesn't go through Cloudflare on your side. Hosts in Russia and Iran that switched went from hundreds of reconnections a day to a handful. On the host:</p>
-<pre><code>sudo sed -i 's#https://mcp.sentinelx.app#https://mcp-direct.sentinelx.app#' /etc/systemd/system/sentinelx-cloud-core.service /etc/sentinelx/identity.json
+<main class="page">
+  <div class="page-head">
+    <p class="meta">Updated October 3, 2026</p>
+    <h1>Troubleshooting</h1>
+    <p>The problems people actually run into, the exact message you'll see, why it happens and what to do about it. Each section starts with the symptom, so you can search this page for the error you have. If none of them matches, see <a href="#still-stuck">Still stuck?</a></p>
+  </div>
+
+  <div class="ts">
+    <nav class="toc" aria-labelledby="toc-h">
+      <h2 class="label" id="toc-h">symptoms</h2>
+      <ul>
+        <li><a href="#oauth-discovery">"OAuth metadata discovery failed … error decoding response body"</a></li>
+        <li><a href="#russia-reconnects">A host in Russia, Iran or nearby keeps reconnecting</a></li>
+        <li><a href="#wrong-addresses">The agent can't reach the hub: "hostname mismatch"</a></li>
+        <li><a href="#internal-error-32603">"-32603 Internal error" for a minute or two</a></li>
+        <li><a href="#blocked-by-openai">"This tool call was blocked by OpenAI…"</a></li>
+        <li><a href="#audio-metadata-only">Reading an audio file returns only its metadata</a></li>
+        <li><a href="#manus">Manus asks for a Client ID and Client Secret</a></li>
+        <li><a href="#host-offline">The host shows offline, but the service is running</a></li>
+        <li><a href="#still-stuck">Still stuck?</a></li>
+      </ul>
+    </nav>
+
+    <div class="issues">
+      <section class="issue">
+        <h2 id="oauth-discovery">"OAuth metadata discovery failed … error decoding response body"</h2>
+        <p>You add SentinelX to Codex (or another MCP client) and it fails before you ever see a login page:</p>
+        <div class="cmd-block is-out" role="group" aria-label="Error output"><pre class="cmd">Error: Metadata error: OAuth metadata discovery failed for https://mcp.sentinelx.app/mcp/mcp
+  Caused by: HTTP request failed: error decoding response body</pre></div>
+        <p><strong>Why:</strong> security software on your computer is inspecting the client's HTTPS traffic and changing the responses it needs to sign in. The case we've confirmed is <strong>Norton 360</strong>: its <em>AI Protection → Web monitoring → MCP server scanning</em> option breaks the login. Other antivirus products that inspect HTTPS or MCP traffic can do the same. A plain <code>curl</code> to the same addresses often still works, because these products inspect each application differently.</p>
+        <p><strong>Fix:</strong> exclude your MCP client's executable, or <code>mcp.sentinelx.app</code> and <code>keycloak.pensa.ar</code>, from that inspection. If your antivirus doesn't allow an exclusion, turn the MCP or HTTPS scanning option off. To confirm the cause, switch it off for a minute and try again.</p>
+        <p>In the case we confirmed, only the sign-in was affected: with the option back on afterwards, regular calls kept working, so turning it off just while you sign in can be enough. You may need to repeat that whenever your client signs in from scratch, for example on a new machine.</p>
+      </section>
+
+      <section class="issue">
+        <h2 id="russia-reconnects"><a id="network-filtering"></a>A host in Russia, Iran or nearby keeps reconnecting, or never finishes connecting</h2>
+        <p>The host shows as connected, then drops and comes back, over and over: in Russia about every 161 seconds, elsewhere at less regular intervals. Commands that run at those moments can fail, and you may see <code>duplicate_session</code> or <code>keepalive ping timeout</code> in the agent's log. On some networks the agent never finishes connecting at all: its log shows the hello sent and no welcome back.</p>
+        <p><strong>Why:</strong> the agent's connection to SentinelX goes through Cloudflare by default, and some networks filter that path after the connection opens. Since June 2025, many providers in Russia cut each connection to services behind Cloudflare after roughly 16&nbsp;KB; networks in Iran and nearby countries show the same effect. The connection keeps stalling, and the agent keeps reconnecting.</p>
+        <p><strong>Fix:</strong> point the agent at our direct endpoint, which doesn't go through Cloudflare on your side. Hosts in Russia and Iran that switched went from hundreds of reconnections a day to a handful. On the host:</p>
+        <div class="cmd-block"><pre class="cmd">sudo sed -i 's#https://mcp.sentinelx.app#https://mcp-direct.sentinelx.app#' /etc/systemd/system/sentinelx-cloud-core.service /etc/sentinelx/identity.json
 sudo systemctl daemon-reload
-sudo systemctl restart sentinelx-cloud-core</code></pre>
-<p>This keeps your host id, enrollment and configuration; run the same commands with the two addresses swapped to go back. Nothing changes in ChatGPT or Claude: your connector keeps using the usual address. If the direct endpoint is filtered on your network too, an HTTP proxy or a VPN outside the region also works; the agent honors <code>HTTPS_PROXY</code> set in its service environment.</p>
+sudo systemctl restart sentinelx-cloud-core</pre><button class="copy-btn" type="button" onclick="sxCopyCmd(this)" aria-label="Copy commands"><svg class="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></div>
+        <p>This keeps your host id, enrollment and configuration; run the same commands with the two addresses swapped to go back. Nothing changes in ChatGPT or Claude: your connector keeps using the usual address. If the direct endpoint is filtered on your network too, an HTTP proxy or a VPN outside the region also works; the agent honors <code>HTTPS_PROXY</code> set in its service environment.</p>
+      </section>
 
-<h2 id="wrong-addresses">The agent can't reach the hub: "hostname mismatch", or timeouts after a restart</h2>
-<p>The agent stops connecting, often right after a restart, with TLS errors such as a hostname mismatch, or with timeouts. The addresses your host gets for <code>mcp.sentinelx.app</code> aren't ours.</p>
-<p><strong>Why:</strong> on some networks the DNS answers are altered on the way, so the agent tries to reach servers that aren't SentinelX. Keep TLS verification on: it's what stops the agent from talking to the wrong server.</p>
-<p><strong>Fix:</strong> first see what the name really resolves to, asking a resolver over HTTPS so the local network can't change the answer, and compare it with what your host gets:</p>
-<pre><code>curl -s -H 'accept: application/dns-json' 'https://cloudflare-dns.com/dns-query?name=mcp.sentinelx.app&amp;type=A'
+      <section class="issue">
+        <h2 id="wrong-addresses">The agent can't reach the hub: "hostname mismatch", or timeouts after a restart</h2>
+        <p>The agent stops connecting, often right after a restart, with TLS errors such as a hostname mismatch, or with timeouts. The addresses your host gets for <code>mcp.sentinelx.app</code> aren't ours.</p>
+        <p><strong>Why:</strong> on some networks the DNS answers are altered on the way, so the agent tries to reach servers that aren't SentinelX. Keep TLS verification on: it's what stops the agent from talking to the wrong server.</p>
+        <p><strong>Fix:</strong> first see what the name really resolves to, asking a resolver over HTTPS so the local network can't change the answer, and compare it with what your host gets:</p>
+        <div class="cmd-block"><pre class="cmd">curl -s -H 'accept: application/dns-json' 'https://cloudflare-dns.com/dns-query?name=mcp.sentinelx.app&amp;type=A'
 curl -s -H 'accept: application/dns-json' 'https://cloudflare-dns.com/dns-query?name=mcp-direct.sentinelx.app&amp;type=A'
-getent hosts mcp.sentinelx.app</code></pre>
-<p>Then check whether the host can reach the real addresses, with verification still on (replace the addresses with the ones from the first step):</p>
-<pre><code>curl -sS -o /dev/null -w '%{http_code}\n' --resolve mcp.sentinelx.app:443:REAL_ADDRESS https://mcp.sentinelx.app/
-curl -sS -o /dev/null -w '%{http_code}\n' --resolve mcp-direct.sentinelx.app:443:REAL_ADDRESS https://mcp-direct.sentinelx.app/</code></pre>
-<p>If one of them answers, the network can reach us and only the name resolution is wrong. The cleanest fix is a resolver that isn't altered (DNS over HTTPS on the host), or an HTTP proxy or VPN outside the affected network. Pinning the addresses in <code>/etc/hosts</code> also works, but treat it as temporary: Cloudflare's addresses can change. If only the direct endpoint answers, switch the agent to it with the commands in <a href="#network-filtering">the section above</a>.</p>
+getent hosts mcp.sentinelx.app</pre><button class="copy-btn" type="button" onclick="sxCopyCmd(this)" aria-label="Copy commands"><svg class="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></div>
+        <p>Then check whether the host can reach the real addresses, with verification still on (replace the addresses with the ones from the first step):</p>
+        <div class="cmd-block"><pre class="cmd">curl -sS -o /dev/null -w '%{http_code}\n' --resolve mcp.sentinelx.app:443:REAL_ADDRESS https://mcp.sentinelx.app/
+curl -sS -o /dev/null -w '%{http_code}\n' --resolve mcp-direct.sentinelx.app:443:REAL_ADDRESS https://mcp-direct.sentinelx.app/</pre><button class="copy-btn" type="button" onclick="sxCopyCmd(this)" aria-label="Copy commands"><svg class="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></div>
+        <p>If one of them answers, the network can reach us and only the name resolution is wrong. The cleanest fix is a resolver that isn't altered (DNS over HTTPS on the host), or an HTTP proxy or VPN outside the affected network. Pinning the addresses in <code>/etc/hosts</code> also works, but treat it as temporary: Cloudflare's addresses can change. If only the direct endpoint answers, switch the agent to it with the commands in <a href="#network-filtering">the section above</a>.</p>
+      </section>
 
-<h2 id="internal-error-32603">"-32603 Internal error" for a minute or two, then everything works</h2>
-<p>Several calls in a row fail with a generic internal error, and shortly after, they work again on their own.</p>
-<p><strong>Why:</strong> the hub is being updated. For about a minute and a half it stops accepting new calls while the ones already running finish, then it restarts, and agents reconnect by themselves within seconds. ChatGPT shows those refusals as a generic <code>-32603</code> error.</p>
-<p><strong>Fix:</strong> wait a minute and retry. If a long command was running at the time, check its result in your notifications before running it again, so it doesn't run twice.</p>
+      <section class="issue">
+        <h2 id="internal-error-32603">"-32603 Internal error" for a minute or two, then everything works</h2>
+        <p>Several calls in a row fail with a generic internal error, and shortly after, they work again on their own.</p>
+        <p><strong>Why:</strong> the hub is being updated. For about a minute and a half it stops accepting new calls while the ones already running finish, then it restarts, and agents reconnect by themselves within seconds. ChatGPT shows those refusals as a generic <code>-32603</code> error.</p>
+        <p><strong>Fix:</strong> wait a minute and retry. If a long command was running at the time, check its result in your notifications before running it again, so it doesn't run twice.</p>
+      </section>
 
-<h2 id="blocked-by-openai">"This tool call was blocked by OpenAI…"</h2>
-<p>ChatGPT refuses to run a SentinelX operation with a message saying OpenAI blocked it or couldn't determine its safety level.</p>
-<p><strong>Why:</strong> that decision is made by ChatGPT's own safety layer, before the call leaves ChatGPT. The call never reaches SentinelX, so we have no record of it and can't change the outcome. It tends to happen on operations that change permissions, credentials or the agent's own configuration, and in unattended (scheduled) runs.</p>
-<p><strong>Fix:</strong> if you believe it's a mistake, use the feedback option on the blocked message so OpenAI sees it. For a change you, the owner, have decided to make, do it yourself outside the assistant: over SSH, or for the agent's policy, with <em>Edit config</em> on the host's card in your <a href="https://mcp.sentinelx.app/dashboard">dashboard</a>.</p>
+      <section class="issue">
+        <h2 id="blocked-by-openai">"This tool call was blocked by OpenAI…"</h2>
+        <p>ChatGPT refuses to run a SentinelX operation with a message saying OpenAI blocked it or couldn't determine its safety level.</p>
+        <p><strong>Why:</strong> that decision is made by ChatGPT's own safety layer, before the call leaves ChatGPT. The call never reaches SentinelX, so we have no record of it and can't change the outcome. It tends to happen on operations that change permissions, credentials or the agent's own configuration, and in unattended (scheduled) runs.</p>
+        <p><strong>Fix:</strong> if you believe it's a mistake, use the feedback option on the blocked message so OpenAI sees it. For a change you, the owner, have decided to make, do it yourself outside the assistant: over SSH, or for the agent's policy, with <em>Edit config</em> on the host's card in your <a href="https://mcp.sentinelx.app/dashboard">dashboard</a>.</p>
+      </section>
 
-<h2 id="audio-metadata-only">Reading an audio file returns only its metadata in ChatGPT</h2>
-<p>You ask your assistant to listen to an MP3 or WAV with <code>sentinel_read_media</code>, and it only sees the file name, size and type, as if the audio were missing.</p>
-<p><strong>Why:</strong> SentinelX sends the audio itself, encoded inside the reply; that's why audio replies are hundreds of kilobytes or several megabytes. ChatGPT currently passes images from a tool to the model, but not audio, so the model only gets the text that comes with it.</p>
-<p><strong>Fix:</strong> process the audio on the host and bring back something the model can read or see: a transcript (for example with whisper), loudness figures from ffmpeg's ebur128 filter, or a spectrogram image, which <code>sentinel_read_media</code> does deliver:</p>
-<pre><code>ffmpeg -i recording.mp3 -lavfi showspectrumpic=s=1600x600 spectrogram.png</code></pre>
+      <section class="issue">
+        <h2 id="audio-metadata-only">Reading an audio file returns only its metadata in ChatGPT</h2>
+        <p>You ask your assistant to listen to an MP3 or WAV with <code>sentinel_read_media</code>, and it only sees the file name, size and type, as if the audio were missing.</p>
+        <p><strong>Why:</strong> SentinelX sends the audio itself, encoded inside the reply; that's why audio replies are hundreds of kilobytes or several megabytes. ChatGPT currently passes images from a tool to the model, but not audio, so the model only gets the text that comes with it.</p>
+        <p><strong>Fix:</strong> process the audio on the host and bring back something the model can read or see: a transcript (for example with whisper), loudness figures from ffmpeg's ebur128 filter, or a spectrogram image, which <code>sentinel_read_media</code> does deliver:</p>
+        <div class="cmd-block"><pre class="cmd">ffmpeg -i recording.mp3 -lavfi showspectrumpic=s=1600x600 spectrogram.png</pre><button class="copy-btn" type="button" onclick="sxCopyCmd(this)" aria-label="Copy command"><svg class="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></div>
+      </section>
 
-<h2 id="manus">Manus asks for a Client ID and Client Secret</h2>
-<p>Unlike ChatGPT and Claude, which register themselves, Manus's custom MCP settings ask you for OAuth credentials, and an invented Client ID fails at our sign-in page with <em>Client not found</em>.</p>
-<p><strong>Fix:</strong> register a client once, then copy the two values it returns into Manus:</p>
-<pre><code>curl -s https://keycloak.pensa.ar/realms/mcp/clients-registrations/openid-connect \
+      <section class="issue">
+        <h2 id="manus">Manus asks for a Client ID and Client Secret</h2>
+        <p>Unlike ChatGPT and Claude, which register themselves, Manus's custom MCP settings ask you for OAuth credentials, and an invented Client ID fails at our sign-in page with <em>Client not found</em>.</p>
+        <p><strong>Fix:</strong> register a client once, then copy the two values it returns into Manus:</p>
+        <div class="cmd-block"><pre class="cmd">curl -s https://keycloak.pensa.ar/realms/mcp/clients-registrations/openid-connect \
   -H 'Content-Type: application/json' \
-  -d '{"client_name":"Manus","redirect_uris":["https://manus.im/api/webhook/mcp/callback"],"grant_types":["authorization_code","refresh_token"],"response_types":["code"]}'</code></pre>
-<p>Use <code>client_id</code> and <code>client_secret</code> from the response, keep <code>https://mcp.sentinelx.app/mcp/mcp</code> as the server URL, and sign in with the SentinelX account where your hosts are enrolled. If Manus asks for the authentication method, it's <code>client_secret_basic</code>.</p>
+  -d '{"client_name":"Manus","redirect_uris":["https://manus.im/api/webhook/mcp/callback"],"grant_types":["authorization_code","refresh_token"],"response_types":["code"]}'</pre><button class="copy-btn" type="button" onclick="sxCopyCmd(this)" aria-label="Copy command"><svg class="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></div>
+        <p>Use <code>client_id</code> and <code>client_secret</code> from the response, keep <code>https://mcp.sentinelx.app/mcp/mcp</code> as the server URL, and sign in with the SentinelX account where your hosts are enrolled. If Manus asks for the authentication method, it's <code>client_secret_basic</code>.</p>
+      </section>
 
-<h2 id="host-offline">The host shows offline, but the agent's service is running</h2>
-<p>Your dashboard and your assistant say the host isn't connected, yet on the machine the service is active.</p>
-<p><strong>Why:</strong> usually an old agent. Versions before 0.11.12 don't detect a dead connection, so after a network change they can believe they're still connected and never reconnect. Older versions also lack later fixes for searches that ran without a time limit and kept the agent busy.</p>
-<p><strong>Fix:</strong> restart the agent to bring it back now, then update it from the <em>Managing your agent</em> section of your <a href="https://mcp.sentinelx.app/dashboard">dashboard</a>. On Linux:</p>
-<pre><code>sudo systemctl restart sentinelx-cloud-core</code></pre>
+      <section class="issue">
+        <h2 id="host-offline">The host shows offline, but the agent's service is running</h2>
+        <p>Your dashboard and your assistant say the host isn't connected, yet on the machine the service is active.</p>
+        <p><strong>Why:</strong> usually an old agent. Versions before 0.11.12 don't detect a dead connection, so after a network change they can believe they're still connected and never reconnect. Older versions also lack later fixes for searches that ran without a time limit and kept the agent busy.</p>
+        <p><strong>Fix:</strong> restart the agent to bring it back now, then update it from the <em>Managing your agent</em> section of your <a href="https://mcp.sentinelx.app/dashboard">dashboard</a>. On Linux:</p>
+        <div class="cmd-block"><pre class="cmd">sudo systemctl restart sentinelx-cloud-core</pre><button class="copy-btn" type="button" onclick="sxCopyCmd(this)" aria-label="Copy command"><svg class="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></div>
+      </section>
 
-<h2 id="still-stuck">Still stuck?</h2>
-<ul>
-  <li><strong>Ask your assistant to run SentinelX's diagnosis.</strong> Tell it something like "run SentinelX diagnose: my host keeps disconnecting". It checks our records for your account and names the cause when the evidence is clear.</li>
-  <li><strong>File a report from your assistant.</strong> Ask it to report the problem to SentinelX; it attaches the right context, and you'll get our answer by email and in the conversation.</li>
-  <li><strong>Everything else</strong> (GitHub issues, email, security reports) is on the <a href="/support">support page</a>.</li>
-</ul>
+      <section class="issue">
+        <h2 id="still-stuck">Still stuck?</h2>
+        <ul>
+          <li><strong>Ask your assistant to run SentinelX's diagnosis.</strong> Tell it something like "run SentinelX diagnose: my host keeps disconnecting". It checks our records for your account and names the cause when the evidence is clear.</li>
+          <li><strong>File a report from your assistant.</strong> Ask it to report the problem to SentinelX; it attaches the right context, and you'll get our answer by email and in the conversation.</li>
+          <li><strong>Everything else</strong> (GitHub issues, email, security reports) is on the <a href="/support">support page</a>.</li>
+        </ul>
+      </section>
+    </div>
+  </div>
+</main>
 
 <footer>
-  <div>© 2026 SentinelX</div>
-  <div class="links">
-    <a href="/about">Home</a>
-    <a href="/support">Support</a>
-    <a href="/privacy">Privacy</a>
-    <a href="/terms">Terms</a>
-    <a href="https://github.com/pensados/sentinelx-cloud-core">GitHub</a>
-    <a href="mailto:privacy@sentinelx.app">Contact</a>
+  <div class="foot-inner">
+    <div class="foot-id"><strong>SentinelX</strong> · © 2026 · Apache 2.0-licensed agent<br>a <a href="https://pensa.ar/legal/marca/">Pensa Software®</a> product · built by <a href="https://pensa.ar">pensa.ar</a></div>
+    <ul class="foot-links">
+      <li><a href="/">home</a></li>
+      <li><a href="https://mcp.sentinelx.app/dashboard" target="_blank" rel="noopener">dashboard</a></li>
+      <li><a href="https://github.com/pensados/sentinelx-cloud-core" target="_blank" rel="noopener">github</a></li>
+      <li><a href="/plans">pricing</a></li>
+      <li><a href="/support">support</a></li>
+      <li><a href="/troubleshooting">troubleshooting</a></li>
+      <li><a href="/privacy">privacy</a></li>
+      <li><a href="/terms">terms</a></li>
+      <li><a href="mailto:privacy@sentinelx.app">contact</a></li>
+    </ul>
   </div>
 </footer>
-</main>
+<div id="sx-status" class="sr-only" role="status" aria-live="polite"></div>
+<script>
+(function(){
+  var head = document.querySelector('.top'), btn = document.querySelector('.menu-btn');
+  function setOpen(open){ head.classList.toggle('open', open); btn.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+  btn.addEventListener('click', function(){ setOpen(!head.classList.contains('open')); });
+  head.addEventListener('click', function(e){ if(e.target.closest('.menu a')) setOpen(false); });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && head.classList.contains('open')){ setOpen(false); btn.focus(); } });
+})();
+function sxAnnounce(msg){ var s=document.getElementById('sx-status'); s.textContent=''; setTimeout(function(){ s.textContent=msg; },50); }
+function sxFallbackCopy(text){
+  var ta=document.createElement('textarea'); ta.value=text; ta.setAttribute('readonly','');
+  ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+  var ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
+  document.body.removeChild(ta); return ok;
+}
+function sxCopyCmd(btn){
+  var cmd = btn.closest('.cmd-block').querySelector('.cmd');
+  var text = btn.getAttribute('data-copy') || cmd.innerText.replace(/\s+$/,'');
+  function done(){
+    btn.classList.add('copied'); sxAnnounce('Copied to clipboard');
+    clearTimeout(btn._t); btn._t=setTimeout(function(){ btn.classList.remove('copied'); },1600);
+  }
+  function failed(){
+    var r=document.createRange(); r.selectNodeContents(cmd); var sel=getSelection(); sel.removeAllRanges(); sel.addRange(r);
+    sxAnnounce('Copy failed. The text is selected: press Ctrl+C (Cmd+C on macOS).');
+  }
+  function fallback(){ sxFallbackCopy(text) ? done() : failed(); }
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(text).then(done, fallback); }
+  else fallback();
+}
+</script>
 </body>
 </html>
