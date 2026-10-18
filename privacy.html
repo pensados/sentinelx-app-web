@@ -178,8 +178,8 @@
 <main class="page">
   <div class="page-head">
     <h1>Privacy Policy</h1>
-    <p class="meta">Last updated: May 10, 2026</p>
-    <p>This page describes what data SentinelX collects, why, and how it's stored. SentinelX is a hosted MCP service that lets you operate Linux servers from inside Claude.ai or ChatGPT via a small agent installed on your servers.</p>
+    <p class="meta">Last updated: October 18, 2026</p>
+    <p>This page describes what data SentinelX collects, why, and how it's stored. SentinelX is a hosted MCP service that lets you operate your Linux, macOS and Windows servers from an AI client (such as ChatGPT, Claude, Codex or Cursor) through a small agent installed on each server.</p>
   </div>
 
   <section class="msect" aria-labelledby="p-collect">
@@ -193,6 +193,7 @@
         <li>A stable user ID issued by your identity provider (the OpenID Connect <code>sub</code> claim)</li>
       </ul>
       <p>We use these to identify your SentinelX account and bind your enrolled hosts to it. We do <strong>not</strong> receive your password — your identity provider (Google or GitHub) handles authentication.</p>
+      <p>When you sign in, we also record the approximate country you connect from, derived from your IP address. We store the country, not the IP address.</p>
       <h3>Host data</h3>
       <p>For every server you enroll with SentinelX, we store on our hub:</p>
       <ul>
@@ -201,18 +202,21 @@
         <li>Any optional label you've set</li>
         <li>The agent version and protocol version</li>
         <li>Metadata about the active connection (session ID, connect time)</li>
+        <li>The approximate country the agent connects from, derived from its IP address (we store the country, not the IP address)</li>
       </ul>
       <p>We do <strong>not</strong> store the contents of your server's filesystem, the output of commands you run, or any application data on your host. The agent runs commands locally and returns results to your LLM session — they pass through our hub but are not persisted.</p>
       <h3>Operational logs</h3>
-      <p>For service health, debugging, and abuse prevention, our hub logs each tool call with:</p>
+      <p>For security auditing, service health, debugging and abuse prevention, our hub records an audit entry for each tool call, including:</p>
       <ul>
         <li>Your user ID (not your email)</li>
         <li>The target host ID</li>
-        <li>The operation name (<code>exec</code>, <code>edit</code>, etc.)</li>
-        <li>A timestamp</li>
-        <li>Whether the call succeeded</li>
+        <li>The operation name (<code>exec</code>, <code>edit</code>, etc.) and the arguments your AI client sent with it, for example a command line, a file path, the text written by an edit, or the contents of a script</li>
+        <li>A timestamp, and whether the call succeeded (with the error message if it didn't)</li>
+        <li>Timing, the size of the response and a cryptographic hash of it (not the response itself)</li>
+        <li>The name and version of your AI client, and request and session identifiers</li>
       </ul>
-      <p>We do <strong>not</strong> log command arguments, file paths, file contents, or command output in our hub. Those stay between your agent and your LLM session.</p>
+      <p>The output of commands and the contents of files you read through SentinelX pass through our hub but are not stored. Don't put secrets in command lines or scripts: they are recorded like any other argument.</p>
+      <p>If you share a host with another SentinelX account, its audit entries record which account performed each operation.</p>
     </div>
   </section>
 
@@ -221,8 +225,7 @@
     <div class="body">
       <ul>
         <li>Your password — your identity provider authenticates you, we never see it</li>
-        <li>Contents of files on your servers</li>
-        <li>Output of commands you run via SentinelX</li>
+        <li>Output of commands you run, or contents of files you read, through SentinelX</li>
         <li>SSH keys, credentials, or other secrets stored on your hosts</li>
         <li>Browsing or telemetry data unrelated to using SentinelX</li>
       </ul>
@@ -243,14 +246,14 @@
   <section class="msect" aria-labelledby="p-share">
     <h2 id="p-share">Who we share data with</h2>
     <div class="body">
-      <p>We do not sell your data. We share account data only with infrastructure providers required to operate the service (compute, DNS, certificate authorities), and only as needed for them to deliver their service.</p>
+      <p>We do not sell your data. We share account data only with infrastructure providers required to operate the service (compute, DNS, certificate authorities), and only as needed for them to deliver their service. Traffic to our hub passes through Cloudflare. If you subscribe to a paid plan, payments are processed by Polar (with Stripe as its payment provider), which receives the billing details needed to charge you.</p>
     </div>
   </section>
 
   <section class="msect" aria-labelledby="p-where">
     <h2 id="p-where">Where data is stored</h2>
     <div class="body">
-      <p>SentinelX hub infrastructure runs on servers physically located in Argentina. If we add additional regions, we'll update this page.</p>
+      <p>The SentinelX hub and its databases run on DigitalOcean servers in New York, United States. If we add or change regions, we'll update this page.</p>
     </div>
   </section>
 
@@ -258,7 +261,7 @@
     <h2 id="p-controls">Your controls</h2>
     <div class="body">
       <ul>
-        <li><strong>Disconnect a host:</strong> uninstall the agent (<code>systemctl disable --now sentinelx-cloud-core</code>) or remove its identity file. The host stops appearing in your account.</li>
+        <li><strong>Disconnect a host:</strong> uninstall the agent (instructions for Linux, macOS and Windows in the <a href="https://github.com/pensados/sentinelx-cloud-installer">installer repository</a>) or remove its identity file. The host stops appearing in your account.</li>
         <li><strong>Delete a label:</strong> ask your LLM to call <code>sentinel_remove_host_label</code>.</li>
         <li><strong>Delete your account and all associated data:</strong> email <a href="mailto:privacy@sentinelx.app">privacy@sentinelx.app</a>. We process the request within 30 days.</li>
       </ul>
