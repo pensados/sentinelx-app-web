@@ -173,6 +173,27 @@
   .no-js-hide { display: none; }
   .js .no-js-hide { display: inline-flex; }
   .read { font-size: 0.95rem; color: var(--text-2); display: inline-flex; align-items: center; min-height: 44px; }
+  /* second path in the install panel: connect the assistant first, then ask it for the install command */
+  .connect { display: grid; gap: 0.75rem; justify-items: start; padding: 1rem 1.25rem 1.15rem; }
+  .connect .label { margin: 0; }
+  .btn-ghost { display: inline-flex; align-items: center; gap: 0.35rem; min-height: 46px; padding: 0 1.15rem; border: 1px solid var(--line-2); border-radius: 4px; color: var(--text); font-family: var(--sans); font-weight: 600; font-size: 1rem; text-decoration: none; }
+  .btn-ghost:hover { border-color: var(--accent-text); color: var(--accent-text); }
+  .url-row { width: 100%; }
+  .url-k { font-family: var(--mono); font-size: 0.75rem; letter-spacing: 0.04em; color: var(--text-3); margin: 0 0 0.4rem; }
+  .cmd-url { margin: 0; max-width: none; background: var(--bg); }
+  .cmd-url .cmd { padding: 0.6rem 0.85rem; }
+  .cmd-url .copy-btn { margin: 0.25rem 0.25rem 0.25rem 0; }
+  .connect-note { font-size: 0.95rem; color: var(--text-2); margin: 0; max-width: 58ch; }
+  .cmd-url .cmd { -webkit-mask-image: none; mask-image: none; padding-right: 0.85rem; white-space: normal; }
+  @media (max-width: 640px) {
+    .connect { padding: 1rem; }
+    .cmd-url .cmd { font-size: 0.78rem; padding: 0.6rem; }
+  }
+  @media (min-width: 960px) {
+    .connect { grid-template-columns: auto minmax(0, 24rem) minmax(0, 1fr); align-items: end; column-gap: 1.75rem; }
+    .connect .label { grid-column: 1 / -1; }
+    .connect-note { align-self: center; }
+  }
 
   /* link map: telemetry, not illustration */
   .map { margin: 0.25rem 0 0; padding: 1rem 1rem 0.75rem; }
@@ -229,8 +250,8 @@
   .status a:hover, .status a:focus-visible { text-decoration-color: currentColor; }
 
   @media (min-width: 960px) {
-    .preface { grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: 1rem 1.75rem; grid-template-areas: "hero hero" "install c1" "c2 c2" "c3 c3" "status status"; }
-    .hero { grid-area: hero; padding-bottom: 0.5rem; } .install-col { grid-area: install; } .c1 { grid-area: c1; } .c2 { grid-area: c2; } .c3 { grid-area: c3; } .status { grid-area: status; }
+    .preface { grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr); gap: 1rem 1.75rem; grid-template-areas: "hero hero" "install c1" "connect connect" "c2 c2" "c3 c3" "status status"; }
+    .hero { grid-area: hero; padding-bottom: 0.5rem; } .install-col { grid-area: install; } .connect { grid-area: connect; } .c1 { grid-area: c1; } .c2 { grid-area: c2; } .c3 { grid-area: c3; } .status { grid-area: status; }
     .install-col { display: flex; flex-direction: column; } .install-col .install { flex: 1; display: flex; flex-direction: column; } .install .syn-actions { margin-top: auto; padding-top: 1rem; }
     .c2-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0.2rem 1rem; margin: 0 0 0.75rem; }
     .c2-head .ct, .c2-head p { margin: 0; }
@@ -388,6 +409,19 @@ powershell -ExecutionPolicy Bypass -File "$env:TEMP\sx.ps1" -User</code></pre>
           <a class="read" id="syn-read" href="https://github.com/pensados/sentinelx-cloud-installer/blob/main/install.sh" target="_blank" rel="noopener">Read the installer<svg class="i-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a>
         </div>
       </div>
+    </section>
+
+    <section class="connect panel" aria-labelledby="h-connect-now">
+        <h2 class="label" id="h-connect-now">or connect your assistant first</h2>
+        <div class="gpt-row">
+          <p class="url-k">ChatGPT: one click, no URL to paste</p>
+          <a class="btn-ghost" href="https://chatgpt.com/plugins/plugin_asdk_app_69f63e01766881919640f03b5e7912a5" target="_blank" rel="noopener">Open SentinelX in ChatGPT<svg class="i-ext" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 17 17 7"/><path d="M8 7h9v9"/></svg></a>
+        </div>
+        <div class="url-row">
+          <p class="url-k" id="url-k">Claude, Grok, Cursor and other MCP clients: add this connector URL</p>
+          <div class="cmd-block cmd-url"><div class="cmd">https://mcp.sentinelx.app/<wbr>mcp/mcp</div><button class="copy-btn" type="button" onclick="sxCopyCmd(this)" data-copy="https://mcp.sentinelx.app/mcp/mcp" aria-label="Copy connector URL"><svg class="i-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><svg class="i-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg></button></div>
+        </div>
+        <p class="connect-note">In Claude.ai: Settings &rarr; Connectors &rarr; Add custom connector, paste the URL, then authorize with Google (<a href="#connect">other clients</a>). Once connected, ask your assistant for the install command.</p>
     </section>
 
     <section class="c1" aria-labelledby="h-c1">
